@@ -126,4 +126,12 @@ public class InterviewSet extends BaseEntity {
     public void softDelete() {
         this.isDeleted = true;
     }
+
+    public void addBookmarkCount() {
+        this.bookmarkCount += 1;
+    }
+
+    public void subtractBookmarkCount() {
+        this.bookmarkCount -= 1;
+    }
 }

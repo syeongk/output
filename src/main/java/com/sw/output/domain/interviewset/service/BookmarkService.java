@@ -10,6 +10,7 @@ import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.BookmarkErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,12 @@ public class BookmarkService {
      * @param interviewSetId 북마크할 면접 세트 ID
      * @throws BusinessException 면접 세트가 존재하지 않는 경우, 멤버가 존재하지 않는 경우
      */
+    @Transactional
     public void createBookmark(Long interviewSetId) {
+        if (bookmarkRepository.findByInterviewSetIdAndMemberId(interviewSetId, 1L).isPresent()) {
+            throw new BusinessException(BookmarkErrorCode.ALREADY_BOOKMARKED);
+        }
+
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
@@ -39,14 +45,29 @@ public class BookmarkService {
 
         Bookmark bookmark = toBookmark(interviewSet, member);
         bookmarkRepository.save(bookmark);
+
+        // TODO : 동시성 문제 해결 필요
+        interviewSet.addBookmarkCount();
     }
 
+    /**
+     * 면접 세트 북마크를 삭제합니다.
+     *
+     * @param interviewSetId 삭제할 면접 세트 ID
+     * @throws BusinessException 면접 세트가 존재하지 않는 경우, 북마크가 존재하지 않는 경우
+     */
+    @Transactional
     public void deleteBookmark(Long interviewSetId) {
+        InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
+                .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+
         // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         Bookmark bookmark = bookmarkRepository.findByInterviewSetIdAndMemberId(interviewSetId, 1L)
                 .orElseThrow(() -> new BusinessException(BookmarkErrorCode.BOOKMARK_NOT_FOUND));
 
         bookmarkRepository.delete(bookmark);
-    }
 
+        // TODO : 동시성 문제 해결 필요
+        interviewSet.subtractBookmarkCount();
+    }
 }

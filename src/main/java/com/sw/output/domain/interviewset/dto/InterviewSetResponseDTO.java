@@ -1,5 +1,6 @@
 package com.sw.output.domain.interviewset.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,13 +11,13 @@ public class InterviewSetResponseDTO {
     @Getter
     @Builder
     public static class CreateInterviewSetDTO {
-        private Long interviewSetId;
+        private Long id;
     }
 
     @Getter
     @Builder
     public static class GetInterviewSetDTO {
-        private Long interviewSetId;
+        private Long id;
         private String title;
         private List<String> interviewCategories;
         private List<String> jobCategories;
@@ -25,4 +26,16 @@ public class InterviewSetResponseDTO {
         private Boolean isAnswerPublic;
         private List<QuestionAnswerDTO> questionAnswers;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class GetInterviewSetSummaryDTO {
+        private Long id;
+        private String title;
+        private String nickname;
+        private Integer bookmarkCount;
+        private LocalDateTime createdAt;
+    }
+
 }

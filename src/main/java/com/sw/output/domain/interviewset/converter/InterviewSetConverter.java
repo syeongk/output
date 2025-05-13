@@ -29,13 +29,13 @@ public class InterviewSetConverter {
 
     public static InterviewSetResponseDTO.CreateInterviewSetDTO toCreateInterviewSetResponse(Long interviewSetId) {
         return InterviewSetResponseDTO.CreateInterviewSetDTO.builder()
-                .interviewSetId(interviewSetId)
+                .id(interviewSetId)
                 .build();
     }
 
     public static InterviewSetResponseDTO.GetInterviewSetDTO toGetInterviewSetResponse(InterviewSet interviewSet) {
         return InterviewSetResponseDTO.GetInterviewSetDTO.builder()
-                .interviewSetId(interviewSet.getId())
+                .id(interviewSet.getId())
                 .title(interviewSet.getTitle())
                 .interviewCategories(
                         interviewSet.getInterviewSetInterviewCategories().stream()
