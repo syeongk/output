@@ -1,6 +1,9 @@
 package com.sw.output.domain.auth.service;
 
-import com.sw.output.domain.auth.dto.OAuthResponseDTO;
+import com.sw.output.domain.auth.dto.AuthResponseDTO;
+import com.sw.output.domain.auth.dto.GoogleOAuthDTO;
+import com.sw.output.domain.member.entity.Member;
+import com.sw.output.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +19,14 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import static com.sw.output.domain.member.converter.MemberConverter.toMember;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class OAuthService {
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
 
     @Value("${spring.security.oauth2.client.google.client-id}")
@@ -51,11 +58,12 @@ public class OAuthService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
 
 
+        // TODO : 예외처리 필요
         // 구글 OAuth 서버에 액세스 토큰 요청
-        OAuthResponseDTO.GoogleAccessTokenDTO googleAccessTokenDTO = restTemplate.postForObject(
+        GoogleOAuthDTO.GoogleAccessTokenDTO googleAccessTokenDTO = restTemplate.postForObject(
                 "https://oauth2.googleapis.com/token",
                 request,
-                OAuthResponseDTO.GoogleAccessTokenDTO.class
+                GoogleOAuthDTO.GoogleAccessTokenDTO.class
         );
 
         return googleAccessTokenDTO.getAccess_token();
@@ -72,12 +80,13 @@ public class OAuthService {
         // HTTP 요청 엔티티 생성
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
+        // TODO : 예외처리 필요
         // 구글 API 서버에 사용자 이메일 정보 요청
-        OAuthResponseDTO.GoogleUserInfoDTO googleUserInfoDTO = restTemplate.exchange(
+        GoogleOAuthDTO.GoogleUserInfoDTO googleUserInfoDTO = restTemplate.exchange(
                 "https://www.googleapis.com/oauth2/v2/userinfo",
                 HttpMethod.GET,
                 request,
-                OAuthResponseDTO.GoogleUserInfoDTO.class
+                GoogleOAuthDTO.GoogleUserInfoDTO.class
         ).getBody();
 
         return googleUserInfoDTO.getEmail();
@@ -85,14 +94,27 @@ public class OAuthService {
 
     /**
      * 1. 구글 액세스 토큰 요청
-     * <br>
-     * 2. 액세스 토큰으로 사용자 이메일 정보 요청
+     * <br> 2. 액세스 토큰으로 사용자 이메일 정보 요청
+     * <br> 3. DB에 해당 이메일의 회원이 있는지 확인
+     * <br> 4-1. 해당 이메일의 회원이 없는 경우, 회원가입 처리
+     * <br> 5. Access token, Refresh token 발급
      */
-    public String socialLogin(String code) {
+    public AuthResponseDTO.TokenDTO socialLogin(String code) {
         String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         String googleAccessToken = getGoogleAccessToken(decodedCode);
         String email = getGoogleEmail(googleAccessToken);
 
-        return email;
+        // 이메일로 회원 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseGet(() -> memberRepository.save(toMember(email))); // 없으면 회원 가입
+
+        // Access token, Refresh token 발급
+        String accessToken = jwtTokenProvider.createAccessToken(email);
+        String refreshToken = jwtTokenProvider.createRefreshToken(email);
+
+        return AuthResponseDTO.TokenDTO.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

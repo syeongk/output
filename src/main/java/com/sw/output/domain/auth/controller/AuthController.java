@@ -1,5 +1,6 @@
 package com.sw.output.domain.auth.controller;
 
+import com.sw.output.domain.auth.dto.AuthResponseDTO;
 import com.sw.output.domain.auth.service.OAuthService;
 import com.sw.output.domain.auth.service.TokenService;
 import com.sw.output.global.response.ApiResponse;
@@ -17,9 +18,9 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("social-login")
-    public ApiResponse<String> socialLogin(@RequestParam String code) {
-        String email = oAuthService.socialLogin(code);
-        return ApiResponse.success(email);
+    public ApiResponse<AuthResponseDTO.TokenDTO> socialLogin(@RequestParam String code) {
+        AuthResponseDTO.TokenDTO tokenDTO = oAuthService.socialLogin(code);
+        return ApiResponse.success(tokenDTO);
     }
 
     @PostMapping("reissue")

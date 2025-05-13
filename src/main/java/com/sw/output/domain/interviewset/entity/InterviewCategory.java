@@ -1,4 +1,4 @@
-package com.sw.output.domain.interviewcategory.entity;
+package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
 import com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory;
@@ -19,7 +19,7 @@ public class InterviewCategory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 면접 카테고리 ID
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String name; // 면접 카테고리 이름
 
     // 면접 세트 면접 카테고리와 1:N 연관관계

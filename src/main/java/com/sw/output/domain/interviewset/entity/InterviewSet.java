@@ -1,16 +1,19 @@
 package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.bookmark.entity.Bookmark;
+import com.sw.output.domain.interviewset.dto.QuestionAnswerRequestDTO;
 import com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory;
 import com.sw.output.domain.member.entity.Member;
-import com.sw.output.domain.questionanswer.entity.QuestionAnswer;
 import com.sw.output.domain.report.entity.Report;
+import com.sw.output.global.exception.BusinessException;
+import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
 
 @Entity
 @Getter
@@ -42,6 +45,9 @@ public class InterviewSet extends BaseEntity {
     @Column(nullable = false)
     private Integer bookmarkCount = 0; // 북마크 수
 
+    @Column(nullable = false)
+    private Boolean isDeleted = false; // 삭제 여부
+
     // 면접 세트 면접 카테고리와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InterviewSetInterviewCategory> interviewSetInterviewCategories = new ArrayList<>();
@@ -61,4 +67,61 @@ public class InterviewSet extends BaseEntity {
     // 북마크와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
+
+    /**
+     * 면접 카테고리를 설정합니다.
+     * <br> 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
+     *
+     * @param interviewCategories 설정할 면접 카테고리 목록
+     * @throws BusinessException 카테고리가 2개를 초과하는 경우
+     */
+    public void setInterviewSetInterviewCategories(List<InterviewCategory> interviewCategories) {
+        List<InterviewSetInterviewCategory> interviewSetInterviewCategories = interviewCategories.stream()
+                .map(category -> toInterviewSetInterviewCategory(this, category))
+                .toList();
+
+        if (interviewSetInterviewCategories.size() > 2) {
+            throw new BusinessException(InterviewSetErrorCode.INVALID_INTERVIEW_CATEGORY_COUNT);
+        }
+
+        this.interviewSetInterviewCategories.clear();
+        this.interviewSetInterviewCategories.addAll(interviewSetInterviewCategories);
+    }
+
+    /**
+     * 직무 카테고리를 설정합니다.
+     * <br> 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
+     *
+     * @param jobCategories 설정할 직무 카테고리 목록
+     * @throws BusinessException 카테고리가 2개를 초과하는 경우
+     */
+    public void setInterviewSetJobCategories(List<JobCategory> jobCategories) {
+        List<InterviewSetJobCategory> interviewSetJobCategories = jobCategories.stream()
+                .map(category -> toInterviewSetJobCategory(this, category))
+                .toList();
+
+        if (interviewSetJobCategories.size() > 2) {
+            throw new BusinessException(InterviewSetErrorCode.INVALID_JOB_CATEGORY_COUNT);
+        }
+
+        this.interviewSetJobCategories.clear();
+        this.interviewSetJobCategories.addAll(interviewSetJobCategories);
+    }
+
+    /**
+     * 질문 답변을 설정합니다.
+     *
+     * @param questionAnswersDTO 설정할 질문 답변 목록
+     */
+    public void setQuestionAnswers(List<QuestionAnswerRequestDTO.QuestionAnswerDTO> questionAnswersDTO) {
+        List<QuestionAnswer> questionAnswers = questionAnswersDTO.stream()
+                .map(questionAnswer -> toQuestionAnswer(this, questionAnswer))
+                .toList();
+
+        this.questionAnswers.addAll(questionAnswers);
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+    }
 }

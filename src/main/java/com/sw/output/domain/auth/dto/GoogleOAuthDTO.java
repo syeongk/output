@@ -2,7 +2,7 @@ package com.sw.output.domain.auth.dto;
 
 import lombok.Getter;
 
-public class OAuthResponseDTO {
+public class GoogleOAuthDTO {
     @Getter
     public static class GoogleAccessTokenDTO {
         private String access_token;
@@ -19,6 +19,5 @@ public class OAuthResponseDTO {
         private String email;
         private Boolean verified_email;
         private String picture;
-
     }
 }

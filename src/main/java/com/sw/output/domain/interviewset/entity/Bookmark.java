@@ -1,7 +1,6 @@
-package com.sw.output.domain.bookmark.entity;
+package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;

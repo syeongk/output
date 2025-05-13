@@ -1,7 +1,6 @@
-package com.sw.output.domain.jobcategory.entity;
+package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.interviewset.entity.InterviewSetJobCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +18,7 @@ public class JobCategory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 직무 카테고리 ID
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true)
     private String name; // 직무 카테고리 이름
 
     // 면접 세트 직무 카테고리와 1:N 연관관계

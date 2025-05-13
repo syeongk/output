@@ -1,6 +1,10 @@
 package com.sw.output.domain.interviewset.controller;
 
+import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
+import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
+import com.sw.output.domain.interviewset.service.InterviewSetService;
 import com.sw.output.global.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/interview-sets")
 @RequiredArgsConstructor
 public class InterviewSetController {
+    private final InterviewSetService interviewSetService;
 
     @GetMapping("")
     public ApiResponse<Void> getInterviewSets() {
@@ -20,8 +25,9 @@ public class InterviewSetController {
     }
 
     @PostMapping("")
-    public ApiResponse<Void> createInterviewSet() {
-        return ApiResponse.success();
+    public ApiResponse<InterviewSetResponseDTO.CreateInterviewSetDTO> createInterviewSet(@RequestBody @Valid InterviewSetRequestDTO.CreateInterviewSetDTO request) {
+        InterviewSetResponseDTO.CreateInterviewSetDTO response = interviewSetService.createInterviewSet(request);
+        return ApiResponse.success(response);
     }
 
     @PatchMapping("{interviewSetId}")
@@ -31,6 +37,7 @@ public class InterviewSetController {
 
     @DeleteMapping("{interviewSetId}")
     public ApiResponse<Void> deleteInterviewSet(@PathVariable Long interviewSetId) {
+        interviewSetService.deleteInterviewSet(interviewSetId);
         return ApiResponse.success();
     }
 
