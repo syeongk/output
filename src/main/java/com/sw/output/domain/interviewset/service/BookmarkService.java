@@ -1,4 +1,52 @@
 package com.sw.output.domain.interviewset.service;
 
+import com.sw.output.domain.interviewset.entity.Bookmark;
+import com.sw.output.domain.interviewset.entity.InterviewSet;
+import com.sw.output.domain.interviewset.repository.BookmarkRepository;
+import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
+import com.sw.output.domain.member.entity.Member;
+import com.sw.output.domain.member.repository.MemberRepository;
+import com.sw.output.global.exception.BusinessException;
+import com.sw.output.global.response.errorcode.BookmarkErrorCode;
+import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
+import com.sw.output.global.response.errorcode.MemberErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import static com.sw.output.domain.interviewset.converter.BookmarkConverter.toBookmark;
+
+@Service
+@RequiredArgsConstructor
 public class BookmarkService {
+
+    private final BookmarkRepository bookmarkRepository;
+    private final InterviewSetRepository interviewSetRepository;
+    private final MemberRepository memberRepository;
+
+    /**
+     * 면접 세트를 북마크합니다.
+     *
+     * @param interviewSetId 북마크할 면접 세트 ID
+     * @throws BusinessException 면접 세트가 존재하지 않는 경우, 멤버가 존재하지 않는 경우
+     */
+    public void createBookmark(Long interviewSetId) {
+        InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
+                .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+
+        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        Bookmark bookmark = toBookmark(interviewSet, member);
+        bookmarkRepository.save(bookmark);
+    }
+
+    public void deleteBookmark(Long interviewSetId) {
+        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
+        Bookmark bookmark = bookmarkRepository.findByInterviewSetIdAndMemberId(interviewSetId, 1L)
+                .orElseThrow(() -> new BusinessException(BookmarkErrorCode.BOOKMARK_NOT_FOUND));
+
+        bookmarkRepository.delete(bookmark);
+    }
+
 }

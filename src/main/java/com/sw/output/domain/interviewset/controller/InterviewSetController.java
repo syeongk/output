@@ -2,6 +2,7 @@ package com.sw.output.domain.interviewset.controller;
 
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
+import com.sw.output.domain.interviewset.service.BookmarkService;
 import com.sw.output.domain.interviewset.service.InterviewSetService;
 import com.sw.output.global.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class InterviewSetController {
     private final InterviewSetService interviewSetService;
+    private final BookmarkService bookmarkService;
 
     @GetMapping("")
     public ApiResponse<Void> getInterviewSets() {
@@ -49,11 +51,13 @@ public class InterviewSetController {
 
     @PostMapping("{interviewSetId}/bookmarks")
     public ApiResponse<Void> createBookmark(@PathVariable Long interviewSetId) {
+        bookmarkService.createBookmark(interviewSetId);
         return ApiResponse.success();
     }
 
     @DeleteMapping("{interviewSetId}/bookmarks")
     public ApiResponse<Void> deleteBookmark(@PathVariable Long interviewSetId) {
+        bookmarkService.deleteBookmark(interviewSetId);
         return ApiResponse.success();
     }
 

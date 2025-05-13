@@ -9,6 +9,7 @@ import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
 import com.sw.output.global.exception.BusinessException;
+import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -67,9 +68,13 @@ public class InterviewSetService {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
-        interviewSet.softDelete();
+        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
+        if (!interviewSet.getMember().getId().equals(1L)) {
+            throw new BusinessException(CommonErrorCode.FORBIDDEN);
+        }
 
         // TODO : DB 삭제 로직 추가
+        interviewSet.softDelete();
     }
 
     /**
