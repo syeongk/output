@@ -20,8 +20,9 @@ public class InterviewSetController {
     }
 
     @GetMapping("{interviewSetId}")
-    public ApiResponse<Void> getInterviewSet(@PathVariable Long interviewSetId) {
-        return ApiResponse.success();
+    public ApiResponse<InterviewSetResponseDTO.GetInterviewSetDTO> getInterviewSet(@PathVariable Long interviewSetId) {
+        InterviewSetResponseDTO.GetInterviewSetDTO getInterviewSetDTO = interviewSetService.getInterviewSet(interviewSetId);
+        return ApiResponse.success(getInterviewSetDTO);
     }
 
     @PostMapping("")

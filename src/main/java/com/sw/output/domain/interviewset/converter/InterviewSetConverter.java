@@ -2,12 +2,13 @@ package com.sw.output.domain.interviewset.converter;
 
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
-import com.sw.output.domain.interviewset.dto.QuestionAnswerRequestDTO;
+import com.sw.output.domain.interviewset.dto.QuestionAnswerDTO;
 import com.sw.output.domain.interviewset.entity.*;
 import com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory;
 import com.sw.output.domain.member.entity.Member;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class InterviewSetConverter {
 
@@ -26,7 +27,7 @@ public class InterviewSetConverter {
                 .build();
     }
 
-    public static InterviewSetResponseDTO.CreateInterviewSetDTO toCreateResponse(Long interviewSetId) {
+    public static InterviewSetResponseDTO.CreateInterviewSetDTO toCreateInterviewSetResponse(Long interviewSetId) {
         return InterviewSetResponseDTO.CreateInterviewSetDTO.builder()
                 .interviewSetId(interviewSetId)
                 .build();
@@ -46,12 +47,45 @@ public class InterviewSetConverter {
                 .build();
     }
 
-    public static QuestionAnswer toQuestionAnswer(InterviewSet interviewSet, QuestionAnswerRequestDTO.QuestionAnswerDTO questionAnswerDTO) {
+    public static QuestionAnswer toQuestionAnswer(InterviewSet interviewSet, QuestionAnswerDTO questionAnswerDTO) {
         return QuestionAnswer.builder()
                 .interviewSet(interviewSet)
                 .questionTitle(questionAnswerDTO.getQuestionTitle())
                 .answerContent(questionAnswerDTO.getAnswerContent())
                 .feedbacks(new ArrayList<>())
+                .build();
+    }
+
+    public static QuestionAnswerDTO toQuestionAnswerDTO(QuestionAnswer questionAnswer) {
+        return QuestionAnswerDTO.builder()
+                .questionTitle(questionAnswer.getQuestionTitle())
+                .answerContent(questionAnswer.getAnswerContent())
+                .build();
+    }
+
+    public static InterviewSetResponseDTO.GetInterviewSetDTO toGetInterviewSetResponse(InterviewSet interviewSet) {
+        return InterviewSetResponseDTO.GetInterviewSetDTO.builder()
+                .interviewSetId(interviewSet.getId())
+                .title(interviewSet.getTitle())
+                .interviewCategories(
+                        interviewSet.getInterviewSetInterviewCategories().stream()
+                                .map(category -> category.getInterviewCategory())
+                                .map(category -> category.getName())
+                                .collect(Collectors.toList())
+                )
+                .jobCategories(
+                        interviewSet.getInterviewSetJobCategories().stream()
+                                .map(category -> category.getJobCategory())
+                                .map(category -> category.getName())
+                                .collect(Collectors.toList())
+                )
+                .nickname(interviewSet.getMember().getNickname())
+                .createdAt(interviewSet.getCreatedAt())
+                .isAnswerPublic(interviewSet.getIsAnswerPublic())
+                .questionAnswers(
+                        interviewSet.getQuestionAnswers().stream()
+                                .map(questionAnswer -> toQuestionAnswerDTO(questionAnswer))
+                                .collect(Collectors.toList()))
                 .build();
     }
 }

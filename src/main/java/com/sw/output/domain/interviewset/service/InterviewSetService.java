@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toCreateResponse;
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toInterviewSet;
+import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +54,7 @@ public class InterviewSetService {
         interviewSet.setQuestionAnswers(createInterviewSetDTO.getQuestionAnswers());
 
         interviewSetRepository.save(interviewSet);
-        return toCreateResponse(interviewSet.getId());
+        return toCreateInterviewSetResponse(interviewSet.getId());
     }
 
     /**
@@ -69,5 +68,18 @@ public class InterviewSetService {
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
         interviewSet.softDelete();
+
+        // TODO : DB 삭제 로직 추가
+    }
+
+    public InterviewSetResponseDTO.GetInterviewSetDTO getInterviewSet(Long interviewSetId) {
+        InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
+                .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+
+        if (interviewSet.getIsDeleted()) {
+            throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND);
+        }
+
+        return toGetInterviewSetResponse(interviewSet);
     }
 }

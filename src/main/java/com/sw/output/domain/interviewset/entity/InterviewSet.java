@@ -1,7 +1,7 @@
 package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.interviewset.dto.QuestionAnswerRequestDTO;
+import com.sw.output.domain.interviewset.dto.QuestionAnswerDTO;
 import com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.report.entity.Report;
@@ -113,7 +113,7 @@ public class InterviewSet extends BaseEntity {
      *
      * @param questionAnswersDTO 설정할 질문 답변 목록
      */
-    public void setQuestionAnswers(List<QuestionAnswerRequestDTO.QuestionAnswerDTO> questionAnswersDTO) {
+    public void setQuestionAnswers(List<QuestionAnswerDTO> questionAnswersDTO) {
         List<QuestionAnswer> questionAnswers = questionAnswersDTO.stream()
                 .map(questionAnswer -> toQuestionAnswer(this, questionAnswer))
                 .toList();

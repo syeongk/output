@@ -10,7 +10,7 @@ public class InterviewSetRequestDTO {
         private List<String> interviewCategories;
         private List<String> jobCategories;
         private String title;
-        private List<QuestionAnswerRequestDTO.QuestionAnswerDTO> questionAnswers;
+        private List<QuestionAnswerDTO> questionAnswers;
         private Boolean isAnswerPublic;
     }
 }
