@@ -2,13 +2,13 @@ package com.sw.output.domain.interviewset.converter;
 
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
-import com.sw.output.domain.interviewset.dto.QuestionAnswerDTO;
-import com.sw.output.domain.interviewset.entity.*;
-import com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory;
+import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import static com.sw.output.domain.interviewset.converter.QuestionAnswerConverter.toQuestionAnswerDTO;
 
 public class InterviewSetConverter {
 
@@ -30,36 +30,6 @@ public class InterviewSetConverter {
     public static InterviewSetResponseDTO.CreateInterviewSetDTO toCreateInterviewSetResponse(Long interviewSetId) {
         return InterviewSetResponseDTO.CreateInterviewSetDTO.builder()
                 .interviewSetId(interviewSetId)
-                .build();
-    }
-
-    public static InterviewSetInterviewCategory toInterviewSetInterviewCategory(InterviewSet interviewSet, InterviewCategory interviewCategory) {
-        return InterviewSetInterviewCategory.builder()
-                .interviewSet(interviewSet)
-                .interviewCategory(interviewCategory)
-                .build();
-    }
-
-    public static InterviewSetJobCategory toInterviewSetJobCategory(InterviewSet interviewSet, JobCategory jobCategory) {
-        return InterviewSetJobCategory.builder()
-                .interviewSet(interviewSet)
-                .jobCategory(jobCategory)
-                .build();
-    }
-
-    public static QuestionAnswer toQuestionAnswer(InterviewSet interviewSet, QuestionAnswerDTO questionAnswerDTO) {
-        return QuestionAnswer.builder()
-                .interviewSet(interviewSet)
-                .questionTitle(questionAnswerDTO.getQuestionTitle())
-                .answerContent(questionAnswerDTO.getAnswerContent())
-                .feedbacks(new ArrayList<>())
-                .build();
-    }
-
-    public static QuestionAnswerDTO toQuestionAnswerDTO(QuestionAnswer questionAnswer) {
-        return QuestionAnswerDTO.builder()
-                .questionTitle(questionAnswer.getQuestionTitle())
-                .answerContent(questionAnswer.getAnswerContent())
                 .build();
     }
 

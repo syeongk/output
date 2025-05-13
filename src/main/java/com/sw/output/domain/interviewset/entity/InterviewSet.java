@@ -13,7 +13,9 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
+import static com.sw.output.domain.interviewset.converter.InterviewSetInterviewCategoryConverter.toInterviewSetInterviewCategory;
+import static com.sw.output.domain.interviewset.converter.InterviewSetJobCategoryConverter.toInterviewSetJobCategory;
+import static com.sw.output.domain.interviewset.converter.QuestionAnswerConverter.toQuestionAnswer;
 
 @Entity
 @Getter

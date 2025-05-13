@@ -72,6 +72,10 @@ public class InterviewSetService {
         // TODO : DB 삭제 로직 추가
     }
 
+    /**
+     * @param interviewSetId
+     * @return
+     */
     public InterviewSetResponseDTO.GetInterviewSetDTO getInterviewSet(Long interviewSetId) {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
