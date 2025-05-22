@@ -42,15 +42,15 @@ public class InterviewSetService {
     @Transactional
     public InterviewSetResponseDTO.CreateInterviewSetDTO createInterviewSet(
             InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO) {
+        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
         List<JobCategory> jobCategories = jobCategoryService
                 .validateAndGetCategories(createInterviewSetDTO.getJobCategories());
 
         List<InterviewCategory> interviewCategories = interviewCategoryService
                 .validateAndGetCategories(createInterviewSetDTO.getInterviewCategories());
-
-        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         InterviewSet interviewSet = toInterviewSet(member, createInterviewSetDTO);
         interviewSet.setInterviewSetInterviewCategories(interviewCategories);
@@ -98,12 +98,36 @@ public class InterviewSetService {
         return toGetInterviewSetResponse(interviewSet);
     }
 
-    // 면접 세트 목록 조회
-    // 카테고리1, 카테고리2 가 null 값이 아닐 때 -> 카테고리1, 카테고리2에 해당하는 면접 세트 조회
-    // keyword 가 null 값이 아닐 때 -> 세트 제목, 질문 제목에 keyword가 포함되는 면접 세트 조회
+    /**
+     * 면접 세트를 복제합니다.
+     *
+     * @param interviewSetId 복제할 면접 세트 ID
+     * @param createInterviewSetDTO 복제할 면접 세트 생성 요청 DTO
+     * @return 생성된 면접 세트의 ID
+     * @throws BusinessException 면접 세트가 존재하지 않는 경우, 카테고리가 존재하지 않는 경우
+     */
+    @Transactional
+    public InterviewSetResponseDTO.CreateInterviewSetDTO duplicateInterviewSet(Long interviewSetId,
+            InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO) {
+        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-    //
-    public void getInterviewSets() {
+        InterviewSet parentInterviewSet = interviewSetRepository.findById(interviewSetId)
+                .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
+        List<JobCategory> jobCategories = jobCategoryService
+                .validateAndGetCategories(createInterviewSetDTO.getJobCategories());
+
+        List<InterviewCategory> interviewCategories = interviewCategoryService
+                .validateAndGetCategories(createInterviewSetDTO.getInterviewCategories());
+
+        InterviewSet interviewSet = toInterviewSet(member, createInterviewSetDTO, parentInterviewSet);
+        interviewSet.setInterviewSetInterviewCategories(interviewCategories);
+        interviewSet.setInterviewSetJobCategories(jobCategories);
+        interviewSet.setQuestionAnswers(createInterviewSetDTO.getQuestionAnswers());
+
+        interviewSetRepository.save(interviewSet);
+        return toCreateInterviewSetResponse(interviewSet.getId());
     }
 }

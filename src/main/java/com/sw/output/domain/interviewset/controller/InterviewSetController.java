@@ -2,9 +2,9 @@ package com.sw.output.domain.interviewset.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,7 +52,7 @@ public class InterviewSetController {
         return ApiResponse.success(response);
     }
 
-    @PatchMapping("{interviewSetId}")
+    @PutMapping("{interviewSetId}")
     public ApiResponse<Void> updateInterviewSet(@PathVariable Long interviewSetId) {
         return ApiResponse.success();
     }
@@ -83,5 +83,14 @@ public class InterviewSetController {
     @PostMapping("{interviewSetId}/reports")
     public ApiResponse<Void> startInterview(@PathVariable Long interviewSetId) {
         return ApiResponse.success();
+    }
+
+    @PostMapping("{interviewSetId}/duplicate")
+    public ApiResponse<InterviewSetResponseDTO.CreateInterviewSetDTO> duplicateInterviewSet(
+            @PathVariable Long interviewSetId,
+            @RequestBody @Valid InterviewSetRequestDTO.CreateInterviewSetDTO request) {
+        InterviewSetResponseDTO.CreateInterviewSetDTO response = interviewSetService
+                .duplicateInterviewSet(interviewSetId, request);
+        return ApiResponse.success(response);
     }
 }

@@ -12,11 +12,34 @@ import com.sw.output.domain.member.entity.Member;
 
 public class InterviewSetConverter {
 
-        public static InterviewSet toInterviewSet(Member member,
+        public static InterviewSet toInterviewSet(
+                        Member member,
                         InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO) {
+
                 return InterviewSet.builder()
                                 .member(member)
                                 .parent(null)
+                                .title(createInterviewSetDTO.getTitle())
+                                .isAnswerPublic(createInterviewSetDTO.getIsAnswerPublic())
+                                .bookmarkCount(0)
+                                .isDeleted(false)
+                                .mockCount(0)
+                                .interviewSetInterviewCategories(new ArrayList<>())
+                                .interviewSetJobCategories(new ArrayList<>())
+                                .questionAnswers(new ArrayList<>())
+                                .reports(new ArrayList<>())
+                                .bookmarks(new ArrayList<>())
+                                .build();
+        }
+
+        public static InterviewSet toInterviewSet(
+                        Member member,
+                        InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO,
+                        InterviewSet parentInterviewSet) {
+
+                return InterviewSet.builder()
+                                .member(member)
+                                .parent(parentInterviewSet)
                                 .title(createInterviewSetDTO.getTitle())
                                 .isAnswerPublic(createInterviewSetDTO.getIsAnswerPublic())
                                 .bookmarkCount(0)

@@ -46,8 +46,8 @@ public class MyPageService {
      * @throws BusinessException 회원을 찾을 수 없거나, 닉네임이 이미 존재할 경우
      */
     @Transactional
-    public void updateNickname(MemberRequestDTO.UpdateNicknameDTO request) {
-        String nickname = request.getNickname();
+    public void updateNickname(MemberRequestDTO.UpdateNicknameDTO updateNicknameDTO) {
+        String nickname = updateNicknameDTO.getNickname();
 
         // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         Member member = memberRepository.findById(1L)
