@@ -34,8 +34,9 @@ public class MemberController {
     }
 
     @GetMapping("/interview-sets")
-    public ApiResponse<Void> getMyInterviewSets() {
-        return ApiResponse.success();
+    public ApiResponse<List<InterviewSetSummaryProjection>> getMyInterviewSets() {
+        List<InterviewSetSummaryProjection> response = myPageService.getMyInterviewSets();
+        return ApiResponse.success(response);
     }
 
     @GetMapping("/reports")

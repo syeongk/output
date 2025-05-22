@@ -25,6 +25,11 @@ public class MyPageService {
     private final InterviewSetRepository interviewSetRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 북마크한 면접 세트 목록 조회
+     * 
+     * @return 북마크한 면접 세트 목록
+     */
     public List<InterviewSetSummaryProjection> getBookmarkedInterviewSets() {
         // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         List<Bookmark> bookmarks = bookmarkRepository.findByMemberIdOrderByCreatedAtDesc(1L);
@@ -34,10 +39,17 @@ public class MyPageService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 닉네임 수정
+     * 
+     * @param request 닉네임 수정 요청
+     * @throws BusinessException 회원을 찾을 수 없거나, 닉네임이 이미 존재할 경우
+     */
     @Transactional
     public void updateNickname(MemberRequestDTO.UpdateNicknameDTO request) {
         String nickname = request.getNickname();
 
+        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
@@ -46,5 +58,18 @@ public class MyPageService {
         }
 
         member.updateNickname(nickname);
+    }
+
+    /**
+     * 사용자 면접 세트 목록 조회
+     * 
+     * @return 사용자 면접 세트 목록
+     */
+    public List<InterviewSetSummaryProjection> getMyInterviewSets() {
+        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
+        List<InterviewSetSummaryProjection> interviewSets = interviewSetRepository
+                .findByMemberIdOrderByCreatedAtDesc(1L);
+
+        return interviewSets;
     }
 }
