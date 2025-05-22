@@ -1,8 +1,9 @@
 package com.sw.output.domain.test;
 
-import com.sw.output.global.response.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.sw.output.global.response.ApiResponse;
 
 @RestController
 public class TestController {

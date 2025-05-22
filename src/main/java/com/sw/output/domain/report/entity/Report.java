@@ -7,6 +7,7 @@ import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,12 @@ public class Report extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member; // 사용자
+
+    @Column(nullable = false)
+    private Boolean is_deleted = false;
+
+    @Column
+    private LocalDateTime deletedAt; // 탈퇴일자
 
     // 피드백과 1:N 연관관계
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)

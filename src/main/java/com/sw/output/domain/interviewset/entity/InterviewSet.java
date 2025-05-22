@@ -2,7 +2,6 @@ package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
 import com.sw.output.domain.interviewset.dto.QuestionAnswerDTO;
-import com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.report.entity.Report;
 import com.sw.output.global.exception.BusinessException;
@@ -10,6 +9,7 @@ import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,9 +50,15 @@ public class InterviewSet extends BaseEntity {
     @Column(nullable = false)
     private Boolean isDeleted = false; // 삭제 여부
 
+    @Column
+    private LocalDateTime deletedAt; // 탈퇴일자
+
+    @Column(nullable = false)
+    private Integer mockCount = 0; // 모의 면접 횟수
+
     // 면접 세트 면접 카테고리와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InterviewSetInterviewCategory> interviewSetInterviewCategories = new ArrayList<>();
+    private List<com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory> interviewSetInterviewCategories = new ArrayList<>();
 
     // 면접 세트 직무 카테고리와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -72,13 +78,14 @@ public class InterviewSet extends BaseEntity {
 
     /**
      * 면접 카테고리를 설정합니다.
-     * <br> 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
+     * <br>
+     * 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
      *
      * @param interviewCategories 설정할 면접 카테고리 목록
      * @throws BusinessException 카테고리가 2개를 초과하는 경우
      */
     public void setInterviewSetInterviewCategories(List<InterviewCategory> interviewCategories) {
-        List<InterviewSetInterviewCategory> interviewSetInterviewCategories = interviewCategories.stream()
+        List<com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory> interviewSetInterviewCategories = interviewCategories.stream()
                 .map(category -> toInterviewSetInterviewCategory(this, category))
                 .toList();
 
@@ -92,7 +99,8 @@ public class InterviewSet extends BaseEntity {
 
     /**
      * 직무 카테고리를 설정합니다.
-     * <br> 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
+     * <br>
+     * 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
      *
      * @param jobCategories 설정할 직무 카테고리 목록
      * @throws BusinessException 카테고리가 2개를 초과하는 경우

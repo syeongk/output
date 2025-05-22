@@ -57,15 +57,14 @@ public class OAuthService {
         // HTTP 요청 엔티티 생성
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
 
-
         // TODO : 예외처리 필요
         // 구글 OAuth 서버에 액세스 토큰 요청
         GoogleOAuthDTO.GoogleAccessTokenDTO googleAccessTokenDTO = restTemplate.postForObject(
                 "https://oauth2.googleapis.com/token",
                 request,
-                GoogleOAuthDTO.GoogleAccessTokenDTO.class
-        );
+                GoogleOAuthDTO.GoogleAccessTokenDTO.class);
 
+        log.info("googleAccessTokenDTO : {}", googleAccessTokenDTO.getId_token());
         return googleAccessTokenDTO.getAccess_token();
     }
 
@@ -86,18 +85,21 @@ public class OAuthService {
                 "https://www.googleapis.com/oauth2/v2/userinfo",
                 HttpMethod.GET,
                 request,
-                GoogleOAuthDTO.GoogleUserInfoDTO.class
-        ).getBody();
+                GoogleOAuthDTO.GoogleUserInfoDTO.class).getBody();
 
         return googleUserInfoDTO.getEmail();
     }
 
     /**
      * 1. 구글 액세스 토큰 요청
-     * <br> 2. 액세스 토큰으로 사용자 이메일 정보 요청
-     * <br> 3. DB에 해당 이메일의 회원이 있는지 확인
-     * <br> 4-1. 해당 이메일의 회원이 없는 경우, 회원가입 처리
-     * <br> 5. Access token, Refresh token 발급
+     * <br>
+     * 2. 액세스 토큰으로 사용자 이메일 정보 요청
+     * <br>
+     * 3. DB에 해당 이메일의 회원이 있는지 확인
+     * <br>
+     * 4-1. 해당 이메일의 회원이 없는 경우, 회원가입 처리
+     * <br>
+     * 5. Access token, Refresh token 발급
      */
     public AuthResponseDTO.TokenDTO socialLogin(String code) {
         String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);

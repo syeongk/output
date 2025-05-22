@@ -1,8 +1,8 @@
 package com.sw.output.domain.interviewset.dto;
 
-import lombok.Getter;
-
 import java.util.List;
+
+import lombok.Getter;
 
 public class InterviewSetRequestDTO {
     @Getter

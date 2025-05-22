@@ -1,5 +1,14 @@
 package com.sw.output.domain.interviewset.service;
 
+import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toCreateInterviewSetResponse;
+import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toGetInterviewSetResponse;
+import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toInterviewSet;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
@@ -12,13 +21,8 @@ import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +41,7 @@ public class InterviewSetService {
      */
     @Transactional
     public InterviewSetResponseDTO.CreateInterviewSetDTO createInterviewSet(
-            InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO
-    ) {
+            InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO) {
         List<JobCategory> jobCategories = jobCategoryService
                 .validateAndGetCategories(createInterviewSetDTO.getJobCategories());
 
@@ -78,8 +81,11 @@ public class InterviewSetService {
     }
 
     /**
-     * @param interviewSetId
-     * @return
+     * 면접 세트를 조회합니다.
+     *
+     * @param interviewSetId 조회할 면접 세트 ID
+     * @return 조회된 면접 세트
+     * @throws BusinessException 면접 세트가 존재하지 않는 경우, 삭제된 면접 세트인 경우
      */
     public InterviewSetResponseDTO.GetInterviewSetDTO getInterviewSet(Long interviewSetId) {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
@@ -90,5 +96,14 @@ public class InterviewSetService {
         }
 
         return toGetInterviewSetResponse(interviewSet);
+    }
+
+    // 면접 세트 목록 조회
+    // 카테고리1, 카테고리2 가 null 값이 아닐 때 -> 카테고리1, 카테고리2에 해당하는 면접 세트 조회
+    // keyword 가 null 값이 아닐 때 -> 세트 제목, 질문 제목에 keyword가 포함되는 면접 세트 조회
+
+    //
+    public void getInterviewSets() {
+
     }
 }
