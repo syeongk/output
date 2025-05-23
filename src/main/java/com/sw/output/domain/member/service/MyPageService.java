@@ -35,7 +35,8 @@ public class MyPageService {
         List<Bookmark> bookmarks = bookmarkRepository.findByMemberIdOrderByCreatedAtDesc(1L);
 
         return bookmarks.stream()
-                .map(bookmark -> interviewSetRepository.findSummaryById(bookmark.getInterviewSet().getId()))
+                .map(bookmark -> interviewSetRepository
+                        .findSummaryByIdAndIsDeletedFalse(bookmark.getInterviewSet().getId()))
                 .collect(Collectors.toList());
     }
 
@@ -68,7 +69,7 @@ public class MyPageService {
     public List<InterviewSetSummaryProjection> getMyInterviewSets() {
         // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         List<InterviewSetSummaryProjection> interviewSets = interviewSetRepository
-                .findByMemberIdOrderByCreatedAtDesc(1L);
+                .findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(1L);
 
         return interviewSets;
     }

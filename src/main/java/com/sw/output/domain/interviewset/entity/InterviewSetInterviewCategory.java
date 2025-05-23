@@ -1,8 +1,6 @@
-package com.sw.output.domain.mapping.entity;
+package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.interviewset.entity.InterviewCategory;
-import com.sw.output.domain.interviewset.entity.InterviewSet;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,5 +1,6 @@
 package com.sw.output.global.response;
 
+import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.successcode.CommonSuccessCode;
 
 import lombok.Builder;
@@ -43,5 +44,9 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> fail(BaseCode baseCode) {
         return new ApiResponse<>(false, baseCode.getCode(), baseCode.getMessage());
+    }
+
+    public static <T> ApiResponse<T> fail(String message) {
+        return new ApiResponse<>(false, CommonErrorCode.BAD_REQUEST.getCode(), message);
     }
 }

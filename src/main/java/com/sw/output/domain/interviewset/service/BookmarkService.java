@@ -39,6 +39,10 @@ public class BookmarkService {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
+        if (interviewSet.getIsDeleted()) {
+            throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
+        }
+
         // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
@@ -60,6 +64,10 @@ public class BookmarkService {
     public void deleteBookmark(Long interviewSetId) {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+
+        if (interviewSet.getIsDeleted()) {
+            throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
+        }
 
         // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         Bookmark bookmark = bookmarkRepository.findByInterviewSetIdAndMemberId(interviewSetId, 1L)

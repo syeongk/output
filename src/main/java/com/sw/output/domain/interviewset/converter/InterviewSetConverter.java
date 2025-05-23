@@ -14,13 +14,13 @@ public class InterviewSetConverter {
 
         public static InterviewSet toInterviewSet(
                         Member member,
-                        InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO) {
+                        InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
 
                 return InterviewSet.builder()
                                 .member(member)
                                 .parent(null)
-                                .title(createInterviewSetDTO.getTitle())
-                                .isAnswerPublic(createInterviewSetDTO.getIsAnswerPublic())
+                                .title(interviewSetDTO.getTitle())
+                                .isAnswerPublic(interviewSetDTO.getIsAnswerPublic())
                                 .bookmarkCount(0)
                                 .isDeleted(false)
                                 .mockCount(0)
@@ -34,14 +34,14 @@ public class InterviewSetConverter {
 
         public static InterviewSet toInterviewSet(
                         Member member,
-                        InterviewSetRequestDTO.CreateInterviewSetDTO createInterviewSetDTO,
+                        InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO,
                         InterviewSet parentInterviewSet) {
 
                 return InterviewSet.builder()
                                 .member(member)
                                 .parent(parentInterviewSet)
-                                .title(createInterviewSetDTO.getTitle())
-                                .isAnswerPublic(createInterviewSetDTO.getIsAnswerPublic())
+                                .title(interviewSetDTO.getTitle())
+                                .isAnswerPublic(interviewSetDTO.getIsAnswerPublic())
                                 .bookmarkCount(0)
                                 .isDeleted(false)
                                 .mockCount(0)

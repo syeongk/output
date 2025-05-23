@@ -1,7 +1,6 @@
 package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory;
 import jakarta.persistence.*;
 import lombok.*;
 

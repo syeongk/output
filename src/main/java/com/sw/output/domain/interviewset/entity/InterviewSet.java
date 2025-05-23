@@ -58,7 +58,7 @@ public class InterviewSet extends BaseEntity {
 
     // 면접 세트 면접 카테고리와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory> interviewSetInterviewCategories = new ArrayList<>();
+    private List<InterviewSetInterviewCategory> interviewSetInterviewCategories = new ArrayList<>();
 
     // 면접 세트 직무 카테고리와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -85,7 +85,8 @@ public class InterviewSet extends BaseEntity {
      * @throws BusinessException 카테고리가 2개를 초과하는 경우
      */
     public void setInterviewSetInterviewCategories(List<InterviewCategory> interviewCategories) {
-        List<com.sw.output.domain.mapping.entity.InterviewSetInterviewCategory> interviewSetInterviewCategories = interviewCategories.stream()
+        List<InterviewSetInterviewCategory> interviewSetInterviewCategories = interviewCategories
+                .stream()
                 .map(category -> toInterviewSetInterviewCategory(this, category))
                 .toList();
 
@@ -129,6 +130,24 @@ public class InterviewSet extends BaseEntity {
                 .toList();
 
         this.questionAnswers.addAll(questionAnswers);
+    }
+
+    /**
+     * 답변 공개 여부를 설정합니다.
+     *
+     * @param isAnswerPublic 답변 공개 여부
+     */
+    public void setIsAnswerPublic(Boolean isAnswerPublic) {
+        this.isAnswerPublic = isAnswerPublic;
+    }
+
+    /**
+     * 면접 세트 제목을 설정합니다.
+     *
+     * @param title 설정할 면접 세트 제목
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void softDelete() {

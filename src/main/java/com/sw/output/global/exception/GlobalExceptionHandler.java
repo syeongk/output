@@ -1,11 +1,14 @@
 package com.sw.output.global.exception;
 
-import com.sw.output.global.response.ApiResponse;
-import com.sw.output.global.response.errorcode.CommonErrorCode;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.sw.output.global.response.ApiResponse;
+import com.sw.output.global.response.errorcode.CommonErrorCode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 서버 전체에서 발생하는 예외를 처리하는 공통 핸들러
@@ -34,5 +37,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(CommonErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
                 .body(ApiResponse.fail(CommonErrorCode.INTERNAL_SERVER_ERROR));
+    }
+
+    // Validation 예외 처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
+        String errorMessage = e.getFieldError().getDefaultMessage();
+
+        log.error("[ValidationException] message = {}", errorMessage);
+
+        return ResponseEntity
+                .status(CommonErrorCode.BAD_REQUEST.getHttpStatus())
+                .body(ApiResponse.fail(errorMessage));
     }
 }

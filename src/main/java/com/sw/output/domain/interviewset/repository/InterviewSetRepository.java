@@ -8,7 +8,7 @@ import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 
 public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long> {
-    InterviewSetSummaryProjection findSummaryById(Long id);
+    InterviewSetSummaryProjection findSummaryByIdAndIsDeletedFalse(Long id);
 
-    List<InterviewSetSummaryProjection> findByMemberIdOrderByCreatedAtDesc(Long memberId);
+    List<InterviewSetSummaryProjection> findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(Long memberId);
 }
