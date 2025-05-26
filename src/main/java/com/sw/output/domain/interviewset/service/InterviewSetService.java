@@ -1,14 +1,5 @@
 package com.sw.output.domain.interviewset.service;
 
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toCreateInterviewSetResponse;
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toGetInterviewSetResponse;
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toInterviewSet;
-
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
@@ -22,8 +13,13 @@ import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +38,7 @@ public class InterviewSetService {
      * @throws BusinessException 카테고리가 존재하지 않거나, 사용자가 존재하지 않는 경우
      */
     @Transactional
-    public InterviewSetResponseDTO.CreateInterviewSetDTO createInterviewSet(
+    public InterviewSetResponseDTO.InterviewSetIdDTO createInterviewSet(
             InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
         // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
         Member member = memberRepository.findById(1L)
@@ -60,7 +56,7 @@ public class InterviewSetService {
         interviewSet.setQuestionAnswers(interviewSetDTO.getQuestionAnswers());
 
         interviewSetRepository.save(interviewSet);
-        return toCreateInterviewSetResponse(interviewSet.getId());
+        return toInterviewSetIdResponse(interviewSet.getId());
     }
 
     /**
@@ -113,14 +109,18 @@ public class InterviewSetService {
      *                           경우
      */
     @Transactional
-    public InterviewSetResponseDTO.CreateInterviewSetDTO duplicateInterviewSet(Long interviewSetId,
-            InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
+    public InterviewSetResponseDTO.InterviewSetIdDTO duplicateInterviewSet(Long interviewSetId,
+                                                                           InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
         // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         InterviewSet parentInterviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+
+        if (parentInterviewSet.getIsDeleted()) {
+            throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
+        }
 
         List<JobCategory> jobCategories = jobCategoryService
                 .validateAndGetCategories(interviewSetDTO.getJobCategories());
@@ -134,13 +134,26 @@ public class InterviewSetService {
         interviewSet.setQuestionAnswers(interviewSetDTO.getQuestionAnswers());
 
         interviewSetRepository.save(interviewSet);
-        return toCreateInterviewSetResponse(interviewSet.getId());
+        return toInterviewSetIdResponse(interviewSet.getId());
     }
 
+    /**
+     * 면접 세트를 수정합니다.
+     *
+     * @param interviewSetId  수정할 면접 세트 ID
+     * @param interviewSetDTO 수정할 면접 세트 생성 요청 DTO
+     * @throws BusinessException 사용자 정보가 일치하지 않는 경우, 삭제된 면접 세트인 경우, 면접 세트 ID가 존재하지
+     *                           않는 경우, 카테고리가 존재하지 않는 경우
+     */
     @Transactional
-    public void updateInterviewSet(Long interviewSetId, InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
+    public InterviewSetResponseDTO.InterviewSetIdDTO updateInterviewSet(Long interviewSetId,
+                                                                        InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+
+        if (interviewSet.getIsDeleted()) {
+            throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
+        }
 
         // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
         if (!interviewSet.getMember().getId().equals(1L)) {
@@ -158,5 +171,7 @@ public class InterviewSetService {
         interviewSet.setQuestionAnswers(interviewSetDTO.getQuestionAnswers());
         interviewSet.setIsAnswerPublic(interviewSetDTO.getIsAnswerPublic());
         interviewSet.setTitle(interviewSetDTO.getTitle());
+
+        return toInterviewSetIdResponse(interviewSetId);
     }
 }

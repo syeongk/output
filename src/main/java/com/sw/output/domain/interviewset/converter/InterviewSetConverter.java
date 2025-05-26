@@ -53,8 +53,8 @@ public class InterviewSetConverter {
                                 .build();
         }
 
-        public static InterviewSetResponseDTO.CreateInterviewSetDTO toCreateInterviewSetResponse(Long interviewSetId) {
-                return InterviewSetResponseDTO.CreateInterviewSetDTO.builder()
+        public static InterviewSetResponseDTO.InterviewSetIdDTO toInterviewSetIdResponse(Long interviewSetId) {
+                return InterviewSetResponseDTO.InterviewSetIdDTO.builder()
                                 .id(interviewSetId)
                                 .build();
         }

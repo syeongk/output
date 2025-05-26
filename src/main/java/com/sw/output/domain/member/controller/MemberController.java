@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.member.dto.MemberRequestDTO;
+import com.sw.output.domain.member.dto.MemberResponseDTO;
 import com.sw.output.domain.member.service.MyPageService;
 import com.sw.output.global.response.ApiResponse;
 
@@ -23,8 +24,9 @@ public class MemberController {
     private final MyPageService myPageService;
 
     @GetMapping("")
-    public ApiResponse<Void> getMyPage() {
-        return ApiResponse.success();
+    public ApiResponse<MemberResponseDTO.GetMyPageDTO> getMyPage() {
+        MemberResponseDTO.GetMyPageDTO response = myPageService.getMyPage();
+        return ApiResponse.success(response);
     }
 
     @GetMapping("/interview-sets/bookmarks")

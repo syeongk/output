@@ -46,18 +46,19 @@ public class InterviewSetController {
     }
 
     @PostMapping("")
-    public ApiResponse<InterviewSetResponseDTO.CreateInterviewSetDTO> createInterviewSet(
+    public ApiResponse<InterviewSetResponseDTO.InterviewSetIdDTO> createInterviewSet(
             @RequestBody @Valid InterviewSetRequestDTO.InterviewSetDTO request) {
-        InterviewSetResponseDTO.CreateInterviewSetDTO response = interviewSetService.createInterviewSet(request);
+        InterviewSetResponseDTO.InterviewSetIdDTO response = interviewSetService.createInterviewSet(request);
         return ApiResponse.success(response);
     }
 
     @PutMapping("{interviewSetId}")
-    public ApiResponse<Void> updateInterviewSet(
+    public ApiResponse<InterviewSetResponseDTO.InterviewSetIdDTO> updateInterviewSet(
             @PathVariable Long interviewSetId,
             @RequestBody @Valid InterviewSetRequestDTO.InterviewSetDTO request) {
-        interviewSetService.updateInterviewSet(interviewSetId, request);
-        return ApiResponse.success();
+        InterviewSetResponseDTO.InterviewSetIdDTO response = interviewSetService.updateInterviewSet(interviewSetId,
+                request);
+        return ApiResponse.success(response);
     }
 
     @DeleteMapping("{interviewSetId}")
@@ -89,10 +90,10 @@ public class InterviewSetController {
     }
 
     @PostMapping("{interviewSetId}/duplicate")
-    public ApiResponse<InterviewSetResponseDTO.CreateInterviewSetDTO> duplicateInterviewSet(
+    public ApiResponse<InterviewSetResponseDTO.InterviewSetIdDTO> duplicateInterviewSet(
             @PathVariable Long interviewSetId,
             @RequestBody @Valid InterviewSetRequestDTO.InterviewSetDTO request) {
-        InterviewSetResponseDTO.CreateInterviewSetDTO response = interviewSetService
+        InterviewSetResponseDTO.InterviewSetIdDTO response = interviewSetService
                 .duplicateInterviewSet(interviewSetId, request);
         return ApiResponse.success(response);
     }

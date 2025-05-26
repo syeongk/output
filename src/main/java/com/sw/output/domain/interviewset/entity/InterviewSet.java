@@ -5,7 +5,6 @@ import com.sw.output.domain.interviewset.dto.QuestionAnswerDTO;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.report.entity.Report;
 import com.sw.output.global.exception.BusinessException;
-import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -90,10 +89,6 @@ public class InterviewSet extends BaseEntity {
                 .map(category -> toInterviewSetInterviewCategory(this, category))
                 .toList();
 
-        if (interviewSetInterviewCategories.size() > 2) {
-            throw new BusinessException(InterviewSetErrorCode.INVALID_INTERVIEW_CATEGORY_COUNT);
-        }
-
         this.interviewSetInterviewCategories.clear();
         this.interviewSetInterviewCategories.addAll(interviewSetInterviewCategories);
     }
@@ -110,10 +105,6 @@ public class InterviewSet extends BaseEntity {
         List<InterviewSetJobCategory> interviewSetJobCategories = jobCategories.stream()
                 .map(category -> toInterviewSetJobCategory(this, category))
                 .toList();
-
-        if (interviewSetJobCategories.size() > 2) {
-            throw new BusinessException(InterviewSetErrorCode.INVALID_JOB_CATEGORY_COUNT);
-        }
 
         this.interviewSetJobCategories.clear();
         this.interviewSetJobCategories.addAll(interviewSetJobCategories);

@@ -1,16 +1,16 @@
 package com.sw.output.domain.interviewset.dto;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 public class InterviewSetResponseDTO {
     @Getter
     @Builder
-    public static class CreateInterviewSetDTO {
+    public static class InterviewSetIdDTO {
         private Long id;
     }
 

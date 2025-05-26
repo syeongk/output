@@ -1,5 +1,6 @@
 package com.sw.output.domain.member.converter;
 
+import com.sw.output.domain.member.dto.MemberResponseDTO;
 import com.sw.output.domain.member.entity.Member;
 
 public class MemberConverter {
@@ -12,5 +13,10 @@ public class MemberConverter {
                 .isDeleted(false)
                 .build();
     }
-}
 
+    public static MemberResponseDTO.GetMyPageDTO toGetMyPageResponse(Member member) {
+        return MemberResponseDTO.GetMyPageDTO.builder()
+                .nickname(member.getNickname())
+                .build();
+    }
+}
