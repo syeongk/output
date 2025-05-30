@@ -4,7 +4,9 @@ import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
+import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
 import com.sw.output.domain.interviewset.entity.JobCategory;
+import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.repository.BookmarkRepository;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
 import com.sw.output.domain.member.entity.Member;
@@ -25,8 +27,6 @@ import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.
 @RequiredArgsConstructor
 public class InterviewSetService {
     private final InterviewSetRepository interviewSetRepository;
-    private final InterviewCategoryService interviewCategoryService;
-    private final JobCategoryService jobCategoryService;
     private final MemberRepository memberRepository;
     private final BookmarkRepository bookmarkRepository;
 
@@ -44,15 +44,7 @@ public class InterviewSetService {
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        List<JobCategory> jobCategories = jobCategoryService
-                .validateAndGetCategories(interviewSetDTO.getJobCategories());
-
-        List<InterviewCategory> interviewCategories = interviewCategoryService
-                .validateAndGetCategories(interviewSetDTO.getInterviewCategories());
-
         InterviewSet interviewSet = toInterviewSet(member, interviewSetDTO);
-        interviewSet.setInterviewSetInterviewCategories(interviewCategories);
-        interviewSet.setInterviewSetJobCategories(jobCategories);
         interviewSet.setQuestionAnswers(interviewSetDTO.getQuestionAnswers());
 
         interviewSetRepository.save(interviewSet);
@@ -122,15 +114,7 @@ public class InterviewSetService {
             throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
         }
 
-        List<JobCategory> jobCategories = jobCategoryService
-                .validateAndGetCategories(interviewSetDTO.getJobCategories());
-
-        List<InterviewCategory> interviewCategories = interviewCategoryService
-                .validateAndGetCategories(interviewSetDTO.getInterviewCategories());
-
         InterviewSet interviewSet = toInterviewSet(member, interviewSetDTO, parentInterviewSet);
-        interviewSet.setInterviewSetInterviewCategories(interviewCategories);
-        interviewSet.setInterviewSetJobCategories(jobCategories);
         interviewSet.setQuestionAnswers(interviewSetDTO.getQuestionAnswers());
 
         interviewSetRepository.save(interviewSet);
@@ -160,18 +144,21 @@ public class InterviewSetService {
             throw new BusinessException(CommonErrorCode.FORBIDDEN);
         }
 
-        List<JobCategory> jobCategories = jobCategoryService
-                .validateAndGetCategories(interviewSetDTO.getJobCategories());
-
-        List<InterviewCategory> interviewCategories = interviewCategoryService
-                .validateAndGetCategories(interviewSetDTO.getInterviewCategories());
-
-        interviewSet.setInterviewSetInterviewCategories(interviewCategories);
-        interviewSet.setInterviewSetJobCategories(jobCategories);
         interviewSet.setQuestionAnswers(interviewSetDTO.getQuestionAnswers());
         interviewSet.setIsAnswerPublic(interviewSetDTO.getIsAnswerPublic());
         interviewSet.setTitle(interviewSetDTO.getTitle());
 
         return toInterviewSetIdResponse(interviewSetId);
+    }
+
+    public List<InterviewSetSummaryProjection> getInterviewSets(JobCategory jobCategory, InterviewCategory interviewCategory, String keyword,
+                                                                InterviewSetSortType sortType, int size, int cursor) {
+        if (sortType == null) {
+            sortType = InterviewSetSortType.RECOMMEND;
+        }
+
+        List<InterviewSetSummaryProjection> interviewSets = interviewSetRepository.findInterviewSets(jobCategory, interviewCategory, keyword, sortType.name(), size, cursor);
+
+        return interviewSets;
     }
 }

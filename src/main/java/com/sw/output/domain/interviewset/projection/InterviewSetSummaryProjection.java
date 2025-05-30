@@ -9,6 +9,8 @@ public interface InterviewSetSummaryProjection {
 
     Integer getBookmarkCount();
 
+    Boolean getIsAnswerPublic();
+
     LocalDateTime getCreatedAt();
 
     MemberInfoProjection getMember();

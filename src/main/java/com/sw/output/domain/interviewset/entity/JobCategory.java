@@ -1,27 +1,27 @@
 package com.sw.output.domain.interviewset.entity;
 
-import com.sw.output.domain.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class JobCategory extends BaseEntity {
+public enum JobCategory {
+    BACKEND("백엔드"),
+    FRONTEND("프론트엔드"),
+    GAME("게임"),
+    SECURITY("보안"),
+    DATA("데이터"),
+    DEVOPS("Devops"),
+    DATA_ANALYSIS("데이터분석"),
+    MACHINE_LEARNING("머신러닝"),
+    QA("QA"),
+    DBA("DBA"),
+    CLOUD("클라우드"),
+    BLOCKCHAIN("블록체인"),
+    AI("AI"),
+    EMBEDDED("임베디드");
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 직무 카테고리 ID
+    private final String name;
 
-    @Column(nullable = false, length = 30, unique = true)
-    private String name; // 직무 카테고리 이름
-
-    // 면접 세트 직무 카테고리와 1:N 연관관계
-    @OneToMany(mappedBy = "jobCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InterviewSetJobCategory> interviewSetJobCategories = new ArrayList<>();
+    JobCategory(String name) {
+        this.name = name;
+    }
 }

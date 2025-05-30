@@ -10,7 +10,6 @@ public class MemberConverter {
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
-                .isDeleted(false)
                 .build();
     }
 

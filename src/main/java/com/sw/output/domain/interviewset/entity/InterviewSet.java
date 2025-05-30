@@ -4,21 +4,19 @@ import com.sw.output.domain.BaseEntity;
 import com.sw.output.domain.interviewset.dto.QuestionAnswerDTO;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.report.entity.Report;
-import com.sw.output.global.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sw.output.domain.interviewset.converter.InterviewSetInterviewCategoryConverter.toInterviewSetInterviewCategory;
-import static com.sw.output.domain.interviewset.converter.InterviewSetJobCategoryConverter.toInterviewSetJobCategory;
 import static com.sw.output.domain.interviewset.converter.QuestionAnswerConverter.toQuestionAnswer;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class InterviewSet extends BaseEntity {
@@ -41,74 +39,44 @@ public class InterviewSet extends BaseEntity {
     private String title; // 면접 세트 제목
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isAnswerPublic = false; // 답변 공개 여부
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer bookmarkCount = 0; // 북마크 수
-
-    @Column(nullable = false)
-    private Boolean isDeleted = false; // 삭제 여부
 
     @Column
     private LocalDateTime deletedAt; // 탈퇴일자
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer mockCount = 0; // 모의 면접 횟수
 
-    // 면접 세트 면접 카테고리와 1:N 연관관계
-    @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InterviewSetInterviewCategory> interviewSetInterviewCategories = new ArrayList<>();
+    @Column(nullable = false)
+    private InterviewCategory interviewCategory; // 면접 카테고리
 
-    // 면접 세트 직무 카테고리와 1:N 연관관계
-    @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InterviewSetJobCategory> interviewSetJobCategories = new ArrayList<>();
+    @Column(nullable = false)
+    private JobCategory jobCategory; // 직무 카테고리
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isHidden = false; // 숨김 여부
 
     // 질문 답변과 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<QuestionAnswer> questionAnswers = new ArrayList<>();
 
     // 결과 리포트와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", orphanRemoval = true)
+    @Builder.Default
     private List<Report> reports = new ArrayList<>();
 
     // 북마크와 1:N 연관관계
     @OneToMany(mappedBy = "interviewSet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Bookmark> bookmarks = new ArrayList<>();
-
-    /**
-     * 면접 카테고리를 설정합니다.
-     * <br>
-     * 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
-     *
-     * @param interviewCategories 설정할 면접 카테고리 목록
-     * @throws BusinessException 카테고리가 2개를 초과하는 경우
-     */
-    public void setInterviewSetInterviewCategories(List<InterviewCategory> interviewCategories) {
-        List<InterviewSetInterviewCategory> interviewSetInterviewCategories = interviewCategories
-                .stream()
-                .map(category -> toInterviewSetInterviewCategory(this, category))
-                .toList();
-
-        this.interviewSetInterviewCategories.clear();
-        this.interviewSetInterviewCategories.addAll(interviewSetInterviewCategories);
-    }
-
-    /**
-     * 직무 카테고리를 설정합니다.
-     * <br>
-     * 최대 2개까지 선택 가능하며, 기존 카테고리는 모두 제거됩니다.
-     *
-     * @param jobCategories 설정할 직무 카테고리 목록
-     * @throws BusinessException 카테고리가 2개를 초과하는 경우
-     */
-    public void setInterviewSetJobCategories(List<JobCategory> jobCategories) {
-        List<InterviewSetJobCategory> interviewSetJobCategories = jobCategories.stream()
-                .map(category -> toInterviewSetJobCategory(this, category))
-                .toList();
-
-        this.interviewSetJobCategories.clear();
-        this.interviewSetJobCategories.addAll(interviewSetJobCategories);
-    }
 
     /**
      * 질문 답변을 설정합니다.
@@ -139,10 +107,6 @@ public class InterviewSet extends BaseEntity {
      */
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void softDelete() {
-        this.isDeleted = true;
     }
 
     public void addBookmarkCount() {

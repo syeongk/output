@@ -1,23 +1,19 @@
 package com.sw.output.domain.interviewset.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
+import com.sw.output.domain.interviewset.entity.InterviewCategory;
+import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
+import com.sw.output.domain.interviewset.entity.JobCategory;
+import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.service.BookmarkService;
 import com.sw.output.domain.interviewset.service.InterviewSetService;
 import com.sw.output.global.response.ApiResponse;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/interview-sets")
@@ -27,15 +23,16 @@ public class InterviewSetController {
     private final BookmarkService bookmarkService;
 
     @GetMapping("")
-    public ApiResponse<String> getInterviewSets(
-            @RequestParam(required = false) String jobCategories,
-            @RequestParam(required = false) String interviewSetCategories,
+    public ApiResponse<List<InterviewSetSummaryProjection>> getInterviewSets(
+            @RequestParam(required = false) JobCategory jobCategory,
+            @RequestParam(required = false) InterviewCategory interviewCategory,
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) InterviewSetSortType sortType,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "0") int cursor) {
-        // interviewSetService.getInterviewSets(jobCategories, interviewSetCategories,
-        // keyword, size, cursor);
-        return ApiResponse.success();
+        List<InterviewSetSummaryProjection> interviewSets = interviewSetService.getInterviewSets(jobCategory,
+                interviewCategory, keyword, sortType, size, cursor);
+        return ApiResponse.success(interviewSets);
     }
 
     @GetMapping("{interviewSetId}")

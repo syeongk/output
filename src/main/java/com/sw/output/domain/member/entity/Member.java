@@ -1,29 +1,22 @@
 package com.sw.output.domain.member.entity;
 
+import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.interviewset.entity.InterviewSet;
+import com.sw.output.domain.report.entity.Report;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.interviewset.entity.InterviewSet;
-import com.sw.output.domain.report.entity.Report;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Member extends BaseEntity {
@@ -38,10 +31,16 @@ public class Member extends BaseEntity {
     private String nickname; // 닉네임
 
     @Column(nullable = false)
-    private Boolean isDeleted = false; // 계정 탈퇴 여부
+    private Role role; // 권한
+
+    @Column(nullable = false)
+    private Integer warningCount = 0; // 경고 횟수
+
+    @Column(nullable = false)
+    private Boolean isSuspended = false; // 정지 여부
 
     @Column
-    private LocalDateTime deletedAt; // 탈퇴일자
+    private LocalDateTime suspendedUntil; // 정지 해제일
 
     // 면접 세트와 1:N 연관관계
     @OneToMany(mappedBy = "member")

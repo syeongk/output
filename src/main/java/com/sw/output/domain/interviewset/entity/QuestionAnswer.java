@@ -4,13 +4,14 @@ import com.sw.output.domain.BaseEntity;
 import com.sw.output.domain.feedback.entity.Feedback;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class QuestionAnswer extends BaseEntity {
@@ -30,7 +31,12 @@ public class QuestionAnswer extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String answerContent; // 답변 내용 (NULL 허용)
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isAiCreated = false; // AI 생성 여부
+
     // 피드백과 1:N 연관관계
     @OneToMany(mappedBy = "questionAnswer", orphanRemoval = true)
+    @Builder.Default
     private List<Feedback> feedbacks = new ArrayList<>();
 }

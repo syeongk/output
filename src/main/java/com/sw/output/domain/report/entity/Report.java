@@ -5,15 +5,18 @@ import com.sw.output.domain.feedback.entity.Feedback;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Report extends BaseEntity {
@@ -29,12 +32,6 @@ public class Report extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member; // 사용자
-
-    @Column(nullable = false)
-    private Boolean is_deleted = false;
-
-    @Column
-    private LocalDateTime deletedAt; // 탈퇴일자
 
     // 피드백과 1:N 연관관계
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)

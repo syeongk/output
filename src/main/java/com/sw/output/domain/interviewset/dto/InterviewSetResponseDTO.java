@@ -1,11 +1,13 @@
 package com.sw.output.domain.interviewset.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.sw.output.domain.interviewset.entity.InterviewCategory;
+import com.sw.output.domain.interviewset.entity.JobCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class InterviewSetResponseDTO {
     @Getter
@@ -19,8 +21,8 @@ public class InterviewSetResponseDTO {
     public static class GetInterviewSetDTO {
         private Long id;
         private String title;
-        private List<String> interviewCategories;
-        private List<String> jobCategories;
+        private InterviewCategory interviewCategory;
+        private JobCategory jobCategory;
         private String nickname;
         private LocalDateTime createdAt;
         private Boolean isAnswerPublic;

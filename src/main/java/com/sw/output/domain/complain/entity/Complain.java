@@ -1,6 +1,7 @@
-package com.sw.output.domain.interviewset.entity;
+package com.sw.output.domain.complain.entity;
 
 import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -14,19 +15,25 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Bookmark extends BaseEntity {
-
+public class Complain extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 북마크 ID
+    private Long id; // 신고 ID
 
-    // 사용자와 N:1 연관관계
+    @Column(nullable = false)
+    private ComplainType type; // 신고 유형
+
+    @Column(nullable = false)
+    private String content; // 신고 내용
+
+    @Column(nullable = false)
+    private ComplainStatus status; // 처리 상태
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    private Member member; // 신고자
 
-    // 면접세트와 N:1 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_set_id", nullable = false)
-    private InterviewSet interviewSet;
+    private InterviewSet interviewSet; // 신고 면접 세트
 }
