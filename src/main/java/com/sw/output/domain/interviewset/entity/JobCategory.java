@@ -1,27 +1,17 @@
 package com.sw.output.domain.interviewset.entity;
 
-import lombok.Getter;
-
-@Getter
 public enum JobCategory {
-    BACKEND("백엔드"),
-    FRONTEND("프론트엔드"),
-    GAME("게임"),
-    SECURITY("보안"),
-    DATA("데이터"),
-    DEVOPS("Devops"),
-    DATA_ANALYSIS("데이터분석"),
-    MACHINE_LEARNING("머신러닝"),
-    QA("QA"),
-    DBA("DBA"),
-    CLOUD("클라우드"),
-    BLOCKCHAIN("블록체인"),
-    AI("AI"),
-    EMBEDDED("임베디드");
-
-    private final String name;
-
-    JobCategory(String name) {
-        this.name = name;
-    }
+    BACKEND, // 백엔드
+    FRONTEND, // 프론트엔드
+    GAME, // 게임
+    SECURITY, // 보안
+    DEVOPS, // Devops
+    DATA_ANALYSIS, // 데이터 분석
+    MACHINE_LEARNING, // 머신러닝
+    QA, // QA
+    DBA, // DBA
+    CLOUD, // 클라우드
+    BLOCKCHAIN, // 블록체인
+    AI, // AI
+    EMBEDDED; // 임베디드
 }

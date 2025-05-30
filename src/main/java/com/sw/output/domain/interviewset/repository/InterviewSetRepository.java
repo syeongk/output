@@ -29,8 +29,8 @@ public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long
                 JOIN is.member m
                 JOIN is.questionAnswers qa
             WHERE
-                (:jobCategory IS NULL OR is.jobCategory = :jobCategories)
-                AND (:interviewCategories IS NULL OR is.interviewCategory = :interviewCategory)
+                (:jobCategory IS NULL OR is.jobCategory = :jobCategory)
+                AND (:interviewCategory IS NULL OR is.interviewCategory = :interviewCategory)
                 AND (:keyword IS NULL OR is.title LIKE %:keyword% OR qa.questionTitle LIKE %:keyword%)
                 AND (is.isDeleted = false)
             ORDER BY

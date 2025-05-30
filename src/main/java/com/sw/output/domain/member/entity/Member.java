@@ -4,15 +4,14 @@ import com.sw.output.domain.BaseEntity;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.report.entity.Report;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sw.output.domain.member.entity.Role.USER;
 
 @Entity
 @Getter
@@ -31,12 +30,15 @@ public class Member extends BaseEntity {
     private String nickname; // 닉네임
 
     @Column(nullable = false)
-    private Role role; // 권한
+    @Builder.Default
+    private Role role = USER; // 권한
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer warningCount = 0; // 경고 횟수
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isSuspended = false; // 정지 여부
 
     @Column
