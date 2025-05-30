@@ -1,15 +1,15 @@
-package com.sw.output.domain.complain.entity;
+package com.sw.output.domain.complaint.entity;
 
 import lombok.Getter;
 
 @Getter
-public enum ComplainStatus {
+public enum ComplaintStatus {
     PENDING("처리전"),
     COMPLETED("처리완료");
 
     private final String status;
 
-    ComplainStatus(String status) {
+    ComplaintStatus(String status) {
         this.status = status;
     }
 }

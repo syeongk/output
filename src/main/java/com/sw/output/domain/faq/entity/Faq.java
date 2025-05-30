@@ -25,5 +25,6 @@ public class Faq extends BaseEntity {
     private String answerContent; // 답변 내용
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private FaqCategory faqCategory; // 카테고리
 }

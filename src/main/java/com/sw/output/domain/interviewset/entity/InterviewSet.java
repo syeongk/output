@@ -54,9 +54,11 @@ public class InterviewSet extends BaseEntity {
     private Integer mockCount = 0; // 모의 면접 횟수
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private InterviewCategory interviewCategory; // 면접 카테고리
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private JobCategory jobCategory; // 직무 카테고리
 
     @Column(nullable = false)

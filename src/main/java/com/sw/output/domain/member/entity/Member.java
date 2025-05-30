@@ -30,6 +30,7 @@ public class Member extends BaseEntity {
     private String nickname; // 닉네임
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private Role role = USER; // 권한
 

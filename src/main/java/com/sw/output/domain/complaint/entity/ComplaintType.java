@@ -1,9 +1,9 @@
-package com.sw.output.domain.complain.entity;
+package com.sw.output.domain.complaint.entity;
 
 import lombok.Getter;
 
 @Getter
-public enum ComplainType {
+public enum ComplaintType {
     INAPPROPRIATE_CONTENT("부적절한 내용"),
     INCORRECT_INFORMATION("정확하지 않은 정보"),
     PERSONAL_INFO_EXPOSURE("개인정보 노출"),
@@ -12,7 +12,7 @@ public enum ComplainType {
 
     private final String type;
 
-    ComplainType(String type) {
+    ComplaintType(String type) {
         this.type = type;
     }
 }
