@@ -33,6 +33,7 @@ public class BaseEntity {
 
     public void softDelete() {
         this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
     }
 
 }

@@ -1,27 +1,23 @@
 package com.sw.output.domain.member.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.member.dto.MemberRequestDTO;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
+import com.sw.output.domain.member.service.MemberService;
 import com.sw.output.domain.member.service.MyPageService;
 import com.sw.output.global.response.ApiResponse;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users/me")
 @RequiredArgsConstructor
 public class MemberController {
     private final MyPageService myPageService;
+    private final MemberService memberService;
 
     @GetMapping("")
     public ApiResponse<MemberResponseDTO.GetMyPageDTO> getMyPage() {
@@ -48,7 +44,13 @@ public class MemberController {
 
     @PatchMapping("/nickname")
     public ApiResponse<Void> updateNickname(@RequestBody @Valid MemberRequestDTO.UpdateNicknameDTO request) {
-        myPageService.updateNickname(request);
+        memberService.updateNickname(request);
+        return ApiResponse.success();
+    }
+
+    @DeleteMapping("")
+    public ApiResponse<Void> deleteMember() {
+        memberService.deleteMember();
         return ApiResponse.success();
     }
 }

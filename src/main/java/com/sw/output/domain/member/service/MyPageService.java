@@ -60,27 +60,6 @@ public class MyPageService {
     }
 
     /**
-     * 닉네임 수정
-     *
-     * @param updateNicknameDTO 닉네임 수정 요청
-     * @throws BusinessException 회원을 찾을 수 없거나, 닉네임이 이미 존재할 경우
-     */
-    @Transactional
-    public void updateNickname(MemberRequestDTO.UpdateNicknameDTO updateNicknameDTO) {
-        String nickname = updateNicknameDTO.getNickname();
-
-        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
-
-        if (memberRepository.findByNickname(nickname).isPresent()) {
-            throw new BusinessException(MemberErrorCode.NICKNAME_ALREADY_EXISTS);
-        }
-
-        member.updateNickname(nickname);
-    }
-
-    /**
      * 마이페이지 조회
      *
      * @return 마이페이지 조회 응답 (닉네임)
