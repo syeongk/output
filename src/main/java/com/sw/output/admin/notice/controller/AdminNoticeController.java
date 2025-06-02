@@ -26,14 +26,14 @@ public class AdminNoticeController {
     public String getNotices(Model model) {
         List<Notice> notices = adminNoticeService.getNotices();
         model.addAttribute("notices", notices);
-        return "admin/notices/notice-lists";
+        return "/admin/notice/notice-list";
     }
 
     // 공지사항 작성 폼
     @GetMapping("/new")
     public String showNoticeForm(Model model) {
         model.addAttribute("noticeDTO", new AdminNoticeRequestDTO.NoticeDTO());
-        return "admin/notices/notice-form";
+        return "admin/notice/notice-form";
     }
 
     // 공지사항 등록 처리
@@ -43,7 +43,7 @@ public class AdminNoticeController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "admin/notices/notice-form";
+            return "admin/notice/notice-form";
         }
         adminNoticeService.createNotice(request);
         return "redirect:/admin/notices";
