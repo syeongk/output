@@ -1,5 +1,6 @@
 package com.sw.output.domain.interviewset.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.JobCategory;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class InterviewSetResponseDTO {
         private InterviewCategory interviewCategory;
         private JobCategory jobCategory;
         private String nickname;
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;
         private Boolean isAnswerPublic;
         private List<QuestionAnswerDTO> questionAnswers;
@@ -37,6 +39,7 @@ public class InterviewSetResponseDTO {
         private String title;
         private String nickname;
         private Integer bookmarkCount;
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;
     }
 

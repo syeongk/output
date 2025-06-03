@@ -23,8 +23,9 @@ public class ReportController {
     }
 
     @GetMapping("{reportId}")
-    public ApiResponse<List<ReportResponseDTO.GetReportDTO>> getReport(@PathVariable Long reportId) {
-        return ApiResponse.success(reportService.getReport(reportId));
+    public ApiResponse<List<ReportResponseDTO.GetReportDetailDTO>> getReport(@PathVariable Long reportId) {
+        List<ReportResponseDTO.GetReportDetailDTO> response = reportService.getReport(reportId);
+        return ApiResponse.success(response);
     }
 
     @DeleteMapping("{reportId}")

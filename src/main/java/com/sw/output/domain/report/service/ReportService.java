@@ -101,7 +101,7 @@ public class ReportService {
         report.softDelete();
     }
 
-    public List<ReportResponseDTO.GetReportDTO> getReport(Long reportId) {
+    public List<ReportResponseDTO.GetReportDetailDTO> getReport(Long reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new BusinessException(ReportErrorCode.REPORT_NOT_FOUND));
 
@@ -110,9 +110,7 @@ public class ReportService {
         }
 
         return report.getFeedbacks().stream()
-                .map(ReportDTOConverter::toGetReportDTO)
+                .map(ReportDTOConverter::toGetReportDetailDTO)
                 .collect(Collectors.toList());
     }
-
-
 }

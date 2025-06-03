@@ -8,6 +8,10 @@ import com.sw.output.domain.member.converter.MemberConverter;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
+import com.sw.output.domain.report.converter.ReportDTOConverter;
+import com.sw.output.domain.report.dto.ReportResponseDTO;
+import com.sw.output.domain.report.entity.Report;
+import com.sw.output.domain.report.repository.ReportRepository;
 import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +26,14 @@ public class MyPageService {
     private final BookmarkRepository bookmarkRepository;
     private final InterviewSetRepository interviewSetRepository;
     private final MemberRepository memberRepository;
+    private final ReportRepository reportRepository;
 
     /**
      * 북마크한 면접 세트 목록 조회
      *
      * @return 북마크한 면접 세트 목록
      */
-    public List<InterviewSetSummaryProjection> getBookmarkedInterviewSets() {
+    public List<InterviewSetSummaryProjection> getMyBookmarkedInterviewSets() {
         // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
@@ -68,5 +73,16 @@ public class MyPageService {
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         return MemberConverter.toGetMyPageResponse(member);
+    }
+
+    public List<ReportResponseDTO.GetReportDTO> getMyReports() {
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        List<Report> reports = reportRepository.findMyReports(1L);
+
+        return reports.stream()
+                .map(ReportDTOConverter::toGetReportDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -5,6 +5,8 @@ import com.sw.output.domain.member.dto.MemberRequestDTO;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
 import com.sw.output.domain.member.service.MemberService;
 import com.sw.output.domain.member.service.MyPageService;
+import com.sw.output.domain.report.dto.ReportResponseDTO;
+import com.sw.output.domain.report.service.ReportService;
 import com.sw.output.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.List;
 public class MemberController {
     private final MyPageService myPageService;
     private final MemberService memberService;
+    private final ReportService reportService;
 
     @GetMapping("")
     public ApiResponse<MemberResponseDTO.GetMyPageDTO> getMyPage() {
@@ -27,7 +30,7 @@ public class MemberController {
 
     @GetMapping("/interview-sets/bookmarks")
     public ApiResponse<List<InterviewSetSummaryProjection>> getMyBookmarks() {
-        List<InterviewSetSummaryProjection> response = myPageService.getBookmarkedInterviewSets();
+        List<InterviewSetSummaryProjection> response = myPageService.getMyBookmarkedInterviewSets();
         return ApiResponse.success(response);
     }
 
@@ -38,8 +41,9 @@ public class MemberController {
     }
 
     @GetMapping("/reports")
-    public ApiResponse<Void> getMyReports() {
-        return ApiResponse.success();
+    public ApiResponse<List<ReportResponseDTO.GetReportDTO>> getMyReports() {
+        List<ReportResponseDTO.GetReportDTO> response = myPageService.getMyReports();
+        return ApiResponse.success(response);
     }
 
     @PatchMapping("/nickname")

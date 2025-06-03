@@ -1,5 +1,7 @@
 package com.sw.output.domain.interviewset.projection;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public interface InterviewSetSummaryProjection {
@@ -11,6 +13,7 @@ public interface InterviewSetSummaryProjection {
 
     Boolean getIsAnswerPublic();
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDateTime getCreatedAt();
 
     MemberInfoProjection getMember();

@@ -1,5 +1,6 @@
 package com.sw.output.domain.notice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,6 +12,7 @@ public class NoticeResponseDTO {
     public static class NoticeDTO {
         private Long id;
         private String title;
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;
     }
 
@@ -19,6 +21,7 @@ public class NoticeResponseDTO {
     public static class NoticeDetailDTO {
         private String title;
         private String content;
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;
     }
 }
