@@ -5,13 +5,11 @@ import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjectio
 import com.sw.output.domain.interviewset.repository.BookmarkRepository;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
 import com.sw.output.domain.member.converter.MemberConverter;
-import com.sw.output.domain.member.dto.MemberRequestDTO;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
 import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

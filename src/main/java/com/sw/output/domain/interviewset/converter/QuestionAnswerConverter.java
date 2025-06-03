@@ -22,4 +22,10 @@ public class QuestionAnswerConverter {
                 .answerContent(questionAnswer.getAnswerContent())
                 .build();
     }
+
+    public static QuestionAnswerDTO toQuestionAnswerDTO(String questionTitle) {
+        return QuestionAnswerDTO.builder()
+                .questionTitle(questionTitle)
+                .build();
+    }
 }

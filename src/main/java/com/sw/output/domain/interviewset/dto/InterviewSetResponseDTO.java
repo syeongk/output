@@ -40,4 +40,10 @@ public class InterviewSetResponseDTO {
         private LocalDateTime createdAt;
     }
 
+    @Getter
+    @Builder
+    public static class GetQuestionsDTO {
+        private Long id;
+        private List<QuestionAnswerDTO> questionAnswers;
+    }
 }

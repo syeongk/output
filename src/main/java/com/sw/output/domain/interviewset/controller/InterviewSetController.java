@@ -64,9 +64,12 @@ public class InterviewSetController {
         return ApiResponse.success();
     }
 
-    @PostMapping("ai-question-answers")
-    public ApiResponse<Void> createAiQuestionAnswers() {
-        return ApiResponse.success();
+    @PostMapping("{interviewSetId}/ai-question")
+    public ApiResponse<InterviewSetResponseDTO.GetQuestionsDTO> createAiQuestions(
+            @PathVariable Long interviewSetId,
+            @RequestBody @Valid InterviewSetRequestDTO.CreateQuestionsPromptDTO request) {
+        InterviewSetResponseDTO.GetQuestionsDTO response = interviewSetService.createAiQuestions(interviewSetId, request);
+        return ApiResponse.success(response);
     }
 
     @PostMapping("{interviewSetId}/bookmarks")

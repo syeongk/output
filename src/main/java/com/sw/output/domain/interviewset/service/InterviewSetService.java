@@ -1,7 +1,11 @@
 package com.sw.output.domain.interviewset.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
+import com.sw.output.domain.interviewset.dto.OpenAIResponseDTO;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
@@ -16,24 +20,38 @@ import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InterviewSetService {
     private final InterviewSetRepository interviewSetRepository;
     private final MemberRepository memberRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final ObjectMapper objectMapper;
+    private final RestTemplate openAITemplate;
+
+    @Value("${openai.api.model}")
+    private String model;
 
     /**
      * 면접 세트를 생성합니다.
      *
-     * @param createInterviewSetDTO 면접 세트 생성 요청 DTO
+     * @param interviewSetDTO 면접 세트 생성 요청 DTO
      * @return 생성된 면접 세트의 ID
      * @throws BusinessException 카테고리가 존재하지 않거나, 사용자가 존재하지 않는 경우
      */
@@ -160,5 +178,54 @@ public class InterviewSetService {
         List<InterviewSetSummaryProjection> interviewSets = interviewSetRepository.findInterviewSets(jobCategory, interviewCategory, keyword, sortType.name(), size, cursor);
 
         return interviewSets;
+    }
+
+    public InterviewSetResponseDTO.GetQuestionsDTO createAiQuestions(Long interviewSetId, InterviewSetRequestDTO.CreateQuestionsPromptDTO createQuestionsPromptDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> body = new HashMap<>();
+
+        String prompt = """
+                당신은 %s 직무의 %s 면접을 진행하는 면접관입니다.
+
+                [입력 정보]
+                직무 : %s
+                면접 유형 : %s
+                주제 : %s
+
+                [출력 형식]
+                총 %s개의 면접 질문을 JSON 배열 형태로 생성해 주세요.
+                응답 예시 : ["질문1", "질문2", "질문3", ...]
+                """.formatted(
+                createQuestionsPromptDTO.getJobCategory(),
+                createQuestionsPromptDTO.getInterviewCategory(),
+                createQuestionsPromptDTO.getJobCategory(),
+                createQuestionsPromptDTO.getInterviewCategory(),
+                createQuestionsPromptDTO.getTitle(),
+                createQuestionsPromptDTO.getQuestionCount());
+
+        body.put("model", model);
+        body.put("messages", List.of(Map.of("role", "user", "content", prompt)));
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+
+        OpenAIResponseDTO.AIQuestionsDTO response = openAITemplate.postForObject(
+                "https://api.openai.com/v1/chat/completions",
+                request,
+                OpenAIResponseDTO.AIQuestionsDTO.class
+        );
+
+        log.info(response.getChoices().get(0).getMessage().getContent());
+
+        String questions = response.getChoices().get(0).getMessage().getContent();
+        try {
+            List<String> list = objectMapper.readValue(questions, new TypeReference<List<String>>() {
+            });
+            return toGetQuestionsDTO(interviewSetId, list);
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class InterviewSetConverter {
@@ -70,6 +71,17 @@ public class InterviewSetConverter {
                         interviewSet.getQuestionAnswers().stream()
                                 .map(QuestionAnswerConverter::toQuestionAnswerDTO)
                                 .collect(Collectors.toList()))
+                .build();
+    }
+
+    public static InterviewSetResponseDTO.GetQuestionsDTO toGetQuestionsDTO(Long interviewSetId, List<String> questions) {
+        return InterviewSetResponseDTO.GetQuestionsDTO.builder()
+                .id(interviewSetId)
+                .questionAnswers(
+                        questions.stream()
+                                .map(QuestionAnswerConverter::toQuestionAnswerDTO)
+                                .collect(Collectors.toList())
+                )
                 .build();
     }
 }
