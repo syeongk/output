@@ -8,6 +8,7 @@ import com.sw.output.domain.interviewset.entity.JobCategory;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.service.BookmarkService;
 import com.sw.output.domain.interviewset.service.InterviewSetService;
+import com.sw.output.global.dto.CommonResponseDTO;
 import com.sw.output.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -85,8 +86,9 @@ public class InterviewSetController {
     }
 
     @PostMapping("{interviewSetId}/reports")
-    public ApiResponse<Void> startInterview(@PathVariable Long interviewSetId) {
-        return ApiResponse.success();
+    public ApiResponse<CommonResponseDTO.IdResponseDTO> startInterview(@PathVariable Long interviewSetId) {
+        CommonResponseDTO.IdResponseDTO response = interviewSetService.startMockInterview(interviewSetId);
+        return ApiResponse.success(response);
     }
 
     @PostMapping("{interviewSetId}/duplicate")

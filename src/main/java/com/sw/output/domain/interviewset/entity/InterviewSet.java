@@ -118,4 +118,8 @@ public class InterviewSet extends BaseEntity {
     public void subtractBookmarkCount() {
         this.bookmarkCount -= 1;
     }
+
+    public void increaseMockCount() {
+        this.mockCount += 1;
+    }
 }

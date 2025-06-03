@@ -1,7 +1,7 @@
 package com.sw.output.domain.interviewset.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.feedback.entity.Feedback;
+import com.sw.output.domain.report.entity.Feedback;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

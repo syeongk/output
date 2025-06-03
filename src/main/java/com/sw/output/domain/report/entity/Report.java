@@ -1,7 +1,6 @@
 package com.sw.output.domain.report.entity;
 
 import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.feedback.entity.Feedback;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.*;

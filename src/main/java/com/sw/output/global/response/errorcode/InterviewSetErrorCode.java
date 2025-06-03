@@ -10,7 +10,8 @@ public enum InterviewSetErrorCode implements BaseCode {
     JOB_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "INTERVIEW_SET_4003", "직무 카테고리를 찾을 수 없습니다."),
     INTERVIEW_SET_DELETED(HttpStatus.NOT_FOUND, "INTERVIEW_SET_4004", "삭제된 면접 세트입니다."),
     INVALID_JOB_CATEGORY_SIZE(HttpStatus.BAD_REQUEST, "INTERVIEW_SET_4005", "직무 카테고리는 최대 2개만 가능합니다."),
-    INVALID_INTERVIEW_SET_CATEGORY_SIZE(HttpStatus.BAD_REQUEST, "INTERVIEW_SET_4006", "면접 카테고리는 최대 2개만 가능합니다.");
+    INVALID_INTERVIEW_SET_CATEGORY_SIZE(HttpStatus.BAD_REQUEST, "INTERVIEW_SET_4006", "면접 카테고리는 최대 2개만 가능합니다."),
+    QUESTION_ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "INTERVIEW_SET_4007", "질문 답변을 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

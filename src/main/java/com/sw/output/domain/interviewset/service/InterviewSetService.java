@@ -15,6 +15,10 @@ import com.sw.output.domain.interviewset.repository.BookmarkRepository;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
+import com.sw.output.domain.report.entity.Report;
+import com.sw.output.domain.report.repository.ReportRepository;
+import com.sw.output.global.converter.CommonConverter;
+import com.sw.output.global.dto.CommonResponseDTO;
 import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
@@ -34,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
+import static com.sw.output.domain.report.converter.ReportConverter.toReport;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +49,7 @@ public class InterviewSetService {
     private final BookmarkRepository bookmarkRepository;
     private final ObjectMapper objectMapper;
     private final RestTemplate openAITemplate;
+    private final ReportRepository reportRepository;
 
     @Value("${openai.api.model}")
     private String model;
@@ -227,5 +233,24 @@ public class InterviewSetService {
             log.error(e.getMessage());
             throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public CommonResponseDTO.IdResponseDTO startMockInterview(Long interviewSetId) {
+        InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
+                .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+
+        if (interviewSet.getIsDeleted()) {
+            throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
+        }
+
+        interviewSet.increaseMockCount();
+
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        Report report = toReport(interviewSet, member);
+        reportRepository.save(report);
+
+        return CommonConverter.toIdResponseDTO(report.getId());
     }
 }
