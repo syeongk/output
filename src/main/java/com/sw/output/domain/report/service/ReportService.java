@@ -46,6 +46,8 @@ public class ReportService {
     @Async
     @Transactional
     public void createAIFeedback(Long reportId, ReportRequestDTO.CreateAiFeedbackDTO createAiFeedbackDTO) {
+        log.info("현재 쓰레드: {}", Thread.currentThread().getName());
+
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new BusinessException(ReportErrorCode.REPORT_NOT_FOUND));
 
@@ -58,14 +60,15 @@ public class ReportService {
         Map<String, Object> body = new HashMap<>();
 
         String prompt = """
-                당신은 면접관입니다. 면접관의 입장에서 아래 질문에 대한 답변을 피드백 해주세요.
+                면접관의 입장에서 아래 답변에 대한 피드백을 해주세요.
+                추가 질문이나 답변 요청은 하지 말고, 바로 피드백만 작성하세요.
 
                 [입력 정보]
                 질문 : %s
                 답변 : %s
 
                 [출력 형식]
-                질문에 대한 답변을 구체적으로 3가지 피드백해주세요.
+                반드시 아래 형식으로 3가지 구체적인 피드백을 해주세요.
                 응답 예시 : "1. 피드백1 \n2. 피드백2 \n3. 피드백3"
                 """.formatted(
                 createAiFeedbackDTO.getQuestionTitle(),

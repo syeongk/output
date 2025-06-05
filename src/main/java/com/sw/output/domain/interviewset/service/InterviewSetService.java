@@ -186,7 +186,7 @@ public class InterviewSetService {
         return interviewSets;
     }
 
-    public InterviewSetResponseDTO.GetQuestionsDTO createAiQuestions(Long interviewSetId, InterviewSetRequestDTO.CreateQuestionsPromptDTO createQuestionsPromptDTO) {
+    public InterviewSetResponseDTO.GetQuestionsDTO createAiQuestions(InterviewSetRequestDTO.CreateQuestionsPromptDTO createQuestionsPromptDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -228,7 +228,7 @@ public class InterviewSetService {
         try {
             List<String> list = objectMapper.readValue(questions, new TypeReference<List<String>>() {
             });
-            return toGetQuestionsDTO(interviewSetId, list);
+            return toGetQuestionsDTO(list);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR);

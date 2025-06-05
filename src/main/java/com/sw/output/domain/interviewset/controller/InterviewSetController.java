@@ -65,11 +65,10 @@ public class InterviewSetController {
         return ApiResponse.success();
     }
 
-    @PostMapping("{interviewSetId}/ai-question")
+    @PostMapping("ai-questions")
     public ApiResponse<InterviewSetResponseDTO.GetQuestionsDTO> createAiQuestions(
-            @PathVariable Long interviewSetId,
             @RequestBody @Valid InterviewSetRequestDTO.CreateQuestionsPromptDTO request) {
-        InterviewSetResponseDTO.GetQuestionsDTO response = interviewSetService.createAiQuestions(interviewSetId, request);
+        InterviewSetResponseDTO.GetQuestionsDTO response = interviewSetService.createAiQuestions(request);
         return ApiResponse.success(response);
     }
 

@@ -46,7 +46,6 @@ public class InterviewSetResponseDTO {
     @Getter
     @Builder
     public static class GetQuestionsDTO {
-        private Long id;
         private List<QuestionAnswerDTO> questionAnswers;
     }
 }

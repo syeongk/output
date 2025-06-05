@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.hibernate.validator.constraints.Range;
 
 import java.util.List;
 
@@ -37,10 +38,12 @@ public class InterviewSetRequestDTO {
         @NotNull(message = "직무 카테고리는 필수 항목입니다")
         private JobCategory jobCategory;
 
-        @Size(min = 1, max = 50, message = "세트 제목은 1~50자 사이입니다.")
+        @Size(min = 1, max = 50, message = "세트 제목은 1~50자 사이입니다")
+        @NotNull(message = "세트 제목은 필수 항목입니다")
         private String title;
 
-        @NotNull(message = "질문 요청 갯수는 필수 항목입니다.")
+        @Range(min = 1, max = 50, message = "질문 개수는 1~50개 사이입니다")
+        @NotNull(message = "질문 개수는 필수 항목입니다")
         private Integer questionCount;
     }
 }

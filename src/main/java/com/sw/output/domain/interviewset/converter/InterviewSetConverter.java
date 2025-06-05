@@ -74,9 +74,8 @@ public class InterviewSetConverter {
                 .build();
     }
 
-    public static InterviewSetResponseDTO.GetQuestionsDTO toGetQuestionsDTO(Long interviewSetId, List<String> questions) {
+    public static InterviewSetResponseDTO.GetQuestionsDTO toGetQuestionsDTO(List<String> questions) {
         return InterviewSetResponseDTO.GetQuestionsDTO.builder()
-                .id(interviewSetId)
                 .questionAnswers(
                         questions.stream()
                                 .map(QuestionAnswerConverter::toQuestionAnswerDTO)
