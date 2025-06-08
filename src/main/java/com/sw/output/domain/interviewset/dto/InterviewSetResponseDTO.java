@@ -21,6 +21,7 @@ public class InterviewSetResponseDTO {
     @Builder
     public static class GetInterviewSetDTO {
         private Long id;
+        private Long parentId;
         private String title;
         private InterviewCategory interviewCategory;
         private JobCategory jobCategory;

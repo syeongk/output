@@ -15,11 +15,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Feedback extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 피드백 ID
-
     @Column(nullable = false, columnDefinition = "TEXT")
     private String memberAnswer; // 사용자 답변
 

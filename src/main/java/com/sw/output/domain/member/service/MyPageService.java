@@ -6,6 +6,7 @@ import com.sw.output.domain.interviewset.repository.BookmarkRepository;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
 import com.sw.output.domain.member.converter.MemberConverter;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
+import com.sw.output.domain.member.dto.MyPageResponseDTO;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
 import com.sw.output.domain.report.converter.ReportDTOConverter;
@@ -15,10 +16,17 @@ import com.sw.output.domain.report.repository.ReportRepository;
 import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.sw.output.domain.member.converter.MemberConverter.toGetMyInterviewSetsDTO;
+import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -29,16 +37,30 @@ public class MyPageService {
     private final ReportRepository reportRepository;
 
     /**
+     * 마이페이지 조회
+     *
+     * @return 마이페이지 조회 응답 (닉네임)
+     * @throws BusinessException 회원을 찾을 수 없는 경우
+     */
+    public MemberResponseDTO.GetMyPageDTO getMyPage() {
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        return MemberConverter.toGetMyPageResponse(member);
+    }
+
+    /**
      * 북마크한 면접 세트 목록 조회
      *
      * @return 북마크한 면접 세트 목록
      */
-    public List<InterviewSetSummaryProjection> getMyBookmarkedInterviewSets() {
-        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
-        Member member = memberRepository.findById(1L)
+    public List<InterviewSetSummaryProjection> getMyBookmarkedInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        List<Bookmark> bookmarks = bookmarkRepository.findByMemberIdOrderByCreatedAtDesc(1L);
+        Pageable pageable = PageRequest.of(0, pageSize);
+
+        List<Bookmark> bookmarks = bookmarkRepository.findByMemberIdOrderByCreatedAtDesc(member.getId());
 
         return bookmarks.stream()
                 .map(bookmark -> interviewSetRepository
@@ -51,35 +73,36 @@ public class MyPageService {
      *
      * @return 사용자 면접 세트 목록
      */
-    public List<InterviewSetSummaryProjection> getMyInterviewSets() {
-        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
-        Member member = memberRepository.findById(1L)
+    public MyPageResponseDTO.GetMyInterviewSetsDTO getMyInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        List<InterviewSetSummaryProjection> interviewSets = interviewSetRepository
-                .findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(1L);
+        Pageable pageable = PageRequest.of(0, pageSize);
 
-        return interviewSets;
+        Slice<InterviewSetSummaryProjection> interviewSetSlice;
+        if (cursorId == null || cursorCreatedAt == null) {
+            interviewSetSlice = interviewSetRepository.findMyInterviewSetsFirstPage(pageable, member.getId());
+        } else {
+            interviewSetSlice = interviewSetRepository.findMyInterviewSetsNextPage(pageable, cursorId, cursorCreatedAt, member.getId());
+        }
+
+        List<InterviewSetSummaryProjection> interviewSets = interviewSetSlice.getContent();
+        InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
+
+        if (!interviewSetSlice.hasNext()) {
+            return toGetMyInterviewSetsDTO(interviewSets, null);
+        } else {
+            return toGetMyInterviewSetsDTO(interviewSets, lastInterviewSet);
+        }
     }
 
-    /**
-     * 마이페이지 조회
-     *
-     * @return 마이페이지 조회 응답 (닉네임)
-     * @throws BusinessException 회원을 찾을 수 없는 경우
-     */
-    public MemberResponseDTO.GetMyPageDTO getMyPage() {
-        Member member = memberRepository.findById(1L)
+    public List<ReportResponseDTO.GetReportDTO> getMyReports(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        return MemberConverter.toGetMyPageResponse(member);
-    }
+        Pageable pageable = PageRequest.of(0, pageSize);
 
-    public List<ReportResponseDTO.GetReportDTO> getMyReports() {
-        Member member = memberRepository.findById(1L)
-                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
-
-        List<Report> reports = reportRepository.findMyReports(1L);
+        List<Report> reports = reportRepository.findMyReports(member.getId());
 
         return reports.stream()
                 .map(ReportDTOConverter::toGetReportDTO)

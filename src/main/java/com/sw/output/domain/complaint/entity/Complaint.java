@@ -15,10 +15,6 @@ import static com.sw.output.domain.complaint.entity.ComplaintStatus.PENDING;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Complaint extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 신고 ID
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ComplaintType type; // 신고 유형

@@ -39,6 +39,7 @@ import java.util.Map;
 
 import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
 import static com.sw.output.domain.report.converter.ReportConverter.toReport;
+import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -64,8 +65,7 @@ public class InterviewSetService {
     @Transactional
     public InterviewSetResponseDTO.InterviewSetIdDTO createInterviewSet(
             InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
-        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         InterviewSet interviewSet = toInterviewSet(member, interviewSetDTO);
@@ -86,14 +86,15 @@ public class InterviewSetService {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
-        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
-        if (!interviewSet.getMember().getId().equals(1L)) {
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        if (!interviewSet.getMember().getId().equals(member.getId())) {
             throw new BusinessException(CommonErrorCode.FORBIDDEN);
         }
 
         bookmarkRepository.deleteByInterviewSetId(interviewSetId);
 
-        // TODO : DB 삭제 로직 추가
         interviewSet.softDelete();
     }
 
@@ -127,8 +128,7 @@ public class InterviewSetService {
     @Transactional
     public InterviewSetResponseDTO.InterviewSetIdDTO duplicateInterviewSet(Long interviewSetId,
                                                                            InterviewSetRequestDTO.InterviewSetDTO interviewSetDTO) {
-        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         InterviewSet parentInterviewSet = interviewSetRepository.findById(interviewSetId)
@@ -163,8 +163,10 @@ public class InterviewSetService {
             throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
         }
 
-        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
-        if (!interviewSet.getMember().getId().equals(1L)) {
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        if (!interviewSet.getMember().getId().equals(member.getId())) {
             throw new BusinessException(CommonErrorCode.FORBIDDEN);
         }
 
@@ -245,7 +247,7 @@ public class InterviewSetService {
 
         interviewSet.increaseMockCount();
 
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         Report report = toReport(interviewSet, member);

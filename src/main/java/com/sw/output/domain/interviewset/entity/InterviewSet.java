@@ -20,11 +20,6 @@ import static com.sw.output.domain.interviewset.converter.QuestionAnswerConverte
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class InterviewSet extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 면접 세트 ID
-
     // 사용자와 N:1 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

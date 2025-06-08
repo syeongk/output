@@ -16,14 +16,14 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             FROM Notice n
             ORDER BY n.createdAt DESC, n.id DESC
             """)
-    Slice<Notice> findFirstPage(Pageable pageable);
+    Slice<Notice> findNoticeFirstPage(Pageable pageable);
 
     @Query("""
             SELECT n
             FROM Notice n
-            WHERE (n.createdAt < :cursorCreatedAt OR (n.createdAt = :cursorCreatedAt AND n.id < :cursorId))
+            WHERE n.isDeleted = false AND (n.createdAt < :cursorCreatedAt OR (n.createdAt = :cursorCreatedAt AND n.id < :cursorId))
             ORDER BY n.createdAt DESC, n.id DESC
             """)
-    Slice<Notice> findNextPage(Pageable pageable, @Param("cursorId") Long cursorId, @Param("cursorCreatedAt") LocalDateTime cursorCreatedAt
+    Slice<Notice> findNoticeNextPage(Pageable pageable, @Param("cursorId") Long cursorId, @Param("cursorCreatedAt") LocalDateTime cursorCreatedAt
     );
 }

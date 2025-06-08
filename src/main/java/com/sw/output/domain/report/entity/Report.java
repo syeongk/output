@@ -19,11 +19,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Report extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 결과 리포트 ID
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_set_id", nullable = false)
     private InterviewSet interviewSet; // 면접 세트

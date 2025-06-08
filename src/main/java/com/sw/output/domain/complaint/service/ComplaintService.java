@@ -14,6 +14,8 @@ import com.sw.output.global.response.errorcode.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
+
 @Service
 @RequiredArgsConstructor
 public class ComplaintService {
@@ -25,8 +27,7 @@ public class ComplaintService {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
-        // TODO: 인증 시스템 연동 후 현재 로그인한 사용자 정보로 대체
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         Complaint complaint = ComplaintConverter.toComplaint(request, member, interviewSet);

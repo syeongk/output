@@ -38,3 +38,5 @@ out/
 
 ### 환경 설정 ###
 application.yml
+.env
+.env.*

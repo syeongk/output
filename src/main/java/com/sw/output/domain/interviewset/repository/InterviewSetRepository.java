@@ -4,10 +4,13 @@ import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.interviewset.entity.JobCategory;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long> {
@@ -49,4 +52,20 @@ public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long
             @Param("sortType") String sortType,
             @Param("size") int size,
             @Param("cursor") int cursor);
+
+    @Query("""
+            SELECT i
+            FROM InterviewSet i
+            WHERE i.member.id = :memberId AND i.isDeleted = false
+            ORDER BY i.createdAt DESC, i.id DESC
+            """)
+    Slice<InterviewSetSummaryProjection> findMyInterviewSetsFirstPage(Pageable pageable, @Param("memberId") Long memberId);
+
+    @Query("""
+            SELECT i
+            FROM InterviewSet i
+            WHERE i.member.id = :memberId AND i.isDeleted = false AND (i.createdAt < :cursorCreatedAt OR (i.createdAt = :cursorCreatedAt AND i.id < :cursorId))
+            ORDER BY i.createdAt DESC, i.id DESC
+            """)
+    Slice<InterviewSetSummaryProjection> findMyInterviewSetsNextPage(Pageable pageable, @Param("cursorId") Long cursorId, @Param("cursorCreatedAt") LocalDateTime cursorCreatedAt, @Param("memberId") Long memberId);
 }

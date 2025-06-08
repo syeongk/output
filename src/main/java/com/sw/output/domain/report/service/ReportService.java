@@ -46,8 +46,6 @@ public class ReportService {
     @Async
     @Transactional
     public void createAIFeedback(Long reportId, ReportRequestDTO.CreateAiFeedbackDTO createAiFeedbackDTO) {
-        log.info("현재 쓰레드: {}", Thread.currentThread().getName());
-
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new BusinessException(ReportErrorCode.REPORT_NOT_FOUND));
 

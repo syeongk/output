@@ -7,10 +7,14 @@ import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
 
@@ -22,23 +26,21 @@ public class MemberService {
      */
     @Transactional
     public void updateNickname(MemberRequestDTO.UpdateNicknameDTO updateNicknameDTO) {
-        String nickname = updateNicknameDTO.getNickname();
-
-        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        if (memberRepository.findByNickname(nickname).isPresent()) {
+        String newNickname = updateNicknameDTO.getNickname();
+
+        if (memberRepository.findByNickname(newNickname).isPresent()) {
             throw new BusinessException(MemberErrorCode.NICKNAME_ALREADY_EXISTS);
         }
 
-        member.updateNickname(nickname);
+        member.updateNickname(newNickname);
     }
 
     @Transactional
     public void deleteMember() {
-        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         member.softDelete();

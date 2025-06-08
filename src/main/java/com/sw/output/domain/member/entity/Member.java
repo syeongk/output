@@ -1,30 +1,17 @@
 package com.sw.output.domain.member.entity;
 
-import static com.sw.output.domain.member.entity.Role.USER;
+import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.interviewset.entity.InterviewSet;
+import com.sw.output.domain.report.entity.Report;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sw.output.domain.BaseEntity;
-import com.sw.output.domain.interviewset.entity.InterviewSet;
-import com.sw.output.domain.report.entity.Report;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import static com.sw.output.domain.member.entity.Role.USER;
 
 @Entity
 @Getter
@@ -32,10 +19,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Member extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 사용자 ID
-
     @Column(nullable = false, length = 100, unique = true)
     private String email; // 소셜 계정 이메일
 

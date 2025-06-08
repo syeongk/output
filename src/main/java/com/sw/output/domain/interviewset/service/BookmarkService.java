@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import static com.sw.output.domain.interviewset.converter.BookmarkConverter.toBookmark;
+import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +44,7 @@ public class BookmarkService {
             throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
         }
 
-        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         Bookmark bookmark = toBookmark(interviewSet, member);
@@ -69,8 +69,10 @@ public class BookmarkService {
             throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_DELETED);
         }
 
-        // TODO : 멤버 조회 AOP 추가, 1번으로 하드코딩
-        Bookmark bookmark = bookmarkRepository.findByInterviewSetIdAndMemberId(interviewSetId, 1L)
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        Bookmark bookmark = bookmarkRepository.findByInterviewSetIdAndMemberId(interviewSetId, member.getId())
                 .orElseThrow(() -> new BusinessException(BookmarkErrorCode.BOOKMARK_NOT_FOUND));
 
         bookmarkRepository.delete(bookmark);

@@ -1,10 +1,13 @@
 package com.sw.output.domain.notice.converter;
 
+import com.sw.output.domain.notice.dto.NoticeResponseDTO;
+import com.sw.output.domain.notice.entity.Notice;
+import com.sw.output.global.dto.CommonResponseDTO;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.sw.output.domain.notice.dto.NoticeResponseDTO;
-import com.sw.output.domain.notice.entity.Notice;
+import static com.sw.output.global.converter.CommonConverter.toCursorDTO;
 
 public class NoticeDTOConverter {
     public static NoticeResponseDTO.NoticeDTO toNoticeDTO(Notice notice) {
@@ -23,18 +26,11 @@ public class NoticeDTOConverter {
                 .build();
     }
 
-    public static NoticeResponseDTO.NoticeCursorDTO toNoticeCursorDTO(Notice notice) {
-        return NoticeResponseDTO.NoticeCursorDTO.builder()
-                .id(notice.getId())
-                .createdAt(notice.getCreatedAt())
-                .build();
-    }
-
     public static NoticeResponseDTO.NoticesDTO toNoticesDTO(List<Notice> notices, Notice lastNotice) {
-        NoticeResponseDTO.NoticeCursorDTO nextCursor = null;
+        CommonResponseDTO.CursorDTO nextCursor = null;
 
         if (lastNotice != null) {
-            nextCursor = toNoticeCursorDTO(lastNotice);
+            nextCursor = toCursorDTO(lastNotice.getId(), lastNotice.getCreatedAt());
         }
 
         List<NoticeResponseDTO.NoticeDTO> noticeDTOs = notices.stream()

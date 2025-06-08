@@ -61,6 +61,7 @@ public class InterviewSetConverter {
     public static InterviewSetResponseDTO.GetInterviewSetDTO toGetInterviewSetResponse(InterviewSet interviewSet) {
         return InterviewSetResponseDTO.GetInterviewSetDTO.builder()
                 .id(interviewSet.getId())
+                .parentId(interviewSet.getParent() != null ? interviewSet.getParent().getId() : null)
                 .title(interviewSet.getTitle())
                 .interviewCategory(interviewSet.getInterviewCategory())
                 .jobCategory(interviewSet.getJobCategory())

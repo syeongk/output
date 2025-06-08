@@ -28,9 +28,9 @@ public class NoticeService {
 
         Slice<Notice> noticesSlice;
         if (cursorId == null || cursorCreatedAt == null) {
-            noticesSlice = noticeRepository.findFirstPage(pageable);
+            noticesSlice = noticeRepository.findNoticeFirstPage(pageable);
         } else {
-            noticesSlice = noticeRepository.findNextPage(pageable, cursorId, cursorCreatedAt);
+            noticesSlice = noticeRepository.findNoticeNextPage(pageable, cursorId, cursorCreatedAt);
         }
 
         List<Notice> notices = noticesSlice.getContent();
