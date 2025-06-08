@@ -1,0 +1,39 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  datasource:
+    driver-class-name: ${DB_DRIVER_CLASS_NAME}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  sql:
+    init:
+      mode: never # schema.sql, data.sql 등 스크립트 자동 실행 막기
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect # Hibernate MySQL 8 버전에 맞춰 쿼리 생성
+        show_sql: ${HIBERNATE_SHOW_SQL}
+        format_sql: ${HIBERNATE_FORMAT_SQL}
+        use_sql_comments: ${HIBERNATE_USE_SQL_COMMENTS}
+        hbm2ddl:
+          auto: ${HIBERNATE_HBM2DDL_AUTO}
+        default_batch_fetch_size: 1000 # N+1 문제 최적화: 연관 데이터 1000개씩 IN 쿼리로 가져옴
+  security:
+    oauth2:
+      client:
+        google:
+          redirect-uri: ${GOOGLE_REDIRECT_URI}
+          client-id: ${GOOGLE_CLIENT_ID}
+          client-secret: ${GOOGLE_CLIENT_SECRET}
+          grant-type: ${GOOGLE_GRANT_TYPE}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expire: ${JWT_ACCESS_TOKEN_EXPIRE}
+  refresh-token-expire: ${JWT_REFRESH_TOKEN_EXPIRE}
+
+openai:
+  api:
+    key: ${OPENAI_API_KEY}
+    model: ${OPENAI_MODEL}
