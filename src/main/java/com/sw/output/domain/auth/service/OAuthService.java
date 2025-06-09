@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.List;
+import java.util.Arrays;
 
 import static com.sw.output.domain.member.converter.MemberConverter.toMember;
 
@@ -90,7 +90,7 @@ public class OAuthService {
      */
     private Payload verifyGoogleIdToken(String idToken) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(List.of(webClientId, androidClientId))
+                .setAudience(Arrays.asList(webClientId, androidClientId))
                 .build();
         try {
             GoogleIdToken googleIdToken = verifier.verify(idToken); // 유효한 서명, 토큰 만료, 발급자 Google, 수신자 clientId
