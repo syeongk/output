@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
+import java.util.List;
 
 import static com.sw.output.domain.member.converter.MemberConverter.toMember;
 
@@ -37,14 +37,17 @@ public class OAuthService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
 
-    @Value("${spring.security.oauth2.client.google.client-id}")
-    private String clientId;
-    @Value("${spring.security.oauth2.client.google.redirect-uri}")
+    @Value("${spring.security.oauth2.client.google.web.client-id}")
+    private String webClientId;
+    @Value("${spring.security.oauth2.client.google.web.redirect-uri}")
     private String redirectUri;
-    @Value("${spring.security.oauth2.client.google.client-secret}")
+    @Value("${spring.security.oauth2.client.google.web.client-secret}")
     private String clientSecret;
-    @Value("${spring.security.oauth2.client.google.grant-type}")
+    @Value("${spring.security.oauth2.client.google.web.grant-type}")
     private String grantType;
+
+    @Value("${spring.security.oauth2.client.google.android.client-id}")
+    private String androidClientId;
 
     /**
      * 구글 액세스 토큰 요청
@@ -55,7 +58,7 @@ public class OAuthService {
         // 요청 본문 데이터 구성
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("grant_type", grantType);
-        requestBody.add("client_id", clientId);
+        requestBody.add("client_id", webClientId);
         requestBody.add("redirect_uri", redirectUri);
         requestBody.add("code", decodedCode);
         requestBody.add("client_secret", clientSecret);
@@ -87,7 +90,7 @@ public class OAuthService {
      */
     private Payload verifyGoogleIdToken(String idToken) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(Collections.singletonList(clientId))
+                .setAudience(List.of(webClientId, androidClientId))
                 .build();
         try {
             GoogleIdToken googleIdToken = verifier.verify(idToken); // 유효한 서명, 토큰 만료, 발급자 Google, 수신자 clientId
@@ -95,7 +98,7 @@ public class OAuthService {
                 throw new BusinessException(AuthErrorCode.INVALID_ID_TOKEN);
             }
             return googleIdToken.getPayload();
-            
+
         } catch (GeneralSecurityException | IOException e) {
             throw new BusinessException(AuthErrorCode.GOOGLE_VERIFICATION_FAILED);
         }
