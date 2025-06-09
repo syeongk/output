@@ -41,6 +41,9 @@ public class Member extends BaseEntity {
     @Column
     private LocalDateTime suspendedUntil; // 정지 해제일
 
+    @Column
+    private String picture;
+
     // 면접 세트와 1:N 연관관계
     @OneToMany(mappedBy = "member")
     private List<InterviewSet> interviewSets = new ArrayList<>();

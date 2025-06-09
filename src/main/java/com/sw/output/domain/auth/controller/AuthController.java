@@ -1,6 +1,7 @@
 package com.sw.output.domain.auth.controller;
 
 import com.sw.output.domain.auth.dto.AuthResponseDTO;
+import com.sw.output.domain.auth.dto.GoogleOAuthDTO;
 import com.sw.output.domain.auth.service.OAuthService;
 import com.sw.output.domain.auth.service.TokenService;
 import com.sw.output.global.response.ApiResponse;
@@ -18,13 +19,19 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("social-login")
-    public ApiResponse<AuthResponseDTO.TokenDTO> socialLogin(@RequestParam String code) {
-        AuthResponseDTO.TokenDTO tokenDTO = oAuthService.socialLogin(code);
+    public ApiResponse<AuthResponseDTO.TokenDTO> socialLogin(@RequestParam String idToken) {
+        AuthResponseDTO.TokenDTO tokenDTO = oAuthService.socialLogin(idToken);
         return ApiResponse.success(tokenDTO);
     }
 
     @PostMapping("reissue")
     public ApiResponse<Void> reissue() {
         return ApiResponse.success();
+    }
+
+    @PostMapping("test")
+    public ApiResponse<GoogleOAuthDTO.GoogleAccessTokenDTO> test(@RequestParam String code) {
+        GoogleOAuthDTO.GoogleAccessTokenDTO response = oAuthService.test(code);
+        return ApiResponse.success(response);
     }
 }

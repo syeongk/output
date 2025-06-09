@@ -49,6 +49,8 @@ dependencies {
     implementation 'com.openai:openai-java:2.3.0'
     // Spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Google OAuth
+    implementation 'com.google.api-client:google-api-client:2.2.0'
 }
 
 tasks.named('test') {

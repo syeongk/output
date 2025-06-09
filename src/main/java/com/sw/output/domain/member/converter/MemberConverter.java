@@ -11,12 +11,13 @@ import java.util.List;
 import static com.sw.output.global.converter.CommonConverter.toCursorDTO;
 
 public class MemberConverter {
-    public static Member toMember(String email) {
+    public static Member toMember(String email, String picture) {
         String nickname = email.split("@")[0];
 
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
+                .picture(picture)
                 .build();
     }
 

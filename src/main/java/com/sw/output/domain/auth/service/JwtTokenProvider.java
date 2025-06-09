@@ -148,16 +148,4 @@ public class JwtTokenProvider {
 
         return false; // 검증 실패
     }
-
-    /**
-     * 토큰 만료 시간 추출
-     */
-    public Date getExpirationFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
-    }
 }
