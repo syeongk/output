@@ -10,8 +10,15 @@ import java.util.List;
 public class MyPageResponseDTO {
     @Getter
     @Builder
-    public static class GetMyInterviewSetsDTO {
-        private List<InterviewSetSummaryProjection> interviewSets;
+    public static class MyInterviewSetsDTO {
+        private List<InterviewSetSummaryProjection> myInterviewSets;
+        private CommonResponseDTO.CursorDTO cursorDTO;
+    }
+
+    @Getter
+    @Builder
+    public static class BookmarkedInterviewSetsDTO {
+        private List<InterviewSetSummaryProjection> bookmarkedInterviewSets;
         private CommonResponseDTO.CursorDTO cursorDTO;
     }
 }

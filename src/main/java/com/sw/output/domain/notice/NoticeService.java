@@ -12,6 +12,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sw.output.domain.notice.converter.NoticeDTOConverter.toNoticeDetailDTO;
@@ -33,14 +34,17 @@ public class NoticeService {
             noticesSlice = noticeRepository.findNoticeNextPage(pageable, cursorId, cursorCreatedAt);
         }
 
-        List<Notice> notices = noticesSlice.getContent();
-
-        if (!noticesSlice.hasNext()) {
-            return toNoticesDTO(notices, null);
+        if (noticesSlice.isEmpty()) {
+            return toNoticesDTO(new ArrayList<>(), null);
         }
 
-        Notice lastNotice = notices.get(notices.size() - 1);
-        return toNoticesDTO(notices, lastNotice);
+        List<Notice> notices = noticesSlice.getContent();
+        if (!noticesSlice.hasNext()) {
+            return toNoticesDTO(notices, null);
+        } else {
+            Notice lastNotice = notices.get(notices.size() - 1);
+            return toNoticesDTO(notices, lastNotice);
+        }
     }
 
     public NoticeResponseDTO.NoticeDetailDTO getNotice(Long noticeId) {

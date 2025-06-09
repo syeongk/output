@@ -1,23 +1,15 @@
 package com.sw.output.domain.report.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.sw.output.domain.report.dto.FeedbackResponseDTO;
 import com.sw.output.domain.report.dto.ReportRequestDTO;
-import com.sw.output.domain.report.dto.ReportResponseDTO;
 import com.sw.output.domain.report.service.ReportService;
 import com.sw.output.global.response.ApiResponse;
 import com.sw.output.global.response.successcode.CommonSuccessCode;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/reports")
@@ -32,8 +24,12 @@ public class ReportController {
     }
 
     @GetMapping("{reportId}")
-    public ApiResponse<List<ReportResponseDTO.GetReportDetailDTO>> getReport(@PathVariable Long reportId) {
-        List<ReportResponseDTO.GetReportDetailDTO> response = reportService.getReport(reportId);
+    public ApiResponse<FeedbackResponseDTO.FeedbacksDTO> getReport(
+            @PathVariable Long reportId,
+            @RequestParam(required = false) Long cursorId,
+            @RequestParam(required = false) LocalDateTime cursorCreatedAt,
+            @RequestParam(defaultValue = "20") int pageSize) {
+        FeedbackResponseDTO.FeedbacksDTO response = reportService.getReport(reportId, cursorId, cursorCreatedAt, pageSize);
         return ApiResponse.success(response);
     }
 

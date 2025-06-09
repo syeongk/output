@@ -1,17 +1,18 @@
 package com.sw.output.domain.interviewset.repository;
 
-import com.sw.output.domain.interviewset.entity.InterviewCategory;
-import com.sw.output.domain.interviewset.entity.InterviewSet;
-import com.sw.output.domain.interviewset.entity.JobCategory;
-import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.sw.output.domain.interviewset.entity.InterviewCategory;
+import com.sw.output.domain.interviewset.entity.InterviewSet;
+import com.sw.output.domain.interviewset.entity.JobCategory;
+import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 
 public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long> {
     InterviewSetSummaryProjection findSummaryByIdAndIsDeletedFalse(Long id);
@@ -68,4 +69,24 @@ public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long
             ORDER BY i.createdAt DESC, i.id DESC
             """)
     Slice<InterviewSetSummaryProjection> findMyInterviewSetsNextPage(Pageable pageable, @Param("cursorId") Long cursorId, @Param("cursorCreatedAt") LocalDateTime cursorCreatedAt, @Param("memberId") Long memberId);
+
+    @Query("""
+            SELECT i
+            FROM InterviewSet i
+            WHERE i.isDeleted = false AND i.id IN (SELECT b.interviewSet.id FROM Bookmark b WHERE b.member.id = :memberId)
+            ORDER BY i.createdAt DESC, i.id DESC
+            """)
+    Slice<InterviewSetSummaryProjection> findBookmarkedInterviewSetsFirstPage(Pageable pageable, @Param("memberId") Long memberId);
+
+    @Query("""
+            SELECT i
+            FROM InterviewSet i
+            JOIN Bookmark b ON i.id = b.interviewSet.id
+            WHERE i.isDeleted = false
+            AND b.isDeleted = false
+            AND b.member.id = :memberId
+            AND (b.createdAt < :cursorCreatedAt OR (b.createdAt = :cursorCreatedAt AND b.id < :cursorId))
+            ORDER BY b.createdAt DESC, b.id DESC
+            """)
+    Slice<InterviewSetSummaryProjection> findBookmarkedInterviewSetsNextPage(Pageable pageable, @Param("memberId") Long memberId, @Param("cursorId") Long cursorId, @Param("cursorCreatedAt") LocalDateTime cursorCreatedAt);
 }

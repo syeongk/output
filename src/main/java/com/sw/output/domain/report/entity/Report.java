@@ -4,10 +4,7 @@ import com.sw.output.domain.BaseEntity;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -29,5 +26,6 @@ public class Report extends BaseEntity {
 
     // 피드백과 1:N 연관관계
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Feedback> feedbacks = new ArrayList<>();
 }

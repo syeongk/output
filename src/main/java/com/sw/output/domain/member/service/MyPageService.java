@@ -1,15 +1,12 @@
 package com.sw.output.domain.member.service;
 
-import com.sw.output.domain.interviewset.entity.Bookmark;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
-import com.sw.output.domain.interviewset.repository.BookmarkRepository;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
 import com.sw.output.domain.member.converter.MemberConverter;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
 import com.sw.output.domain.member.dto.MyPageResponseDTO;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
-import com.sw.output.domain.report.converter.ReportDTOConverter;
 import com.sw.output.domain.report.dto.ReportResponseDTO;
 import com.sw.output.domain.report.entity.Report;
 import com.sw.output.domain.report.repository.ReportRepository;
@@ -22,16 +19,17 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.sw.output.domain.member.converter.MemberConverter.toGetMyInterviewSetsDTO;
+import static com.sw.output.domain.member.converter.MyPageConverter.toBookmarkedInterviewSetsDTO;
+import static com.sw.output.domain.report.converter.ReportDTOConverter.toReportsDTO;
 import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
-    private final BookmarkRepository bookmarkRepository;
     private final InterviewSetRepository interviewSetRepository;
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
@@ -54,18 +52,30 @@ public class MyPageService {
      *
      * @return 북마크한 면접 세트 목록
      */
-    public List<InterviewSetSummaryProjection> getMyBookmarkedInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+    public MyPageResponseDTO.BookmarkedInterviewSetsDTO getMyBookmarkedInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
         Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(0, pageSize);
 
-        List<Bookmark> bookmarks = bookmarkRepository.findByMemberIdOrderByCreatedAtDesc(member.getId());
+        Slice<InterviewSetSummaryProjection> bookmarkedInterviewSetSlice;
+        if (cursorId == null || cursorCreatedAt == null) {
+            bookmarkedInterviewSetSlice = interviewSetRepository.findBookmarkedInterviewSetsFirstPage(pageable, member.getId());
+        } else {
+            bookmarkedInterviewSetSlice = interviewSetRepository.findBookmarkedInterviewSetsNextPage(pageable, member.getId(), cursorId, cursorCreatedAt);
+        }
 
-        return bookmarks.stream()
-                .map(bookmark -> interviewSetRepository
-                        .findSummaryByIdAndIsDeletedFalse(bookmark.getInterviewSet().getId()))
-                .collect(Collectors.toList());
+        if (bookmarkedInterviewSetSlice.isEmpty()) {
+            return toBookmarkedInterviewSetsDTO(new ArrayList<>(), null);
+        }
+
+        List<InterviewSetSummaryProjection> interviewSets = bookmarkedInterviewSetSlice.getContent();
+        if (!bookmarkedInterviewSetSlice.hasNext()) {
+            return toBookmarkedInterviewSetsDTO(interviewSets, null);
+        } else {
+            InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
+            return toBookmarkedInterviewSetsDTO(interviewSets, lastInterviewSet);
+        }
     }
 
     /**
@@ -73,7 +83,7 @@ public class MyPageService {
      *
      * @return 사용자 면접 세트 목록
      */
-    public MyPageResponseDTO.GetMyInterviewSetsDTO getMyInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+    public MyPageResponseDTO.MyInterviewSetsDTO getMyInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
         Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
@@ -86,26 +96,42 @@ public class MyPageService {
             interviewSetSlice = interviewSetRepository.findMyInterviewSetsNextPage(pageable, cursorId, cursorCreatedAt, member.getId());
         }
 
-        List<InterviewSetSummaryProjection> interviewSets = interviewSetSlice.getContent();
-        InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
+        if (interviewSetSlice.isEmpty()) {
+            return toGetMyInterviewSetsDTO(new ArrayList<>(), null);
+        }
 
+        List<InterviewSetSummaryProjection> interviewSets = interviewSetSlice.getContent();
         if (!interviewSetSlice.hasNext()) {
             return toGetMyInterviewSetsDTO(interviewSets, null);
         } else {
+            InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
             return toGetMyInterviewSetsDTO(interviewSets, lastInterviewSet);
         }
     }
 
-    public List<ReportResponseDTO.GetReportDTO> getMyReports(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+    public ReportResponseDTO.ReportsDTO getMyReports(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
         Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(0, pageSize);
 
-        List<Report> reports = reportRepository.findMyReports(member.getId());
+        Slice<Report> reportSlice;
+        if (cursorId == null || cursorCreatedAt == null) {
+            reportSlice = reportRepository.findReportFirstPage(pageable, member.getId());
+        } else {
+            reportSlice = reportRepository.findReportNextPage(pageable, member.getId(), cursorId, cursorCreatedAt);
+        }
 
-        return reports.stream()
-                .map(ReportDTOConverter::toGetReportDTO)
-                .collect(Collectors.toList());
+        if (reportSlice.isEmpty()) {
+            return toReportsDTO(new ArrayList<>(), null);
+        }
+
+        List<Report> reports = reportSlice.getContent();
+        if (!reportSlice.hasNext()) {
+            return toReportsDTO(reports, null);
+        } else {
+            Report lastReport = reports.get(reports.size() - 1);
+            return toReportsDTO(reports, lastReport);
+        }
     }
 }

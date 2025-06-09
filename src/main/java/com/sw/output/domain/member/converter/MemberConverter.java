@@ -27,15 +27,15 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MyPageResponseDTO.GetMyInterviewSetsDTO toGetMyInterviewSetsDTO(List<InterviewSetSummaryProjection> interviewSets, InterviewSetSummaryProjection lastInterviewSet) {
+    public static MyPageResponseDTO.MyInterviewSetsDTO toGetMyInterviewSetsDTO(List<InterviewSetSummaryProjection> interviewSets, InterviewSetSummaryProjection lastInterviewSet) {
         CommonResponseDTO.CursorDTO nextCursor = null;
 
         if (lastInterviewSet != null) {
             nextCursor = toCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getCreatedAt());
         }
 
-        return MyPageResponseDTO.GetMyInterviewSetsDTO.builder()
-                .interviewSets(interviewSets)
+        return MyPageResponseDTO.MyInterviewSetsDTO.builder()
+                .myInterviewSets(interviewSets)
                 .cursorDTO(nextCursor)
                 .build();
 

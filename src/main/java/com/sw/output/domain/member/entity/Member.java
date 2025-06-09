@@ -45,10 +45,12 @@ public class Member extends BaseEntity {
     private String picture;
 
     // 면접 세트와 1:N 연관관계
+    @Builder.Default
     @OneToMany(mappedBy = "member")
     private List<InterviewSet> interviewSets = new ArrayList<>();
 
     // 결과 리포트와 1:N 연관관계
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports = new ArrayList<>();
 

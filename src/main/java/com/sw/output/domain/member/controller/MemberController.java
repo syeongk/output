@@ -1,6 +1,5 @@
 package com.sw.output.domain.member.controller;
 
-import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.member.dto.MemberRequestDTO;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
 import com.sw.output.domain.member.dto.MyPageResponseDTO;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users/me")
@@ -31,33 +29,33 @@ public class MemberController {
     }
 
     @GetMapping("/interview-sets/bookmarks")
-    public ApiResponse<List<InterviewSetSummaryProjection>> getMyBookmarks(
+    public ApiResponse<MyPageResponseDTO.BookmarkedInterviewSetsDTO> getMyBookmarks(
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
-        List<InterviewSetSummaryProjection> response = myPageService.getMyBookmarkedInterviewSets(cursorId, cursorCreatedAt, pageSize);
+        MyPageResponseDTO.BookmarkedInterviewSetsDTO response = myPageService.getMyBookmarkedInterviewSets(cursorId, cursorCreatedAt, pageSize);
         return ApiResponse.success(response);
     }
 
     @GetMapping("/interview-sets")
-    public ApiResponse<MyPageResponseDTO.GetMyInterviewSetsDTO> getMyInterviewSets(
+    public ApiResponse<MyPageResponseDTO.MyInterviewSetsDTO> getMyInterviewSets(
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
 
-        MyPageResponseDTO.GetMyInterviewSetsDTO response = myPageService.getMyInterviewSets(cursorId, cursorCreatedAt, pageSize);
+        MyPageResponseDTO.MyInterviewSetsDTO response = myPageService.getMyInterviewSets(cursorId, cursorCreatedAt, pageSize);
         return ApiResponse.success(response);
     }
 
     @GetMapping("/reports")
-    public ApiResponse<List<ReportResponseDTO.GetReportDTO>> getMyReports(
+    public ApiResponse<ReportResponseDTO.ReportsDTO> getMyReports(
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
-        List<ReportResponseDTO.GetReportDTO> response = myPageService.getMyReports(cursorId, cursorCreatedAt, pageSize);
+        ReportResponseDTO.ReportsDTO response = myPageService.getMyReports(cursorId, cursorCreatedAt, pageSize);
         return ApiResponse.success(response);
     }
 

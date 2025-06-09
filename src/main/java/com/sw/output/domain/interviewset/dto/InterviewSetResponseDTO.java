@@ -47,6 +47,6 @@ public class InterviewSetResponseDTO {
     @Getter
     @Builder
     public static class GetQuestionsDTO {
-        private List<QuestionAnswerDTO> questionAnswers;
+        private List<String> questions;
     }
 }
