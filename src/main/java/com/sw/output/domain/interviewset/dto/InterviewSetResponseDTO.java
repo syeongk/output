@@ -3,6 +3,7 @@ package com.sw.output.domain.interviewset.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.JobCategory;
+import com.sw.output.global.dto.CommonResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class InterviewSetResponseDTO {
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;
         private Boolean isAnswerPublic;
-        private List<QuestionAnswerDTO> questionAnswers;
+        private List<QuestionAnswerResponseDTO.QuestionAnswerDTO> questionAnswers;
     }
 
     @Getter
@@ -48,5 +49,12 @@ public class InterviewSetResponseDTO {
     @Builder
     public static class GetQuestionsDTO {
         private List<String> questions;
+    }
+
+    @Getter
+    @Builder
+    public static class InterviewSetCursorDTO {
+        private GetInterviewSetDTO interviewSet;
+        private CommonResponseDTO.CursorDTO nextCursor;
     }
 }

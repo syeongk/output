@@ -11,10 +11,17 @@ public class CommonConverter {
                 .build();
     }
 
-    public static CommonResponseDTO.CursorDTO toCursorDTO(Long entityId, LocalDateTime entityCreatedAt) {
+    public static CommonResponseDTO.CursorDTO toCreatedAtCursorDTO(Long entityId, LocalDateTime entityCreatedAt) {
         return CommonResponseDTO.CursorDTO.builder()
                 .id(entityId)
                 .createdAt(entityCreatedAt)
+                .build();
+    }
+
+    public static CommonResponseDTO.CursorDTO toTitleCursorDTO(Long entityId, String entityTitle) {
+        return CommonResponseDTO.CursorDTO.builder()
+                .id(entityId)
+                .title(entityTitle)
                 .build();
     }
 }

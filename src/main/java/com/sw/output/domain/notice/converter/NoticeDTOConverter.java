@@ -7,7 +7,7 @@ import com.sw.output.global.dto.CommonResponseDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sw.output.global.converter.CommonConverter.toCursorDTO;
+import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
 
 public class NoticeDTOConverter {
     public static NoticeResponseDTO.NoticeDTO toNoticeDTO(Notice notice) {
@@ -30,7 +30,7 @@ public class NoticeDTOConverter {
         CommonResponseDTO.CursorDTO nextCursor = null;
 
         if (lastNotice != null) {
-            nextCursor = toCursorDTO(lastNotice.getId(), lastNotice.getCreatedAt());
+            nextCursor = toCreatedAtCursorDTO(lastNotice.getId(), lastNotice.getCreatedAt());
         }
 
         List<NoticeResponseDTO.NoticeDTO> noticeDTOs = notices.stream()

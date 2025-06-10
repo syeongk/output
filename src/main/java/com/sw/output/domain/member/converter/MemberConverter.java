@@ -8,7 +8,7 @@ import com.sw.output.global.dto.CommonResponseDTO;
 
 import java.util.List;
 
-import static com.sw.output.global.converter.CommonConverter.toCursorDTO;
+import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
 
 public class MemberConverter {
     public static Member toMember(String email, String picture) {
@@ -31,7 +31,7 @@ public class MemberConverter {
         CommonResponseDTO.CursorDTO nextCursor = null;
 
         if (lastInterviewSet != null) {
-            nextCursor = toCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getCreatedAt());
+            nextCursor = toCreatedAtCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getCreatedAt());
         }
 
         return MyPageResponseDTO.MyInterviewSetsDTO.builder()

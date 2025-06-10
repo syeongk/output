@@ -6,14 +6,14 @@ import com.sw.output.global.dto.CommonResponseDTO;
 
 import java.util.List;
 
-import static com.sw.output.global.converter.CommonConverter.toCursorDTO;
+import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
 
 public class MyPageConverter {
     public static MyPageResponseDTO.BookmarkedInterviewSetsDTO toBookmarkedInterviewSetsDTO(List<InterviewSetSummaryProjection> interviewSets, InterviewSetSummaryProjection lastInterviewSet) {
         CommonResponseDTO.CursorDTO nextCursor = null;
 
         if (lastInterviewSet != null) {
-            nextCursor = toCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getCreatedAt());
+            nextCursor = toCreatedAtCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getCreatedAt());
         }
 
         return MyPageResponseDTO.BookmarkedInterviewSetsDTO.builder()

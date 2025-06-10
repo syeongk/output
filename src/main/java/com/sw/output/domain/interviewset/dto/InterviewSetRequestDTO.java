@@ -24,7 +24,7 @@ public class InterviewSetRequestDTO {
 
         @Valid
         @Size(min = 1, max = 50, message = "질문 답변은 1~50개 입니다.")
-        private List<QuestionAnswerDTO> questionAnswers;
+        private List<QuestionAnswerRequestDTO.QuestionAnswerCreateDTO> questionAnswers;
 
         @NotNull(message = "답변 공개 여부는 필수 항목입니다")
         private Boolean isAnswerPublic;

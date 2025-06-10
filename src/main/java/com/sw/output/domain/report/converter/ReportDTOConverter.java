@@ -7,7 +7,7 @@ import com.sw.output.global.dto.CommonResponseDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sw.output.global.converter.CommonConverter.toCursorDTO;
+import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
 
 public class ReportDTOConverter {
     public static ReportResponseDTO.ReportDTO toReportDTO(Report report) {
@@ -25,7 +25,7 @@ public class ReportDTOConverter {
         CommonResponseDTO.CursorDTO nextCursor = null;
 
         if (lastReport != null) {
-            nextCursor = toCursorDTO(lastReport.getId(), lastReport.getCreatedAt());
+            nextCursor = toCreatedAtCursorDTO(lastReport.getId(), lastReport.getCreatedAt());
         }
 
         List<ReportResponseDTO.ReportDTO> reportDTOs = reports.stream()

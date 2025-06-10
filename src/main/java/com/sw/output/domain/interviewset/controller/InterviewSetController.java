@@ -5,6 +5,7 @@ import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
 import com.sw.output.domain.interviewset.entity.JobCategory;
+import com.sw.output.domain.interviewset.entity.QuestionAnswerSortType;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.service.BookmarkService;
 import com.sw.output.domain.interviewset.service.InterviewSetService;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -37,10 +39,16 @@ public class InterviewSetController {
     }
 
     @GetMapping("{interviewSetId}")
-    public ApiResponse<InterviewSetResponseDTO.GetInterviewSetDTO> getInterviewSet(@PathVariable Long interviewSetId) {
-        InterviewSetResponseDTO.GetInterviewSetDTO getInterviewSetDTO = interviewSetService
-                .getInterviewSet(interviewSetId);
-        return ApiResponse.success(getInterviewSetDTO);
+    public ApiResponse<InterviewSetResponseDTO.InterviewSetCursorDTO> getInterviewSet(
+            @PathVariable Long interviewSetId,
+            @RequestParam(required = false) Long cursorId,
+            @RequestParam(required = false) LocalDateTime cursorCreatedAt,
+            @RequestParam(required = false) String cursorQuestionTitle,
+            @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam(defaultValue = "CREATED_AT") QuestionAnswerSortType questionAnswerSortType) {
+        InterviewSetResponseDTO.InterviewSetCursorDTO response = interviewSetService
+                .getInterviewSet(interviewSetId, cursorId, cursorCreatedAt, cursorQuestionTitle, pageSize, questionAnswerSortType);
+        return ApiResponse.success(response);
     }
 
     @PostMapping("")

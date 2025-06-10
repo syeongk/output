@@ -7,7 +7,7 @@ import com.sw.output.global.dto.CommonResponseDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sw.output.global.converter.CommonConverter.toCursorDTO;
+import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
 
 public class FeedbackDTOConverter {
     public static FeedbackResponseDTO.FeedbackDTO toFeedbackDTO(Feedback feedback) {
@@ -23,7 +23,7 @@ public class FeedbackDTOConverter {
         CommonResponseDTO.CursorDTO nextCursor = null;
 
         if (lastFeedback != null) {
-            nextCursor = toCursorDTO(lastFeedback.getId(), lastFeedback.getCreatedAt());
+            nextCursor = toCreatedAtCursorDTO(lastFeedback.getId(), lastFeedback.getCreatedAt());
         }
 
         List<FeedbackResponseDTO.FeedbackDTO> feedbackDTOs = feedbacks.stream()

@@ -6,13 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.dto.OpenAIResponseDTO;
-import com.sw.output.domain.interviewset.entity.InterviewCategory;
-import com.sw.output.domain.interviewset.entity.InterviewSet;
-import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
-import com.sw.output.domain.interviewset.entity.JobCategory;
+import com.sw.output.domain.interviewset.entity.*;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.repository.BookmarkRepository;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
+import com.sw.output.domain.interviewset.repository.QuestionAnswerRepository;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
 import com.sw.output.domain.report.entity.Report;
@@ -26,6 +24,9 @@ import com.sw.output.global.response.errorcode.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -33,6 +34,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +54,7 @@ public class InterviewSetService {
     private final ObjectMapper objectMapper;
     private final RestTemplate openAITemplate;
     private final ReportRepository reportRepository;
+    private final QuestionAnswerRepository questionAnswerRepository;
 
     @Value("${openai.api.model}")
     private String model;
@@ -105,7 +109,14 @@ public class InterviewSetService {
      * @return 조회된 면접 세트
      * @throws BusinessException 면접 세트가 존재하지 않는 경우, 삭제된 면접 세트인 경우, 사용자가 존재하지 않는 경우
      */
-    public InterviewSetResponseDTO.GetInterviewSetDTO getInterviewSet(Long interviewSetId) {
+    public InterviewSetResponseDTO.InterviewSetCursorDTO getInterviewSet(
+            Long interviewSetId,
+            Long cursorId,
+            LocalDateTime cursorCreatedAt,
+            String cursorQuestionTitle,
+            int pageSize,
+            QuestionAnswerSortType questionAnswerSortType
+    ) {
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
@@ -113,7 +124,27 @@ public class InterviewSetService {
             throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND);
         }
 
-        return toGetInterviewSetResponse(interviewSet);
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Slice<QuestionAnswer> questionAnswerSlice;
+        if (cursorId == null ||
+                (questionAnswerSortType == QuestionAnswerSortType.CREATED_AT && cursorCreatedAt == null) ||
+                (questionAnswerSortType == QuestionAnswerSortType.TITLE && cursorQuestionTitle == null)) {
+            questionAnswerSlice = questionAnswerRepository.findQuestionAnswerFirstPage(pageable, interviewSetId, questionAnswerSortType.name());
+        } else {
+            questionAnswerSlice = questionAnswerRepository.findQuestionAnswerNextPage(pageable, interviewSetId, cursorId, cursorCreatedAt, cursorQuestionTitle, questionAnswerSortType.name());
+        }
+
+        List<QuestionAnswer> questionAnswers = questionAnswerSlice.getContent();
+        if (questionAnswers.isEmpty()) {
+            return toInterviewSetCursorResponse(interviewSet, new ArrayList<>(), null, questionAnswerSortType);
+        }
+
+        if (!questionAnswerSlice.hasNext()) {
+            return toInterviewSetCursorResponse(interviewSet, questionAnswers, null, questionAnswerSortType);
+        } else {
+            QuestionAnswer lastQuestionAnswer = questionAnswers.get(questionAnswers.size() - 1);
+            return toInterviewSetCursorResponse(interviewSet, questionAnswers, lastQuestionAnswer, questionAnswerSortType);
+        }
     }
 
     /**
