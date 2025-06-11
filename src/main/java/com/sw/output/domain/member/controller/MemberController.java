@@ -1,12 +1,11 @@
 package com.sw.output.domain.member.controller;
 
+import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.member.dto.MemberRequestDTO;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
-import com.sw.output.domain.member.dto.MyPageResponseDTO;
 import com.sw.output.domain.member.service.MemberService;
 import com.sw.output.domain.member.service.MyPageService;
 import com.sw.output.domain.report.dto.ReportResponseDTO;
-import com.sw.output.domain.report.service.ReportService;
 import com.sw.output.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 public class MemberController {
     private final MyPageService myPageService;
     private final MemberService memberService;
-    private final ReportService reportService;
 
     @GetMapping("")
     public ApiResponse<MemberResponseDTO.GetMyPageDTO> getMyPage() {
@@ -29,23 +27,23 @@ public class MemberController {
     }
 
     @GetMapping("/interview-sets/bookmarks")
-    public ApiResponse<MyPageResponseDTO.BookmarkedInterviewSetsDTO> getMyBookmarks(
+    public ApiResponse<InterviewSetResponseDTO.InterviewSetsCursorDTO> getMyBookmarks(
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
-        MyPageResponseDTO.BookmarkedInterviewSetsDTO response = myPageService.getMyBookmarkedInterviewSets(cursorId, cursorCreatedAt, pageSize);
+        InterviewSetResponseDTO.InterviewSetsCursorDTO response = myPageService.getMyBookmarkedInterviewSets(cursorId, cursorCreatedAt, pageSize);
         return ApiResponse.success(response);
     }
 
     @GetMapping("/interview-sets")
-    public ApiResponse<MyPageResponseDTO.MyInterviewSetsDTO> getMyInterviewSets(
+    public ApiResponse<InterviewSetResponseDTO.InterviewSetsCursorDTO> getMyInterviewSets(
             @RequestParam(required = false) Long cursorId,
             @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
 
-        MyPageResponseDTO.MyInterviewSetsDTO response = myPageService.getMyInterviewSets(cursorId, cursorCreatedAt, pageSize);
+        InterviewSetResponseDTO.InterviewSetsCursorDTO response = myPageService.getMyInterviewSets(cursorId, cursorCreatedAt, pageSize);
         return ApiResponse.success(response);
     }
 

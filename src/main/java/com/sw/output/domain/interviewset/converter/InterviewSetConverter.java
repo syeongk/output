@@ -3,8 +3,10 @@ package com.sw.output.domain.interviewset.converter;
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
+import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
 import com.sw.output.domain.interviewset.entity.QuestionAnswer;
 import com.sw.output.domain.interviewset.entity.QuestionAnswerSortType;
+import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.global.dto.CommonResponseDTO;
 
@@ -12,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
-import static com.sw.output.global.converter.CommonConverter.toTitleCursorDTO;
+import static com.sw.output.global.converter.CommonConverter.*;
 
 public class InterviewSetConverter {
 
@@ -100,6 +101,40 @@ public class InterviewSetConverter {
 
         return InterviewSetResponseDTO.InterviewSetCursorDTO.builder()
                 .interviewSet(toGetInterviewSetResponse(interviewSet, questionAnswers))
+                .nextCursor(nextCursor)
+                .build();
+    }
+
+    public static InterviewSetResponseDTO.GetInterviewSetSummaryDTO toGetInterviewSetSummaryDTO(
+            InterviewSetSummaryProjection interviewSet) {
+        return InterviewSetResponseDTO.GetInterviewSetSummaryDTO.builder()
+                .id(interviewSet.getId())
+                .title(interviewSet.getTitle())
+                .nickname(interviewSet.getMember().getNickname())
+                .bookmarkCount(interviewSet.getBookmarkCount())
+                .mockCount(interviewSet.getMockCount())
+                .isAnswerPublic(interviewSet.getIsAnswerPublic())
+                .createdAt(interviewSet.getCreatedAt())
+                .build();
+    }
+
+    public static InterviewSetResponseDTO.InterviewSetsCursorDTO toInterviewSetsCursorResponse(List<InterviewSetSummaryProjection> interviewSets, InterviewSetSummaryProjection lastInterviewSet, InterviewSetSortType sortType) {
+        CommonResponseDTO.CursorDTO nextCursor = null;
+
+        if (lastInterviewSet != null) {
+            if (sortType == InterviewSetSortType.RECOMMEND) {
+                nextCursor = toMockCountAndBookmarkCountCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getMockCount(), lastInterviewSet.getBookmarkCount());
+            } else if (sortType == InterviewSetSortType.LATEST) {
+                nextCursor = toCreatedAtCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getCreatedAt());
+            } else if (sortType == InterviewSetSortType.BOOKMARK) {
+                nextCursor = toBookmarkCountCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getBookmarkCount());
+            }
+        }
+
+        return InterviewSetResponseDTO.InterviewSetsCursorDTO.builder()
+                .interviewSets(interviewSets.stream()
+                        .map(InterviewSetConverter::toGetInterviewSetSummaryDTO)
+                        .collect(Collectors.toList()))
                 .nextCursor(nextCursor)
                 .build();
     }

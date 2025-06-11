@@ -1,6 +1,6 @@
 package com.sw.output.domain.interviewset.entity;
 
-import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.common.SoftDeleteEntity;
 import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Bookmark extends BaseEntity {
+public class Bookmark extends SoftDeleteEntity {
     // 사용자와 N:1 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

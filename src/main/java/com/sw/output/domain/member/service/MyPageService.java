@@ -1,10 +1,10 @@
 package com.sw.output.domain.member.service;
 
+import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
 import com.sw.output.domain.member.converter.MemberConverter;
 import com.sw.output.domain.member.dto.MemberResponseDTO;
-import com.sw.output.domain.member.dto.MyPageResponseDTO;
 import com.sw.output.domain.member.entity.Member;
 import com.sw.output.domain.member.repository.MemberRepository;
 import com.sw.output.domain.report.dto.ReportResponseDTO;
@@ -22,8 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sw.output.domain.member.converter.MemberConverter.toGetMyInterviewSetsDTO;
-import static com.sw.output.domain.member.converter.MyPageConverter.toBookmarkedInterviewSetsDTO;
+import static com.sw.output.domain.member.converter.MemberConverter.toInterviewSetsCursorDTO;
 import static com.sw.output.domain.report.converter.ReportDTOConverter.toReportsDTO;
 import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
@@ -52,7 +51,7 @@ public class MyPageService {
      *
      * @return 북마크한 면접 세트 목록
      */
-    public MyPageResponseDTO.BookmarkedInterviewSetsDTO getMyBookmarkedInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+    public InterviewSetResponseDTO.InterviewSetsCursorDTO getMyBookmarkedInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
         Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
@@ -66,15 +65,15 @@ public class MyPageService {
         }
 
         if (bookmarkedInterviewSetSlice.isEmpty()) {
-            return toBookmarkedInterviewSetsDTO(new ArrayList<>(), null);
+            return toInterviewSetsCursorDTO(new ArrayList<>(), null);
         }
 
         List<InterviewSetSummaryProjection> interviewSets = bookmarkedInterviewSetSlice.getContent();
         if (!bookmarkedInterviewSetSlice.hasNext()) {
-            return toBookmarkedInterviewSetsDTO(interviewSets, null);
+            return toInterviewSetsCursorDTO(interviewSets, null);
         } else {
             InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
-            return toBookmarkedInterviewSetsDTO(interviewSets, lastInterviewSet);
+            return toInterviewSetsCursorDTO(interviewSets, lastInterviewSet);
         }
     }
 
@@ -83,7 +82,7 @@ public class MyPageService {
      *
      * @return 사용자 면접 세트 목록
      */
-    public MyPageResponseDTO.MyInterviewSetsDTO getMyInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+    public InterviewSetResponseDTO.InterviewSetsCursorDTO getMyInterviewSets(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
         Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
@@ -97,15 +96,15 @@ public class MyPageService {
         }
 
         if (interviewSetSlice.isEmpty()) {
-            return toGetMyInterviewSetsDTO(new ArrayList<>(), null);
+            return toInterviewSetsCursorDTO(new ArrayList<>(), null);
         }
 
         List<InterviewSetSummaryProjection> interviewSets = interviewSetSlice.getContent();
         if (!interviewSetSlice.hasNext()) {
-            return toGetMyInterviewSetsDTO(interviewSets, null);
+            return toInterviewSetsCursorDTO(interviewSets, null);
         } else {
             InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
-            return toGetMyInterviewSetsDTO(interviewSets, lastInterviewSet);
+            return toInterviewSetsCursorDTO(interviewSets, lastInterviewSet);
         }
     }
 

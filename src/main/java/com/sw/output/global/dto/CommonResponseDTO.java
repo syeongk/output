@@ -21,5 +21,7 @@ public class CommonResponseDTO {
         private Long id;
         private LocalDateTime createdAt;
         private String title;
+        private Integer bookmarkCount;
+        private Integer mockCount;
     }
 }

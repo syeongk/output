@@ -1,6 +1,6 @@
 package com.sw.output.domain.report.entity;
 
-import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.common.SoftDeleteEntity;
 import com.sw.output.domain.interviewset.entity.QuestionAnswer;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Feedback extends BaseEntity {
+public class Feedback extends SoftDeleteEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String memberAnswer; // 사용자 답변
 

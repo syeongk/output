@@ -1,6 +1,6 @@
 package com.sw.output.domain.member.entity;
 
-import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.common.SoftDeleteEntity;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.report.entity.Report;
 import jakarta.persistence.*;
@@ -18,7 +18,7 @@ import static com.sw.output.domain.member.entity.Role.USER;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Member extends BaseEntity {
+public class Member extends SoftDeleteEntity {
     @Column(nullable = false, length = 100, unique = true)
     private String email; // 소셜 계정 이메일
 

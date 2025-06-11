@@ -1,6 +1,6 @@
 package com.sw.output.domain.faq.entity;
 
-import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.common.SoftDeleteEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Faq extends BaseEntity {
+public class Faq extends SoftDeleteEntity {
     @Column(nullable = false)
     private String questionTitle; // 질문 제목
 

@@ -75,18 +75,6 @@ public class JwtTokenProvider {
     }
 
     /**
-     * 토큰에서 이메일 추출
-     */
-    public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    /**
      * JWT 토큰에서 Authentication 객체 생성
      */
     public Authentication getAuthentication(String token) {
@@ -116,7 +104,7 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰에서 Claims 추출
      */
-    private Claims parseClaims(String token) {
+    public Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

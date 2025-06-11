@@ -31,6 +31,10 @@ spring:
           android:
             client-id: ${GOOGLE_ANDROID_CLIENT_ID}
 
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  
 jwt:
   secret: ${JWT_SECRET}
   access-token-expire: ${JWT_ACCESS_TOKEN_EXPIRE}
@@ -40,3 +44,4 @@ openai:
   api:
     key: ${OPENAI_API_KEY}
     model: ${OPENAI_MODEL}
+

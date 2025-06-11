@@ -6,7 +6,6 @@ import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
 import com.sw.output.domain.interviewset.entity.JobCategory;
 import com.sw.output.domain.interviewset.entity.QuestionAnswerSortType;
-import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.service.BookmarkService;
 import com.sw.output.domain.interviewset.service.InterviewSetService;
 import com.sw.output.global.dto.CommonResponseDTO;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/interview-sets")
@@ -26,15 +24,27 @@ public class InterviewSetController {
     private final BookmarkService bookmarkService;
 
     @GetMapping("")
-    public ApiResponse<List<InterviewSetSummaryProjection>> getInterviewSets(
+    public ApiResponse<InterviewSetResponseDTO.InterviewSetsCursorDTO> getInterviewSets(
             @RequestParam(required = false) JobCategory jobCategory,
             @RequestParam(required = false) InterviewCategory interviewCategory,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) InterviewSetSortType sortType,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "0") int cursor) {
-        List<InterviewSetSummaryProjection> interviewSets = interviewSetService.getInterviewSets(jobCategory,
-                interviewCategory, keyword, sortType, size, cursor);
+            @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam(required = false) Long cursorId,
+            @RequestParam(required = false) LocalDateTime cursorCreatedAt,
+            @RequestParam(required = false) Integer cursorBookmarkCount,
+            @RequestParam(required = false) Integer cursorMockInterviewCount) {
+        InterviewSetResponseDTO.InterviewSetsCursorDTO interviewSets = interviewSetService.getInterviewSets(
+                jobCategory,
+                interviewCategory,
+                keyword,
+                sortType,
+                pageSize,
+                cursorId,
+                cursorCreatedAt,
+                cursorBookmarkCount,
+                cursorMockInterviewCount
+        );
         return ApiResponse.success(interviewSets);
     }
 
@@ -46,8 +56,14 @@ public class InterviewSetController {
             @RequestParam(required = false) String cursorQuestionTitle,
             @RequestParam(defaultValue = "20") int pageSize,
             @RequestParam(defaultValue = "CREATED_AT") QuestionAnswerSortType questionAnswerSortType) {
-        InterviewSetResponseDTO.InterviewSetCursorDTO response = interviewSetService
-                .getInterviewSet(interviewSetId, cursorId, cursorCreatedAt, cursorQuestionTitle, pageSize, questionAnswerSortType);
+        InterviewSetResponseDTO.InterviewSetCursorDTO response = interviewSetService.getInterviewSet(
+                interviewSetId,
+                cursorId,
+                cursorCreatedAt,
+                cursorQuestionTitle,
+                pageSize,
+                questionAnswerSortType
+        );
         return ApiResponse.success(response);
     }
 

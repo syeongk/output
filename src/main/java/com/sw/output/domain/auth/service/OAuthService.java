@@ -1,13 +1,22 @@
 package com.sw.output.domain.auth.service;
 
-import static com.sw.output.domain.member.converter.MemberConverter.toMember;
-
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.sw.output.domain.auth.converter.AuthDTOConverter;
+import com.sw.output.domain.auth.dto.AuthResponseDTO;
+import com.sw.output.domain.auth.dto.GoogleOAuthDTO;
+import com.sw.output.domain.auth.entity.RefreshToken;
+import com.sw.output.domain.auth.repository.RefreshTokenRepository;
+import com.sw.output.domain.member.entity.Member;
+import com.sw.output.domain.member.repository.MemberRepository;
+import com.sw.output.global.exception.BusinessException;
+import com.sw.output.global.response.errorcode.AuthErrorCode;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,19 +26,17 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.sw.output.domain.auth.dto.AuthResponseDTO;
-import com.sw.output.domain.auth.dto.GoogleOAuthDTO;
-import com.sw.output.domain.member.repository.MemberRepository;
-import com.sw.output.global.exception.BusinessException;
-import com.sw.output.global.response.errorcode.AuthErrorCode;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static com.sw.output.domain.auth.converter.RefreshTokenConverter.toRefreshToken;
+import static com.sw.output.domain.member.converter.MemberConverter.toMember;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +45,7 @@ public class OAuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${spring.security.oauth2.client.google.web.client-id}")
     private String webClientId;
@@ -109,22 +117,35 @@ public class OAuthService {
     /**
      * Google ID 토큰으로 소셜 로그인 처리
      */
+    @Transactional
     public AuthResponseDTO.TokenDTO socialLogin(String idToken) {
         Payload payload = verifyGoogleIdToken(idToken);
         String email = payload.getEmail();
         String picture = (String) payload.getOrDefault("picture", null);
 
         // 이메일로 회원 조회
-        memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseGet(() -> memberRepository.save(toMember(email, picture))); // 이메일 없으면 회원 가입
 
         // 로그인 처리 (Access token, Refresh token 발급)
         String accessToken = jwtTokenProvider.createAccessToken(email);
         String refreshToken = jwtTokenProvider.createRefreshToken(email);
 
-        return AuthResponseDTO.TokenDTO.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        // refresh token 업데이트 또는 저장
+        LocalDateTime expire = jwtTokenProvider.parseClaims(refreshToken)
+                .getExpiration()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByMemberId(member.getId());
+        if (refreshTokenOptional.isPresent()) {
+            refreshTokenOptional.get().updateToken(refreshToken, expire);
+        } else {
+            RefreshToken newRefreshTokenEntity = toRefreshToken(refreshToken, expire, member);
+            refreshTokenRepository.save(newRefreshTokenEntity);
+        }
+
+        return AuthDTOConverter.toTokenDTO(accessToken, refreshToken);
     }
 }

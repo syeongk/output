@@ -24,4 +24,19 @@ public class CommonConverter {
                 .title(entityTitle)
                 .build();
     }
+
+    public static CommonResponseDTO.CursorDTO toBookmarkCountCursorDTO(Long entityId, Integer entityBookmarkCount) {
+        return CommonResponseDTO.CursorDTO.builder()
+                .id(entityId)
+                .bookmarkCount(entityBookmarkCount)
+                .build();
+    }
+
+    public static CommonResponseDTO.CursorDTO toMockCountAndBookmarkCountCursorDTO(Long entityId, Integer entityMockCount, Integer entityBookmarkCount) {
+        return CommonResponseDTO.CursorDTO.builder()
+                .id(entityId)
+                .mockCount(entityMockCount)
+                .bookmarkCount(entityBookmarkCount)
+                .build();
+    }
 }

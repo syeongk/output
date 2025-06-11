@@ -1,26 +1,5 @@
 package com.sw.output.domain.report.service;
 
-import static com.sw.output.domain.report.converter.FeedbackConverter.toFeedback;
-import static com.sw.output.domain.report.converter.FeedbackDTOConverter.toFeedbacksDTO;
-import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import com.sw.output.domain.interviewset.dto.OpenAIResponseDTO;
 import com.sw.output.domain.interviewset.entity.QuestionAnswer;
 import com.sw.output.domain.interviewset.repository.QuestionAnswerRepository;
@@ -39,10 +18,29 @@ import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import com.sw.output.global.response.errorcode.ReportErrorCode;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.sw.output.domain.report.converter.FeedbackConverter.toFeedback;
+import static com.sw.output.domain.report.converter.FeedbackDTOConverter.toFeedbacksDTO;
+import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -62,10 +60,10 @@ public class ReportService {
                 .orElseThrow(() -> new BusinessException(ReportErrorCode.REPORT_NOT_FOUND));
 
         QuestionAnswer questionAnswer = questionAnswerRepository.findByIdAndInterviewSetId(
-                createAiFeedbackDTO.getQuestionAnswerId(),
-                report.getInterviewSet().getId())
+                        createAiFeedbackDTO.getQuestionAnswerId(),
+                        report.getInterviewSet().getId())
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.QUESTION_ANSWER_NOT_FOUND));
-        
+
         return ValidationResultDTOConverter.toAiFeedbackValidationDTO(report, questionAnswer);
     }
 
@@ -102,8 +100,7 @@ public class ReportService {
                 답변 : %s
 
                 [출력 형식]
-
-                답변에 대한 개선이 가능하도록 3가지 피드백을 해주세요.
+                면접관의 관점에서, 사용자의 1분 답변에 대해 실제 면접 상황을 기준으로 개선 가능한 점 3가지를 구체적으로 피드백해주세요.
                 이때, 답변이 없거나 모르겠다고 응답한 경우, 답변 예시 등을 포함해 주세요.
                 응답 형식1 : "1. 피드백1 \n2. 피드백2 \n3. 피드백3"
 

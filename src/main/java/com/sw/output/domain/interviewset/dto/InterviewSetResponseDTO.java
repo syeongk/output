@@ -41,6 +41,8 @@ public class InterviewSetResponseDTO {
         private String title;
         private String nickname;
         private Integer bookmarkCount;
+        private Integer mockCount;
+        private Boolean isAnswerPublic;
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;
     }
@@ -55,6 +57,13 @@ public class InterviewSetResponseDTO {
     @Builder
     public static class InterviewSetCursorDTO {
         private GetInterviewSetDTO interviewSet;
+        private CommonResponseDTO.CursorDTO nextCursor;
+    }
+
+    @Getter
+    @Builder
+    public static class InterviewSetsCursorDTO {
+        private List<GetInterviewSetSummaryDTO> interviewSets;
         private CommonResponseDTO.CursorDTO nextCursor;
     }
 }

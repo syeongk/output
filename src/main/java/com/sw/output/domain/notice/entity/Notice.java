@@ -1,6 +1,6 @@
 package com.sw.output.domain.notice.entity;
 
-import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.common.SoftDeleteEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Notice extends BaseEntity {
+public class Notice extends SoftDeleteEntity {
     @Column(nullable = false)
     private String title; // 공지사항 제목
 

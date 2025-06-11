@@ -8,5 +8,6 @@ public class MemberResponseDTO {
     @Builder
     public static class GetMyPageDTO {
         private String nickname;
+        private String picture;
     }
 }

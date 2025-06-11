@@ -11,6 +11,8 @@ public interface InterviewSetSummaryProjection {
 
     Integer getBookmarkCount();
 
+    Integer getMockCount();
+
     Boolean getIsAnswerPublic();
 
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -1,6 +1,6 @@
 package com.sw.output.domain.interviewset.entity;
 
-import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.common.SoftDeleteEntity;
 import com.sw.output.domain.report.entity.Feedback;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class QuestionAnswer extends BaseEntity {
+public class QuestionAnswer extends SoftDeleteEntity {
     // 면접세트와 N:1 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_set_id", nullable = false)

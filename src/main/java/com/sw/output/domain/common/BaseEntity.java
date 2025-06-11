@@ -1,7 +1,10 @@
-package com.sw.output.domain;
+package com.sw.output.domain.common;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,7 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BaseEntity {
+public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,17 +28,4 @@ public class BaseEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @Column
-    private LocalDateTime deletedAt;
-
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean isDeleted = false; // 계정 탈퇴 여부
-
-    public void softDelete() {
-        this.isDeleted = true;
-        this.deletedAt = LocalDateTime.now();
-    }
-
 }

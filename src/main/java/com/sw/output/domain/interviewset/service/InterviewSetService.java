@@ -208,15 +208,43 @@ public class InterviewSetService {
         return toInterviewSetIdResponse(interviewSetId);
     }
 
-    public List<InterviewSetSummaryProjection> getInterviewSets(JobCategory jobCategory, InterviewCategory interviewCategory, String keyword,
-                                                                InterviewSetSortType sortType, int size, int cursor) {
+    public InterviewSetResponseDTO.InterviewSetsCursorDTO getInterviewSets(
+            JobCategory jobCategory,
+            InterviewCategory interviewCategory,
+            String keyword,
+            InterviewSetSortType sortType,
+            int pageSize,
+            Long cursorId,
+            LocalDateTime cursorCreatedAt,
+            Integer cursorBookmarkCount,
+            Integer cursorMockInterviewCount
+    ) {
         if (sortType == null) {
             sortType = InterviewSetSortType.RECOMMEND;
         }
 
-        List<InterviewSetSummaryProjection> interviewSets = interviewSetRepository.findInterviewSets(jobCategory, interviewCategory, keyword, sortType.name(), size, cursor);
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Slice<InterviewSetSummaryProjection> interviewSetSlice;
+        if (cursorId == null ||
+                (sortType == InterviewSetSortType.RECOMMEND && cursorMockInterviewCount == null && cursorBookmarkCount == null) ||
+                (sortType == InterviewSetSortType.LATEST && cursorCreatedAt == null) ||
+                (sortType == InterviewSetSortType.BOOKMARK && cursorBookmarkCount == null)) {
+            interviewSetSlice = interviewSetRepository.findInterviewSetsFirstPage(pageable, jobCategory, interviewCategory, keyword, sortType.name());
+        } else {
+            interviewSetSlice = interviewSetRepository.findInterviewSetsNextPage(pageable, jobCategory, interviewCategory, keyword, sortType.name(), cursorId, cursorCreatedAt, cursorBookmarkCount, cursorMockInterviewCount);
+        }
 
-        return interviewSets;
+        List<InterviewSetSummaryProjection> interviewSets = interviewSetSlice.getContent();
+        if (interviewSets.isEmpty()) {
+            return toInterviewSetsCursorResponse(new ArrayList<>(), null, sortType);
+        }
+
+        if (!interviewSetSlice.hasNext()) {
+            return toInterviewSetsCursorResponse(interviewSets, null, sortType);
+        } else {
+            InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
+            return toInterviewSetsCursorResponse(interviewSets, lastInterviewSet, sortType);
+        }
     }
 
     public InterviewSetResponseDTO.GetQuestionsDTO createAiQuestions(InterviewSetRequestDTO.CreateQuestionsPromptDTO createQuestionsPromptDTO) {

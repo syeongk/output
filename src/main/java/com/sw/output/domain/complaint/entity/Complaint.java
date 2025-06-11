@@ -1,6 +1,6 @@
 package com.sw.output.domain.complaint.entity;
 
-import com.sw.output.domain.BaseEntity;
+import com.sw.output.domain.common.SoftDeleteEntity;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
 import com.sw.output.domain.member.entity.Member;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import static com.sw.output.domain.complaint.entity.ComplaintStatus.PENDING;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Complaint extends BaseEntity {
+public class Complaint extends SoftDeleteEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ComplaintType type; // 신고 유형
