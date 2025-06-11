@@ -2,6 +2,7 @@ package com.sw.output.domain.report.dto;
 
 import java.util.List;
 
+import com.sw.output.domain.report.entity.FeedbackStatus;
 import com.sw.output.global.dto.CommonResponseDTO;
 
 import lombok.Builder;
@@ -15,6 +16,7 @@ public class FeedbackResponseDTO {
         private String questionTitle; // 질문 제목
         private String memberAnswer; // 사용자 답변
         private String feedbackContent; // AI 피드백 내용
+        private FeedbackStatus feedbackStatus; // 피드백 상태
     }
 
     @Getter

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer, Long> {
-    Optional<QuestionAnswer> findByInterviewSetIdAndQuestionTitle(Long interviewSetId, String questionTitle);
+    Optional<QuestionAnswer> findByIdAndInterviewSetId(Long questionAnswerId, Long interviewSetId);
 
     @Query("""
                 SELECT qa

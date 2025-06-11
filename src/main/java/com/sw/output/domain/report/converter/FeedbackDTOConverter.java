@@ -1,13 +1,13 @@
 package com.sw.output.domain.report.converter;
 
-import com.sw.output.domain.report.dto.FeedbackResponseDTO;
-import com.sw.output.domain.report.entity.Feedback;
-import com.sw.output.global.dto.CommonResponseDTO;
+import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sw.output.global.converter.CommonConverter.toCreatedAtCursorDTO;
+import com.sw.output.domain.report.dto.FeedbackResponseDTO;
+import com.sw.output.domain.report.entity.Feedback;
+import com.sw.output.global.dto.CommonResponseDTO;
 
 public class FeedbackDTOConverter {
     public static FeedbackResponseDTO.FeedbackDTO toFeedbackDTO(Feedback feedback) {
@@ -16,6 +16,7 @@ public class FeedbackDTOConverter {
                 .questionTitle(feedback.getQuestionAnswer().getQuestionTitle())
                 .memberAnswer(feedback.getMemberAnswer())
                 .feedbackContent(feedback.getFeedbackContent())
+                .feedbackStatus(feedback.getFeedbackStatus())
                 .build();
     }
 

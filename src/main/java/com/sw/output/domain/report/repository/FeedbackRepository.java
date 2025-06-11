@@ -1,6 +1,7 @@
 package com.sw.output.domain.report.repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -32,4 +33,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         @Param("reportId") Long reportId,
         @Param("cursorId") Long cursorId,
         @Param("cursorCreatedAt") LocalDateTime cursorCreatedAt);
+
+    Optional<Feedback> findByReportIdAndQuestionAnswerId(Long reportId, Long questionAnswerId);
 }

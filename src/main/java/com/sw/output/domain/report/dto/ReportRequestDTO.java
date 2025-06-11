@@ -5,7 +5,7 @@ import lombok.Getter;
 public class ReportRequestDTO {
     @Getter
     public static class CreateAiFeedbackDTO {
-        private String questionTitle;
+        private Long questionAnswerId;
         private String memberAnswer;
     }
 }
