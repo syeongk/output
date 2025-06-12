@@ -15,6 +15,7 @@ import com.sw.output.domain.report.entity.Report;
 import com.sw.output.domain.report.repository.FeedbackRepository;
 import com.sw.output.domain.report.repository.ReportRepository;
 import com.sw.output.global.exception.BusinessException;
+import com.sw.output.global.response.errorcode.FeedbackErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import com.sw.output.global.response.errorcode.ReportErrorCode;
@@ -32,7 +33,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +85,7 @@ public class ReportService {
             feedback = toFeedback(report, questionAnswer, createAiFeedbackDTO.getMemberAnswer(), null, null);
             feedbackRepository.save(feedback);
         }
+        feedbackRepository.flush();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -141,7 +142,7 @@ public class ReportService {
         report.softDelete();
     }
 
-    public FeedbackResponseDTO.FeedbacksDTO getReport(Long reportId, Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+    public FeedbackResponseDTO.FeedbacksDTO getReport(Long reportId, Long cursorId, int pageSize) {
         Member member = memberRepository.findByEmail(getAuthenticatedUsername())
                 .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
@@ -152,13 +153,19 @@ public class ReportService {
             throw new BusinessException(ReportErrorCode.REPORT_NOT_FOUND);
         }
 
+        Feedback feedback = null;
+        if (cursorId != null) {
+            feedback = feedbackRepository.findById(cursorId)
+                    .orElseThrow(() -> new BusinessException(FeedbackErrorCode.FEEDBACK_NOT_FOUND));
+        }
+
         Pageable pageable = PageRequest.of(0, pageSize);
 
         Slice<Feedback> feedbackSlice;
-        if (cursorId == null || cursorCreatedAt == null) {
+        if (cursorId == null) {
             feedbackSlice = feedbackRepository.findFeedbacksFirstPage(pageable, reportId);
         } else {
-            feedbackSlice = feedbackRepository.findFeedbacksNextPage(pageable, reportId, cursorId, cursorCreatedAt);
+            feedbackSlice = feedbackRepository.findFeedbacksNextPage(pageable, reportId, feedback.getId(), feedback.getCreatedAt());
         }
 
         List<Feedback> feedbacks = feedbackSlice.getContent();
@@ -168,6 +175,6 @@ public class ReportService {
         }
 
         Feedback lastFeedback = feedbacks.get(feedbacks.size() - 1);
-        return toFeedbacksDTO(feedbacks, lastFeedback);
+        return toFeedbacksDTO(feedbacks, lastFeedback.getId());
     }
 }

@@ -1,7 +1,6 @@
 package com.sw.output.domain.report.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sw.output.global.dto.CommonResponseDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -26,6 +25,6 @@ public class ReportResponseDTO {
     @Builder
     public static class ReportsDTO {
         private List<ReportDTO> reports;
-        private CommonResponseDTO.CursorDTO nextCursor;
+        private Long nextCursor;
     }
 }

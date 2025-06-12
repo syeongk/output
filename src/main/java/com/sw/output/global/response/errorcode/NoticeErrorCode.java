@@ -1,11 +1,10 @@
 package com.sw.output.global.response.errorcode;
 
+import com.sw.output.global.response.BaseCode;
 import org.springframework.http.HttpStatus;
 
-import com.sw.output.global.response.BaseCode;
-
 public enum NoticeErrorCode implements BaseCode {
-    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE_4001", "공지사항을 찾을 수 없습니다."),
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE_4001", "요청한 공지사항을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

@@ -8,10 +8,9 @@ import com.sw.output.domain.member.service.MyPageService;
 import com.sw.output.domain.report.dto.ReportResponseDTO;
 import com.sw.output.global.response.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/users/me")
@@ -29,31 +28,28 @@ public class MemberController {
     @GetMapping("/interview-sets/bookmarks")
     public ApiResponse<InterviewSetResponseDTO.InterviewSetsCursorDTO> getMyBookmarks(
             @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
-        InterviewSetResponseDTO.InterviewSetsCursorDTO response = myPageService.getMyBookmarkedInterviewSets(cursorId, cursorCreatedAt, pageSize);
+        InterviewSetResponseDTO.InterviewSetsCursorDTO response = myPageService.getMyBookmarkedInterviewSets(cursorId, pageSize);
         return ApiResponse.success(response);
     }
 
     @GetMapping("/interview-sets")
     public ApiResponse<InterviewSetResponseDTO.InterviewSetsCursorDTO> getMyInterviewSets(
             @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
 
-        InterviewSetResponseDTO.InterviewSetsCursorDTO response = myPageService.getMyInterviewSets(cursorId, cursorCreatedAt, pageSize);
+        InterviewSetResponseDTO.InterviewSetsCursorDTO response = myPageService.getMyInterviewSets(cursorId, pageSize);
         return ApiResponse.success(response);
     }
 
     @GetMapping("/reports")
     public ApiResponse<ReportResponseDTO.ReportsDTO> getMyReports(
             @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false) LocalDateTime cursorCreatedAt,
-            @RequestParam(defaultValue = "20") int pageSize
+            @RequestParam(defaultValue = "20") @Min(value = 1, message = "페이지 크기는 1 이상입니다") int pageSize
     ) {
-        ReportResponseDTO.ReportsDTO response = myPageService.getMyReports(cursorId, cursorCreatedAt, pageSize);
+        ReportResponseDTO.ReportsDTO response = myPageService.getMyReports(cursorId, pageSize);
         return ApiResponse.success(response);
     }
 

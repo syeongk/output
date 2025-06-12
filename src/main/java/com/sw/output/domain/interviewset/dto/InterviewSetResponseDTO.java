@@ -1,9 +1,9 @@
 package com.sw.output.domain.interviewset.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.JobCategory;
-import com.sw.output.global.dto.CommonResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,8 +36,9 @@ public class InterviewSetResponseDTO {
     @Getter
     @Builder
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class GetInterviewSetSummaryDTO {
-        private Long id;
+        private Long interviewSetId;
         private String title;
         private String nickname;
         private Integer bookmarkCount;
@@ -57,13 +58,13 @@ public class InterviewSetResponseDTO {
     @Builder
     public static class InterviewSetCursorDTO {
         private GetInterviewSetDTO interviewSet;
-        private CommonResponseDTO.CursorDTO nextCursor;
+        private Long nextCursor;
     }
 
     @Getter
     @Builder
     public static class InterviewSetsCursorDTO {
         private List<GetInterviewSetSummaryDTO> interviewSets;
-        private CommonResponseDTO.CursorDTO nextCursor;
+        private Long nextCursor;
     }
 }

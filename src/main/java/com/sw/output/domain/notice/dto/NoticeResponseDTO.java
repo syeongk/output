@@ -1,7 +1,6 @@
 package com.sw.output.domain.notice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sw.output.global.dto.CommonResponseDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -31,6 +30,6 @@ public class NoticeResponseDTO {
     @Builder
     public static class NoticesDTO {
         private List<NoticeDTO> notices;
-        private CommonResponseDTO.CursorDTO nextCursor;
+        private Long nextCursor;
     }
 }

@@ -21,6 +21,7 @@ import com.sw.output.global.exception.BusinessException;
 import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
+import com.sw.output.global.response.errorcode.QuestionAnswerErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -112,8 +112,6 @@ public class InterviewSetService {
     public InterviewSetResponseDTO.InterviewSetCursorDTO getInterviewSet(
             Long interviewSetId,
             Long cursorId,
-            LocalDateTime cursorCreatedAt,
-            String cursorQuestionTitle,
             int pageSize,
             QuestionAnswerSortType questionAnswerSortType
     ) {
@@ -124,14 +122,18 @@ public class InterviewSetService {
             throw new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND);
         }
 
+        QuestionAnswer questionAnswer = null;
+        if (cursorId != null) {
+            questionAnswer = questionAnswerRepository.findById(cursorId)
+                    .orElseThrow(() -> new BusinessException(QuestionAnswerErrorCode.QUESTION_ANSWER_NOT_FOUND));
+        }
+
         Pageable pageable = PageRequest.of(0, pageSize);
         Slice<QuestionAnswer> questionAnswerSlice;
-        if (cursorId == null ||
-                (questionAnswerSortType == QuestionAnswerSortType.CREATED_AT && cursorCreatedAt == null) ||
-                (questionAnswerSortType == QuestionAnswerSortType.TITLE && cursorQuestionTitle == null)) {
+        if (cursorId == null) {
             questionAnswerSlice = questionAnswerRepository.findQuestionAnswerFirstPage(pageable, interviewSetId, questionAnswerSortType.name());
         } else {
-            questionAnswerSlice = questionAnswerRepository.findQuestionAnswerNextPage(pageable, interviewSetId, cursorId, cursorCreatedAt, cursorQuestionTitle, questionAnswerSortType.name());
+            questionAnswerSlice = questionAnswerRepository.findQuestionAnswerNextPage(pageable, interviewSetId, questionAnswer.getId(), questionAnswer.getCreatedAt(), questionAnswer.getQuestionTitle(), questionAnswerSortType.name());
         }
 
         List<QuestionAnswer> questionAnswers = questionAnswerSlice.getContent();
@@ -143,7 +145,7 @@ public class InterviewSetService {
             return toInterviewSetCursorResponse(interviewSet, questionAnswers, null, questionAnswerSortType);
         } else {
             QuestionAnswer lastQuestionAnswer = questionAnswers.get(questionAnswers.size() - 1);
-            return toInterviewSetCursorResponse(interviewSet, questionAnswers, lastQuestionAnswer, questionAnswerSortType);
+            return toInterviewSetCursorResponse(interviewSet, questionAnswers, lastQuestionAnswer.getId(), questionAnswerSortType);
         }
     }
 
@@ -214,24 +216,24 @@ public class InterviewSetService {
             String keyword,
             InterviewSetSortType sortType,
             int pageSize,
-            Long cursorId,
-            LocalDateTime cursorCreatedAt,
-            Integer cursorBookmarkCount,
-            Integer cursorMockInterviewCount
+            Long cursorId
     ) {
+        InterviewSet interviewSet = null;
+        if (cursorId != null) {
+            interviewSet = interviewSetRepository.findById(cursorId)
+                    .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
+        }
+
         if (sortType == null) {
             sortType = InterviewSetSortType.RECOMMEND;
         }
 
         Pageable pageable = PageRequest.of(0, pageSize);
         Slice<InterviewSetSummaryProjection> interviewSetSlice;
-        if (cursorId == null ||
-                (sortType == InterviewSetSortType.RECOMMEND && cursorMockInterviewCount == null && cursorBookmarkCount == null) ||
-                (sortType == InterviewSetSortType.LATEST && cursorCreatedAt == null) ||
-                (sortType == InterviewSetSortType.BOOKMARK && cursorBookmarkCount == null)) {
+        if (cursorId == null) {
             interviewSetSlice = interviewSetRepository.findInterviewSetsFirstPage(pageable, jobCategory, interviewCategory, keyword, sortType.name());
         } else {
-            interviewSetSlice = interviewSetRepository.findInterviewSetsNextPage(pageable, jobCategory, interviewCategory, keyword, sortType.name(), cursorId, cursorCreatedAt, cursorBookmarkCount, cursorMockInterviewCount);
+            interviewSetSlice = interviewSetRepository.findInterviewSetsNextPage(pageable, jobCategory, interviewCategory, keyword, sortType.name(), interviewSet.getId(), interviewSet.getCreatedAt(), interviewSet.getBookmarkCount(), interviewSet.getMockCount());
         }
 
         List<InterviewSetSummaryProjection> interviewSets = interviewSetSlice.getContent();
@@ -243,7 +245,7 @@ public class InterviewSetService {
             return toInterviewSetsCursorResponse(interviewSets, null, sortType);
         } else {
             InterviewSetSummaryProjection lastInterviewSet = interviewSets.get(interviewSets.size() - 1);
-            return toInterviewSetsCursorResponse(interviewSets, lastInterviewSet, sortType);
+            return toInterviewSetsCursorResponse(interviewSets, lastInterviewSet.getId(), sortType);
         }
     }
 

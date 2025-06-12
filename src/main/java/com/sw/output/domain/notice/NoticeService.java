@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +23,20 @@ import static com.sw.output.domain.notice.converter.NoticeDTOConverter.toNotices
 public class NoticeService {
     private final NoticeRepository noticeRepository;
 
-    public NoticeResponseDTO.NoticesDTO getNotices(Long cursorId, LocalDateTime cursorCreatedAt, int pageSize) {
+    public NoticeResponseDTO.NoticesDTO getNotices(Long cursorId, int pageSize) {
+        Notice notice = null;
+        if (cursorId != null) {
+            notice = noticeRepository.findById(cursorId)
+                    .orElseThrow(() -> new BusinessException(NoticeErrorCode.NOTICE_NOT_FOUND));
+        }
+
         Pageable pageable = PageRequest.of(0, pageSize);
 
         Slice<Notice> noticesSlice;
-        if (cursorId == null || cursorCreatedAt == null) {
+        if (cursorId == null) {
             noticesSlice = noticeRepository.findNoticeFirstPage(pageable);
         } else {
-            noticesSlice = noticeRepository.findNoticeNextPage(pageable, cursorId, cursorCreatedAt);
+            noticesSlice = noticeRepository.findNoticeNextPage(pageable, notice.getId(), notice.getCreatedAt());
         }
 
         if (noticesSlice.isEmpty()) {
@@ -43,7 +48,7 @@ public class NoticeService {
             return toNoticesDTO(notices, null);
         } else {
             Notice lastNotice = notices.get(notices.size() - 1);
-            return toNoticesDTO(notices, lastNotice);
+            return toNoticesDTO(notices, lastNotice.getId());
         }
     }
 

@@ -8,13 +8,10 @@ import com.sw.output.domain.interviewset.entity.QuestionAnswer;
 import com.sw.output.domain.interviewset.entity.QuestionAnswerSortType;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.member.entity.Member;
-import com.sw.output.global.dto.CommonResponseDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.sw.output.global.converter.CommonConverter.*;
 
 public class InterviewSetConverter {
 
@@ -88,27 +85,17 @@ public class InterviewSetConverter {
                 .build();
     }
 
-    public static InterviewSetResponseDTO.InterviewSetCursorDTO toInterviewSetCursorResponse(InterviewSet interviewSet, List<QuestionAnswer> questionAnswers, QuestionAnswer lastQuestionAnswer, QuestionAnswerSortType questionAnswerSortType) {
-        CommonResponseDTO.CursorDTO nextCursor = null;
-
-        if (lastQuestionAnswer != null) {
-            if (questionAnswerSortType == QuestionAnswerSortType.CREATED_AT) {
-                nextCursor = toCreatedAtCursorDTO(lastQuestionAnswer.getId(), lastQuestionAnswer.getCreatedAt());
-            } else {
-                nextCursor = toTitleCursorDTO(lastQuestionAnswer.getId(), lastQuestionAnswer.getQuestionTitle());
-            }
-        }
-
+    public static InterviewSetResponseDTO.InterviewSetCursorDTO toInterviewSetCursorResponse(InterviewSet interviewSet, List<QuestionAnswer> questionAnswers, Long cursorId, QuestionAnswerSortType questionAnswerSortType) {
         return InterviewSetResponseDTO.InterviewSetCursorDTO.builder()
                 .interviewSet(toGetInterviewSetResponse(interviewSet, questionAnswers))
-                .nextCursor(nextCursor)
+                .nextCursor(cursorId)
                 .build();
     }
 
     public static InterviewSetResponseDTO.GetInterviewSetSummaryDTO toGetInterviewSetSummaryDTO(
             InterviewSetSummaryProjection interviewSet) {
         return InterviewSetResponseDTO.GetInterviewSetSummaryDTO.builder()
-                .id(interviewSet.getId())
+                .interviewSetId(interviewSet.getId())
                 .title(interviewSet.getTitle())
                 .nickname(interviewSet.getMember().getNickname())
                 .bookmarkCount(interviewSet.getBookmarkCount())
@@ -118,24 +105,12 @@ public class InterviewSetConverter {
                 .build();
     }
 
-    public static InterviewSetResponseDTO.InterviewSetsCursorDTO toInterviewSetsCursorResponse(List<InterviewSetSummaryProjection> interviewSets, InterviewSetSummaryProjection lastInterviewSet, InterviewSetSortType sortType) {
-        CommonResponseDTO.CursorDTO nextCursor = null;
-
-        if (lastInterviewSet != null) {
-            if (sortType == InterviewSetSortType.RECOMMEND) {
-                nextCursor = toMockCountAndBookmarkCountCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getMockCount(), lastInterviewSet.getBookmarkCount());
-            } else if (sortType == InterviewSetSortType.LATEST) {
-                nextCursor = toCreatedAtCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getCreatedAt());
-            } else if (sortType == InterviewSetSortType.BOOKMARK) {
-                nextCursor = toBookmarkCountCursorDTO(lastInterviewSet.getId(), lastInterviewSet.getBookmarkCount());
-            }
-        }
-
+    public static InterviewSetResponseDTO.InterviewSetsCursorDTO toInterviewSetsCursorResponse(List<InterviewSetSummaryProjection> interviewSets, Long cursorId, InterviewSetSortType sortType) {
         return InterviewSetResponseDTO.InterviewSetsCursorDTO.builder()
                 .interviewSets(interviewSets.stream()
                         .map(InterviewSetConverter::toGetInterviewSetSummaryDTO)
                         .collect(Collectors.toList()))
-                .nextCursor(nextCursor)
+                .nextCursor(cursorId)
                 .build();
     }
 }

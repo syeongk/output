@@ -40,7 +40,7 @@ public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long
                 CASE :sortType
                     WHEN 'RECOMMEND' THEN i.bookmarkCount
                 END DESC,
-                i.id DESC
+                i.id ASC
             """)
     Slice<InterviewSetSummaryProjection> findInterviewSetsFirstPage(
             Pageable pageable,
@@ -136,11 +136,15 @@ public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long
                 i.mockCount as mockCount,
                 i.createdAt as createdAt,
                 i.isAnswerPublic as isAnswerPublic,
-                m as member
+                m as member,
+                b as bookmark
             FROM InterviewSet i
             JOIN i.member m
-            WHERE i.isDeleted = false AND i.id IN (SELECT b.interviewSet.id FROM Bookmark b WHERE b.member.id = :memberId)
-            ORDER BY i.createdAt DESC, i.id DESC
+            JOIN Bookmark b ON i.id = b.interviewSet.id
+            WHERE i.isDeleted = false
+            AND b.isDeleted = false
+            AND b.member.id = :memberId
+            ORDER BY b.createdAt DESC, b.id DESC
             """)
     Slice<InterviewSetSummaryProjection> findBookmarkedInterviewSetsFirstPage(Pageable pageable, @Param("memberId") Long memberId);
 
@@ -152,7 +156,8 @@ public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long
                 i.mockCount as mockCount,
                 i.createdAt as createdAt,
                 i.isAnswerPublic as isAnswerPublic,
-                m as member
+                m as member,
+                b as bookmark
             FROM InterviewSet i
             JOIN i.member m
             JOIN Bookmark b ON i.id = b.interviewSet.id

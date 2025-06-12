@@ -1,9 +1,6 @@
 package com.sw.output.global.dto;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,9 +16,5 @@ public class CommonResponseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CursorDTO {
         private Long id;
-        private LocalDateTime createdAt;
-        private String title;
-        private Integer bookmarkCount;
-        private Integer mockCount;
     }
 }

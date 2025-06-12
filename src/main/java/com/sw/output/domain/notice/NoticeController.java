@@ -5,8 +5,6 @@ import com.sw.output.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequestMapping("/notices")
 @RequiredArgsConstructor
@@ -16,10 +14,9 @@ public class NoticeController {
     @GetMapping
     public ApiResponse<NoticeResponseDTO.NoticesDTO> getNotices(
             @RequestParam(required = false) Long cursorId,
-            @RequestParam(required = false) LocalDateTime cursorCreatedAt,
             @RequestParam(defaultValue = "20") int pageSize
     ) {
-        NoticeResponseDTO.NoticesDTO notices = noticeService.getNotices(cursorId, cursorCreatedAt, pageSize);
+        NoticeResponseDTO.NoticesDTO notices = noticeService.getNotices(cursorId, pageSize);
         return ApiResponse.success(notices);
     }
 

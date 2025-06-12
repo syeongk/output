@@ -20,7 +20,13 @@ public interface InterviewSetSummaryProjection {
 
     MemberInfoProjection getMember();
 
+    BookmarkInfoProjection getBookmark();
+
     interface MemberInfoProjection {
         String getNickname();
+    }
+
+    interface BookmarkInfoProjection {
+        Long getId();
     }
 }
