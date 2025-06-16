@@ -28,7 +28,7 @@ public class ReportController {
     }
 
     @GetMapping("{reportId}")
-    @Operation(summary = "[개발중] 결과 레포트 상세 조회 API", description = "결과 레포트 내용인 질문, 사용자 답변, AI 피드백 목록 조회")
+    @Operation(summary = "결과 레포트 상세 조회 API", description = "결과 레포트 내용인 질문, 사용자 답변, AI 피드백 목록 조회")
     public ApiResponse<FeedbackResponseDTO.FeedbacksDTO> getReport(
             @PathVariable Long reportId,
             @RequestParam(required = false) Long cursorId,
