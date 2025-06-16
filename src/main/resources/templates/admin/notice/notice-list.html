@@ -17,10 +17,11 @@
             <th>ID</th>
             <th>제목</th>
             <th>내용</th>
+            <th>삭제 여부</th>
             <th>작성일</th>
             <th>수정일</th>
             <th>삭제일</th>
-            <th>삭제 여부</th>
+            <th>작업</th>
         </tr>
         </thead>
         <tbody>
@@ -28,10 +29,18 @@
             <td th:text="${notice.id}"></td>
             <td th:text="${notice.title}"></td>
             <td th:text="${notice.content}"></td>
+            <td th:text="${notice.isDeleted}"></td>
             <td th:text="${notice.createdAt}"></td>
             <td th:text="${notice.updatedAt}"></td>
             <td th:text="${notice.deletedAt}"></td>
-            <td th:text="${notice.isDeleted}"></td>
+            <td>
+                <form method="post" th:action="@{/admin/notices/{noticeId}/delete(noticeId=${notice.id})}" th:if="${!notice.isDeleted}">
+                    <button onclick="return confirm('삭제하시겠습니까?')" type="submit">삭제</button>
+                </form>
+                <form method="post" th:action="@{/admin/notices/{noticeId}/restore(noticeId=${notice.id})}" th:if="${notice.isDeleted}">
+                    <button onclick="return confirm('복구하시겠습니까?')" type="submit">복구</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
