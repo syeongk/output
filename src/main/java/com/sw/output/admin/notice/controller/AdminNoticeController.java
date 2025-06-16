@@ -59,9 +59,29 @@ public class AdminNoticeController {
         return "redirect:/admin/notices";
     }
 
+    // 공지사항 복구
     @PostMapping("/{noticeId}/restore")
     public String restoreNotice(@PathVariable Long noticeId) {
         adminNoticeService.restoreNotice(noticeId);
+        return "redirect:/admin/notices";
+    }
+
+    // 공지사항 수정 폼
+    @GetMapping("/{noticeId}/edit")
+    public String showNoticeEditForm(@PathVariable Long noticeId, Model model) {
+        Notice notice = adminNoticeService.getNoticeById(noticeId);
+        model.addAttribute("noticeDTO", new AdminNoticeRequestDTO.NoticeDTO());
+        model.addAttribute("notice", notice);
+        return "admin/notice/notice-edit";
+    }
+
+    // 공지사항 수정 처리
+    @PostMapping("/{noticeId}/edit")
+    public String updateNotice(@PathVariable Long noticeId, @ModelAttribute @Valid AdminNoticeRequestDTO.NoticeDTO request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/notice/notice-edit";
+        }
+        adminNoticeService.updateNotice(noticeId, request);
         return "redirect:/admin/notices";
     }
 }

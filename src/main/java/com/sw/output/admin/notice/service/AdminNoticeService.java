@@ -21,16 +21,21 @@ import lombok.RequiredArgsConstructor;
 public class AdminNoticeService {
     private final NoticeRepository noticeRepository;
 
-    @Transactional
-    public void createNotice(AdminNoticeRequestDTO.NoticeDTO request) {
-        Notice notice = toNotice(request);
-        noticeRepository.save(notice);
+    public Notice getNoticeById(Long noticeId) {
+        return noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new BusinessException(NoticeErrorCode.NOTICE_NOT_FOUND));
     }
 
     public List<Notice> getNotices() {
         return noticeRepository.findAll();
     }
 
+    @Transactional
+    public void createNotice(AdminNoticeRequestDTO.NoticeDTO request) {
+        Notice notice = toNotice(request);
+        noticeRepository.save(notice);
+    }
+    
     @Transactional
     public void deleteNotice(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
@@ -53,5 +58,13 @@ public class AdminNoticeService {
         }
 
         notice.restore();
+    }
+
+    @Transactional
+    public void updateNotice(Long noticeId, AdminNoticeRequestDTO.NoticeDTO request) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new BusinessException(NoticeErrorCode.NOTICE_NOT_FOUND));
+
+        notice.update(request);
     }
 }

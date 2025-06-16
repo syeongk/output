@@ -1,6 +1,8 @@
 package com.sw.output.domain.faq.entity;
 
+import com.sw.output.admin.faq.dto.AdminFAQRequestDTO;
 import com.sw.output.domain.common.SoftDeleteEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,4 +28,10 @@ public class Faq extends SoftDeleteEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private FaqCategory faqCategory; // 카테고리
+
+    public void update(AdminFAQRequestDTO.FaqDTO request) {
+        this.questionTitle = request.getQuestionTitle();
+        this.answerContent = request.getAnswerContent();
+        this.faqCategory = request.getFaqCategory();
+    }
 }

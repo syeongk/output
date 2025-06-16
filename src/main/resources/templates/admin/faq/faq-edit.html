@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ 작성</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<link href="data:;base64,iVBORw0KGgo=" rel="icon">
+
+<body>
+    <div class="container mt-5">
+        <h2>FAQ 수정</h2>
+        <form method="post" th:action="@{/admin/faqs/{faqId}/edit(faqId=${faq.id})}" th:object="${faqDTO}">
+            <div>
+                <label for="questionTitle">질문 제목</label>
+                <input id="questionTitle" th:field="*{questionTitle}" type="text">
+            </div>
+            <div>
+                <label for="answerContent">답변 내용</label>
+                <textarea id="answerContent" th:field="*{answerContent}"></textarea>
+            </div>
+            <div>
+                <label for="faqCategory">카테고리</label>
+                <select id="faqCategory" th:field="*{faqCategory}">
+                    <option value="">카테고리 선택</option>
+                    <option th:each="category : ${T(com.sw.output.domain.faq.entity.FaqCategory).values()}"
+                        th:text="${category}" th:value="${category}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit">수정</button>
+        </form>
+    </div>
+</body>
+
+</html>
