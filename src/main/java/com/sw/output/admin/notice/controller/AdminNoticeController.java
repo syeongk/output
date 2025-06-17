@@ -70,8 +70,13 @@ public class AdminNoticeController {
     @GetMapping("/{noticeId}/edit")
     public String showNoticeEditForm(@PathVariable Long noticeId, Model model) {
         Notice notice = adminNoticeService.getNoticeById(noticeId);
-        model.addAttribute("noticeDTO", new AdminNoticeRequestDTO.NoticeDTO());
-        model.addAttribute("notice", notice);
+
+        AdminNoticeRequestDTO.NoticeDTO noticeDTO = new AdminNoticeRequestDTO.NoticeDTO();
+        noticeDTO.setTitle(notice.getTitle());
+        noticeDTO.setContent(notice.getContent());
+
+        model.addAttribute("noticeDTO", noticeDTO);
+        model.addAttribute("noticeId", noticeId);
         return "admin/notice/notice-edit";
     }
 

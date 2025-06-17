@@ -11,7 +11,7 @@
 <body>
     <div class="container mt-5">
         <h2>FAQ 수정</h2>
-        <form method="post" th:action="@{/admin/faqs/{faqId}/edit(faqId=${faq.id})}" th:object="${faqDTO}">
+        <form method="post" th:action="@{/admin/faqs/{faqId}/edit(faqId=${faqId})}" th:object="${faqDTO}">
             <div>
                 <label for="questionTitle">질문 제목</label>
                 <input id="questionTitle" th:field="*{questionTitle}" type="text">
@@ -29,7 +29,9 @@
                     </option>
                 </select>
             </div>
-            <button type="submit">수정</button>
+            <div>
+                <button type="submit">수정</button>
+            </div>
         </form>
     </div>
 </body>

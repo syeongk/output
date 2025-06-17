@@ -1,18 +1,31 @@
 package com.sw.output.domain.interviewset.entity;
 
-import com.sw.output.domain.common.SoftDeleteEntity;
-import com.sw.output.domain.interviewset.dto.QuestionAnswerRequestDTO;
-import com.sw.output.domain.member.entity.Member;
-import com.sw.output.domain.report.entity.Report;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import static com.sw.output.domain.interviewset.converter.QuestionAnswerConverter.toQuestionAnswer;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sw.output.domain.interviewset.converter.QuestionAnswerConverter.toQuestionAnswer;
+import com.sw.output.domain.common.SoftDeleteEntity;
+import com.sw.output.domain.interviewset.dto.QuestionAnswerRequestDTO;
+import com.sw.output.domain.member.entity.Member;
+import com.sw.output.domain.report.entity.Report;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
@@ -116,5 +129,13 @@ public class InterviewSet extends SoftDeleteEntity {
 
     public void increaseMockCount() {
         this.mockCount += 1;
+    }
+
+    public void hide() {
+        this.isHidden = true;
+    }
+
+    public void unhide() {
+        this.isHidden = false;
     }
 }

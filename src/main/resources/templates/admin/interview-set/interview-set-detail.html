@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>면접 세트 상세</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<link href="data:;base64,iVBORw0KGgo=" rel="icon">
+
+<body>
+    <div class="container mt-5">
+        <h2>면접 세트 정보</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>질문</th>
+                    <th>답변</th>
+                    <th>AI 생성 여부</th>
+                    <th>삭제 여부</th>
+                    <th>생성일</th>
+                    <th>수정일</th>
+                    <th>삭제일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="questionAnswer : ${questionAnswers}">
+                    <td th:text="${questionAnswer.id}"></td>
+                    <td th:text="${questionAnswer.questionTitle}"></td>
+                    <td th:text="${questionAnswer.answerContent}"></td>
+                    <td th:text="${questionAnswer.isAiCreated}"></td>
+                    <td th:text="${questionAnswer.isDeleted}"></td>
+                    <td th:text="${questionAnswer.createdAt}"></td>
+                    <td th:text="${questionAnswer.updatedAt}"></td>
+                    <td th:text="${questionAnswer.deletedAt}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
