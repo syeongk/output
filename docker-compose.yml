@@ -12,6 +12,7 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+      - --init-connect=SET\ NAMES\ utf8mb4
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 10s
@@ -29,7 +30,7 @@ services:
     ports:
       - "8081:8080"
     env_file:
-      - /home/rocky/envs/.env.dev
+      - /home/rocky/.env.dev
     depends_on:
       db:
         condition: service_healthy

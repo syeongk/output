@@ -15,7 +15,7 @@ public class Feedback extends SoftDeleteEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String memberAnswer; // 사용자 답변
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String feedbackContent; // 피드백 내용
 
     @Column(columnDefinition = "TEXT")
