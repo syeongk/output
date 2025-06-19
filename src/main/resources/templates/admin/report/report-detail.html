@@ -24,7 +24,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+        <tr th:each="feedback : ${feedbacks}">
             <td th:text="${feedback.id}"></td>
             <td th:text="${feedback.promptContent}"></td>
             <td th:text="${feedback.feedbackContent}"></td>

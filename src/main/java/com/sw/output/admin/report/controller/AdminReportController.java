@@ -29,8 +29,8 @@ public class AdminReportController {
 
     @GetMapping("/{reportId}")
     public String getReportDetail(@PathVariable Long reportId, Model model) {
-        Feedback feedback = adminFeedbackService.getFeedback(reportId);
-        model.addAttribute("feedback", feedback);
+        List<Feedback> feedbacks = adminFeedbackService.getFeedback(reportId);
+        model.addAttribute("feedbacks", feedbacks);
         return "admin/report/report-detail";
     }
 

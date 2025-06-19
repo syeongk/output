@@ -30,7 +30,7 @@ services:
     ports:
       - "8081:8080"
     env_file:
-      - /home/rocky/.env.dev
+      - /home/rocky/envs/.env.dev
     depends_on:
       db:
         condition: service_healthy
