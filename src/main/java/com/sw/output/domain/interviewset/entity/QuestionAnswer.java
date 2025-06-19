@@ -20,7 +20,7 @@ public class QuestionAnswer extends SoftDeleteEntity {
     @JoinColumn(name = "interview_set_id", nullable = false)
     private InterviewSet interviewSet; // 면접 세트
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 200)
     private String questionTitle; // 질문 제목
 
     @Column(columnDefinition = "TEXT")
