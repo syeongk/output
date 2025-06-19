@@ -1,16 +1,14 @@
 package com.sw.output.domain.interviewset.dto;
 
-import java.util.List;
-
-import org.hibernate.validator.constraints.Range;
-
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.JobCategory;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.hibernate.validator.constraints.Range;
+
+import java.util.List;
 
 public class InterviewSetRequestDTO {
     @Getter
@@ -40,7 +38,7 @@ public class InterviewSetRequestDTO {
         @NotNull(message = "직무 카테고리는 필수 항목입니다")
         private JobCategory jobCategory;
 
-        @Size(min = 1, max = 50, message = "세트 제목은 1~50자 사이입니다")
+        @Size(min = 1, max = 100, message = "세트 제목은 1~50자 사이입니다")
         @NotNull(message = "세트 제목은 필수 항목입니다")
         private String title;
 
