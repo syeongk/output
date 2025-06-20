@@ -1,16 +1,14 @@
 package com.sw.output.admin.auth;
 
+import com.sw.output.domain.admin.Admin;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.sw.output.domain.admin.Admin;
-
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,6 +36,7 @@ public class AdminAuthController {
         return "redirect:/admin/members";
     }
 
+    // 관리자 로그아웃 
     @PostMapping("/logout")
     public String adminLogout(HttpSession session) {
         session.invalidate();

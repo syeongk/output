@@ -34,6 +34,24 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - output-net
+
+  nginx:
+    image: nginx:1.25.2
+    container_name: output-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./downloads:/usr/share/nginx/html/downloads
+    depends_on:
+      - app
     networks:
       - output-net
 

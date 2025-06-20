@@ -1,41 +1,12 @@
 package com.sw.output.domain.interviewset.service;
 
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toGetQuestionsDTO;
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toInterviewSet;
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toInterviewSetCursorResponse;
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toInterviewSetIdResponse;
-import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.toInterviewSetsCursorResponse;
-import static com.sw.output.domain.report.converter.ReportConverter.toReport;
-import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sw.output.domain.interviewset.dto.InterviewSetRequestDTO;
 import com.sw.output.domain.interviewset.dto.InterviewSetResponseDTO;
 import com.sw.output.domain.interviewset.dto.OpenAIResponseDTO;
-import com.sw.output.domain.interviewset.entity.InterviewCategory;
-import com.sw.output.domain.interviewset.entity.InterviewSet;
-import com.sw.output.domain.interviewset.entity.InterviewSetSortType;
-import com.sw.output.domain.interviewset.entity.JobCategory;
-import com.sw.output.domain.interviewset.entity.QuestionAnswer;
-import com.sw.output.domain.interviewset.entity.QuestionAnswerSortType;
+import com.sw.output.domain.interviewset.entity.*;
 import com.sw.output.domain.interviewset.projection.InterviewSetSummaryProjection;
 import com.sw.output.domain.interviewset.repository.BookmarkRepository;
 import com.sw.output.domain.interviewset.repository.InterviewSetRepository;
@@ -51,9 +22,27 @@ import com.sw.output.global.response.errorcode.CommonErrorCode;
 import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.MemberErrorCode;
 import com.sw.output.global.response.errorcode.QuestionAnswerErrorCode;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.sw.output.domain.interviewset.converter.InterviewSetConverter.*;
+import static com.sw.output.domain.report.converter.ReportConverter.toReport;
+import static com.sw.output.global.util.SecurityUtils.getAuthenticatedUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -217,6 +206,8 @@ public class InterviewSetService {
         interviewSet.setQuestionAnswers(interviewSetDTO.getQuestionAnswers());
         interviewSet.setIsAnswerPublic(interviewSetDTO.getIsAnswerPublic());
         interviewSet.setTitle(interviewSetDTO.getTitle());
+        interviewSet.setJobCategory(interviewSetDTO.getJobCategory());
+        interviewSet.setInterviewCategory(interviewSetDTO.getInterviewCategory());
 
         return toInterviewSetIdResponse(interviewSetId);
     }
@@ -269,58 +260,58 @@ public class InterviewSetService {
         String prompt = null;
         if (createQuestionsPromptDTO.getDocument() == null) {
             prompt = """
-                당신은 %s 직무의 %s 면접을 진행하는 면접관입니다.
-                입력 정보에 따라 면접 질문을 생성해 주세요.
-                기존에 생성된 질문이 있으면 제외하고 새로운 질문을 생성해 주세요.
+                    당신은 %s 직무의 %s 면접을 진행하는 면접관입니다.
+                    입력 정보에 따라 면접 질문을 생성해 주세요.
+                    기존에 생성된 질문이 있으면 제외하고 새로운 질문을 생성해 주세요.
 
-                [입력 정보]
-                직무 : %s
-                면접 유형 : %s
-                주제 : %s
-                기존에 생성된 질문 : %s
+                    [입력 정보]
+                    직무 : %s
+                    면접 유형 : %s
+                    주제 : %s
+                    기존에 생성된 질문 : %s
 
-                [출력 형식]
-                총 %s개의 면접 질문을 JSON 배열 형태로 생성해 주세요.
-                응답 예시 : ["질문1", "질문2", "질문3", ...]
-                """.formatted(
-                createQuestionsPromptDTO.getJobCategory().getCategory(),
-                createQuestionsPromptDTO.getInterviewCategory().getCategory(),
-                createQuestionsPromptDTO.getJobCategory().getCategory(),
-                createQuestionsPromptDTO.getInterviewCategory().getCategory(),
-                createQuestionsPromptDTO.getTitle(),
-                createQuestionsPromptDTO.getQuestions(),
-                createQuestionsPromptDTO.getQuestionCount()
-                );
+                    [출력 형식]
+                    총 %s개의 면접 질문을 JSON 배열 형태로 생성해 주세요.
+                    응답 예시 : ["질문1", "질문2", "질문3", ...]
+                    """.formatted(
+                    createQuestionsPromptDTO.getJobCategory().getCategory(),
+                    createQuestionsPromptDTO.getInterviewCategory().getCategory(),
+                    createQuestionsPromptDTO.getJobCategory().getCategory(),
+                    createQuestionsPromptDTO.getInterviewCategory().getCategory(),
+                    createQuestionsPromptDTO.getTitle(),
+                    createQuestionsPromptDTO.getQuestions(),
+                    createQuestionsPromptDTO.getQuestionCount()
+            );
         } else {
             prompt = """
-                당신은 %s 직무의 %s 면접을 진행하는 면접관입니다.
-                입력 정보에 따라 면접 질문을 생성해 주세요.
-                기존에 생성된 질문이 있으면 제외하고 새로운 질문을 생성해 주세요.
+                    당신은 %s 직무의 %s 면접을 진행하는 면접관입니다.
+                    입력 정보에 따라 면접 질문을 생성해 주세요.
+                    기존에 생성된 질문이 있으면 제외하고 새로운 질문을 생성해 주세요.
 
-                [입력 정보]
-                직무 : %s
-                면접 유형 : %s
-                주제 : %s
-                자기소개서 및 포트폴리오 : %s
-                기존에 생성된 질문 : %s
+                    [입력 정보]
+                    직무 : %s
+                    면접 유형 : %s
+                    주제 : %s
+                    자기소개서 및 포트폴리오 : %s
+                    기존에 생성된 질문 : %s
 
-                [출력 형식]
-                총 %s개의 면접 질문을 JSON 배열 형태로 생성해 주세요.
-                응답 예시 : ["질문1", "질문2", "질문3", ...]
-                """.formatted(
-                createQuestionsPromptDTO.getJobCategory().getCategory(),
-                createQuestionsPromptDTO.getInterviewCategory().getCategory(),
-                createQuestionsPromptDTO.getJobCategory().getCategory(),
-                createQuestionsPromptDTO.getInterviewCategory().getCategory(),
-                createQuestionsPromptDTO.getTitle(),
-                createQuestionsPromptDTO.getDocument(),
-                createQuestionsPromptDTO.getQuestions(),
-                createQuestionsPromptDTO.getQuestionCount()
-                );
+                    [출력 형식]
+                    총 %s개의 면접 질문을 JSON 배열 형태로 생성해 주세요.
+                    응답 예시 : ["질문1", "질문2", "질문3", ...]
+                    """.formatted(
+                    createQuestionsPromptDTO.getJobCategory().getCategory(),
+                    createQuestionsPromptDTO.getInterviewCategory().getCategory(),
+                    createQuestionsPromptDTO.getJobCategory().getCategory(),
+                    createQuestionsPromptDTO.getInterviewCategory().getCategory(),
+                    createQuestionsPromptDTO.getTitle(),
+                    createQuestionsPromptDTO.getDocument(),
+                    createQuestionsPromptDTO.getQuestions(),
+                    createQuestionsPromptDTO.getQuestionCount()
+            );
         }
 
         log.info(prompt);
-        
+
         body.put("model", model);
         body.put("messages", List.of(Map.of("role", "user", "content", prompt)));
 
