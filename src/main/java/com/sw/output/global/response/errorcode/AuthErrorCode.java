@@ -8,7 +8,8 @@ public enum AuthErrorCode implements BaseCode {
     INVALID_ID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_4001", "유효하지 않은 ID Token 입니다"),
     GOOGLE_VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH_4002", "Google 인증에 실패했습니다"),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_4003", "토큰이 만료되었습니다"),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_4004", "유효하지 않은 토큰입니다");
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_4004", "유효하지 않은 토큰입니다"),
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "AUTH_4005", "이메일 또는 비밀번호가 일치하지 않습니다");
 
     private final HttpStatus httpStatus;
     private final String code;

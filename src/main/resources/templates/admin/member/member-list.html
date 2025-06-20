@@ -9,57 +9,57 @@
 <link href="data:;base64,iVBORw0KGgo=" rel="icon">
 
 <body>
-    <div class="container mt-3">
-        <h2>회원 목록</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>이메일</th>
-                    <th>닉네임</th>
-                    <th>역할</th>
-                    <th>경고 횟수</th>
-                    <th>탈퇴 여부</th>
-                    <th>정지 여부</th>
-                    <th>사진</th>
-                    <th>생성일</th>
-                    <th>수정일</th>
-                    <th>탈퇴일</th>
-                    <th>정지 해제일</th>
-                    <th>관리</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="member : ${members}">
-                    <td th:text="${member.id}"></td>
-                    <td th:text="${member.email}"></td>
-                    <td th:text="${member.nickname}"></td>
-                    <td th:text="${member.role.name()}"></td>
-                    <td th:text="${member.warningCount}"></td>
-                    <td th:text="${member.isDeleted}"></td>
-                    <td th:text="${member.isSuspended}"></td>
-                    <td th:text="${member.picture}"></td>
-                    <td th:text="${member.createdAt}"></td>
-                    <td th:text="${member.updatedAt}"></td>
-                    <td th:text="${member.deletedAt}"></td>
-                    <td th:text="${member.suspendedUntil}"></td>
-                    <td>
-                        <form method="post" th:action="@{/admin/members/{memberId}/warn(memberId=${member.id})}">
-                            <button onclick="return confirm('경고 처리하시겠습니까?')" type="submit">경고</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form method="post" th:action="@{/admin/members/{memberId}/delete(memberId=${member.id})}" th:if="${!member.isDeleted}">
-                            <button onclick="return confirm('탈퇴 처리하시겠습니까?')" type="submit">탈퇴</button>
-                        </form>
-                        <form method="post" th:action="@{/admin/members/{memberId}/restore(memberId=${member.id})}" th:if="${member.isDeleted}">
-                            <button onclick="return confirm('탈퇴 해제하시겠습니까?')" type="submit">탈퇴 해제</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="container mt-3">
+    <h2>회원 목록</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이메일</th>
+            <th>닉네임</th>
+            <th>역할</th>
+            <th>경고 횟수</th>
+            <th>탈퇴 여부</th>
+            <th>사진</th>
+            <th>생성일</th>
+            <th>수정일</th>
+            <th>탈퇴일</th>
+            <th>정지 해제일</th>
+            <th>관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="member : ${members}">
+            <td th:text="${member.id}"></td>
+            <td th:text="${member.email}"></td>
+            <td th:text="${member.nickname}"></td>
+            <td th:text="${member.role.name()}"></td>
+            <td th:text="${member.warningCount}"></td>
+            <td th:text="${member.isDeleted}"></td>
+            <td th:text="${member.picture}"></td>
+            <td th:text="${member.createdAt}"></td>
+            <td th:text="${member.updatedAt}"></td>
+            <td th:text="${member.deletedAt}"></td>
+            <td th:text="${member.suspendedUntil}"></td>
+            <td>
+                <form method="post" th:action="@{/admin/members/{memberId}/warn(memberId=${member.id})}">
+                    <button onclick="return confirm('경고 처리하시겠습니까?')" type="submit">경고</button>
+                </form>
+            </td>
+            <td>
+                <form method="post" th:action="@{/admin/members/{memberId}/delete(memberId=${member.id})}"
+                      th:if="${!member.isDeleted}">
+                    <button onclick="return confirm('탈퇴 처리하시겠습니까?')" type="submit">탈퇴</button>
+                </form>
+                <form method="post" th:action="@{/admin/members/{memberId}/restore(memberId=${member.id})}"
+                      th:if="${member.isDeleted}">
+                    <button onclick="return confirm('탈퇴 해제하시겠습니까?')" type="submit">탈퇴 해제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 
 </html>
