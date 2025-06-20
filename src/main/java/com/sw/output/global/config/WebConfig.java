@@ -15,6 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(adminAuthInterceptor)
                 .addPathPatterns("/admin/**") // 관리자 권한 필요한 경로
-                .excludePathPatterns("/admin/auth/login", "/admin/auth/logout"); // 로그인, 로그아웃 제외
+                .excludePathPatterns("/admin/auth/login"); // 로그인 제외
     }
 }
