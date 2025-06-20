@@ -1,14 +1,16 @@
 package com.sw.output.domain.interviewset.dto;
 
+import java.util.List;
+
+import org.hibernate.validator.constraints.Range;
+
 import com.sw.output.domain.interviewset.entity.InterviewCategory;
 import com.sw.output.domain.interviewset.entity.JobCategory;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.hibernate.validator.constraints.Range;
-
-import java.util.List;
 
 public class InterviewSetRequestDTO {
     @Getter
@@ -48,5 +50,8 @@ public class InterviewSetRequestDTO {
 
         @Size(max = 3000, message = "자기소개서 및 포트폴리오는 3000자 이하로 입력해주세요.")
         private String document;
+
+        @Size(max = 49, message = "질문은 50개 미만으로 입력해주세요.")
+        private List<String> questions;
     }
 }

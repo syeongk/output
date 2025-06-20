@@ -271,11 +271,13 @@ public class InterviewSetService {
             prompt = """
                 당신은 %s 직무의 %s 면접을 진행하는 면접관입니다.
                 입력 정보에 따라 면접 질문을 생성해 주세요.
+                기존에 생성된 질문이 있으면 제외하고 새로운 질문을 생성해 주세요.
 
                 [입력 정보]
                 직무 : %s
                 면접 유형 : %s
                 주제 : %s
+                기존에 생성된 질문 : %s
 
                 [출력 형식]
                 총 %s개의 면접 질문을 JSON 배열 형태로 생성해 주세요.
@@ -286,18 +288,21 @@ public class InterviewSetService {
                 createQuestionsPromptDTO.getJobCategory().getCategory(),
                 createQuestionsPromptDTO.getInterviewCategory().getCategory(),
                 createQuestionsPromptDTO.getTitle(),
+                createQuestionsPromptDTO.getQuestions(),
                 createQuestionsPromptDTO.getQuestionCount()
                 );
         } else {
             prompt = """
                 당신은 %s 직무의 %s 면접을 진행하는 면접관입니다.
                 입력 정보에 따라 면접 질문을 생성해 주세요.
+                기존에 생성된 질문이 있으면 제외하고 새로운 질문을 생성해 주세요.
 
                 [입력 정보]
                 직무 : %s
                 면접 유형 : %s
                 주제 : %s
                 자기소개서 및 포트폴리오 : %s
+                기존에 생성된 질문 : %s
 
                 [출력 형식]
                 총 %s개의 면접 질문을 JSON 배열 형태로 생성해 주세요.
@@ -309,6 +314,7 @@ public class InterviewSetService {
                 createQuestionsPromptDTO.getInterviewCategory().getCategory(),
                 createQuestionsPromptDTO.getTitle(),
                 createQuestionsPromptDTO.getDocument(),
+                createQuestionsPromptDTO.getQuestions(),
                 createQuestionsPromptDTO.getQuestionCount()
                 );
         }
