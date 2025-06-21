@@ -1,0 +1,46 @@
+:root {
+    /* 브랜드 컬러 */
+    --primary-color: #374EAD;
+    --primary-light: #4a5fc7;
+    --primary-dark: #2a3d8a;
+
+    /* 중성 컬러 */
+    --white: #ffffff;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-300: #ddd;
+    --gray-400: #777;
+    --gray-500: #666;
+    --gray-700: #555;
+    --gray-900: #333;
+    --black: #000000;
+
+    /* 상태 컬러 */
+    --success: #155724;
+    --error: #bf3c49;
+
+    /* 그림자 */
+    --shadow-sm: 0 4px 20px rgba(55, 78, 173, 0.1);
+    --shadow-md: 0 4px 12px rgba(55, 78, 173, 0.3);
+    --shadow-lg: 0 10px 25px rgba(55, 78, 173, 0.2);
+
+    /* 폰트 */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+
+    /* 간격 */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 20px;
+    --spacing-xl: 30px;
+    --spacing-xxl: 40px;
+
+    /* 테두리 */
+    --border-radius-sm: 6px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 20px;
+}

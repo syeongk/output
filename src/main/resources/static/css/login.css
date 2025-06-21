@@ -1,0 +1,79 @@
+/* 로그인 페이지 전용 스타일 */
+body {
+    background: var(--white);
+    min-height: 100vh;
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: var(--spacing-lg);
+}
+
+.login-card {
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-xxl);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.login-header h2 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+}
+
+.login-header p {
+    color: var(--gray-500);
+    font-size: var(--font-size-sm);
+}
+
+.login-btn {
+    width: 100%;
+    margin-top: var(--spacing-sm);
+}
+
+.login-form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.login-form-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--gray-700);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+}
+
+.login-form-control {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    transition: all 0.3s ease;
+    background: var(--gray-50);
+    box-sizing: border-box;
+}
+
+.login-form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(55, 78, 173, 0.1);
+}

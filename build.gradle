@@ -51,6 +51,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     // Google OAuth
     implementation 'com.google.api-client:google-api-client:2.2.0'
+    // devtools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 tasks.named('test') {

@@ -3,15 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>면접 세트 상세</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>면접 세트 정보</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
-<link href="data:;base64,iVBORw0KGgo=" rel="icon">
 
 <body>
-    <div class="container mt-5">
-        <h2>면접 세트 정보</h2>
-        <table class="table">
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+    <div class="container">
+        <div class="header">
+            <h1>면접 세트 정보</h1>
+        </div>
+        <div class="table-container">
+            <table class="table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -27,8 +31,8 @@
             <tbody>
                 <tr th:each="questionAnswer : ${questionAnswers}">
                     <td th:text="${questionAnswer.id}"></td>
-                    <td th:text="${questionAnswer.questionTitle}"></td>
-                    <td th:text="${questionAnswer.answerContent}"></td>
+                    <td class="content" th:text="${questionAnswer.questionTitle}"></td>
+                    <td class="content" th:text="${questionAnswer.answerContent}"></td>
                     <td th:text="${questionAnswer.isAiCreated}"></td>
                     <td th:text="${questionAnswer.isDeleted}"></td>
                     <td th:text="${questionAnswer.createdAt}"></td>
@@ -37,6 +41,7 @@
                 </tr>
             </tbody>
         </table>
+    </div>
     </div>
 </body>
 

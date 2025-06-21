@@ -3,48 +3,68 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>공지사항 목록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>공지사항 관리</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
-<link href="data:;base64,iVBORw0KGgo=" rel="icon">
 
 <body>
-<div class="container mt-5">
-    <h2>공지사항 목록</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>제목</th>
-            <th>내용</th>
-            <th>삭제 여부</th>
-            <th>작성일</th>
-            <th>수정일</th>
-            <th>삭제일</th>
-            <th>작업</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="notice : ${notices}">
-            <td th:text="${notice.id}"></td>
-            <td th:text="${notice.title}"></td>
-            <td th:text="${notice.content}"></td>
-            <td th:text="${notice.isDeleted}"></td>
-            <td th:text="${notice.createdAt}"></td>
-            <td th:text="${notice.updatedAt}"></td>
-            <td th:text="${notice.deletedAt}"></td>
-            <td>
-                <form method="post" th:action="@{/admin/notices/{noticeId}/delete(noticeId=${notice.id})}" th:if="${!notice.isDeleted}">
-                    <button onclick="return confirm('삭제하시겠습니까?')" type="submit">삭제</button>
-                </form>
-                <form method="post" th:action="@{/admin/notices/{noticeId}/restore(noticeId=${notice.id})}" th:if="${notice.isDeleted}">
-                    <button onclick="return confirm('복구하시겠습니까?')" type="submit">복구</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+    <div class="container">
+        <div class="header">
+            <h1>공지사항 관리</h1>
+            <button class="header-button" onclick="location.href='/admin/notices/new'">
+                <img src="/images/add.png" alt="추가">
+            </button>
+        </div>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>삭제 여부</th>
+                    <th>작성일</th>
+                    <th>수정일</th>
+                    <th>삭제일</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="notice : ${notices}">
+                    <td th:text="${notice.id}"></td>
+                    <td th:text="${notice.title}"></td>
+                    <td th:text="${notice.content}"></td>
+                    <td th:text="${notice.isDeleted}"></td>
+                    <td th:text="${notice.createdAt}"></td>
+                    <td th:text="${notice.updatedAt}"></td>
+                    <td th:text="${notice.deletedAt}"></td>
+                    <td>
+                        <form method="get" th:action="@{/admin/notices/{noticeId}/edit(noticeId=${notice.id})}">
+                            <button type="submit">
+                                <img src="/images/edit.png" alt="편집">
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" th:action="@{/admin/notices/{noticeId}/delete(noticeId=${notice.id})}" th:if="${!notice.isDeleted}">
+                            <button onclick="return confirm('삭제하시겠습니까?')" type="submit">
+                                <img src="/images/delete.png" alt="삭제">
+                            </button>
+                        </form>
+                        <form method="post" th:action="@{/admin/notices/{noticeId}/restore(noticeId=${notice.id})}" th:if="${notice.isDeleted}">
+                            <button onclick="return confirm('복구하시겠습니까?')" type="submit">
+                                <img src="/images/restore.png" alt="복구">
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,0 +1,340 @@
+/* 공통 폼 스타일 */
+.form-box {
+    width: 100%;
+    margin: 20px 0;
+}
+
+.form-content {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 26px;
+    color: var(--black);
+    padding: 30px 0;
+    background-color: white;
+    border: none;
+    border-bottom: 3px solid #ddd;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.form-content:focus {
+    outline: none;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+textarea.form-content {
+    min-height: 420px;
+    resize: vertical;
+    border: none;
+    border-bottom: 3px solid #ddd;
+    font-size: 18px;
+}
+
+.form-content::placeholder {
+    color: #ddd;
+    font-weight: 600;
+}
+
+select.form-content {
+    font-size: 18px;
+}
+
+.form-button {
+    margin-top: 10px;
+    padding: 10px 24px;
+    font-size: 16px;
+    background-color: #3F51B5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    float: right;
+}
+
+.form-button img {
+    width: 20px;
+    height: 20px;
+}
+
+/* 공통 카드 스타일 */
+.card {
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-xxl);
+    box-sizing: border-box;
+}
+
+/* 공통 버튼 스타일 */
+.btn {
+    padding: var(--spacing-md) var(--spacing-xl);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-danger {
+    background: var(--error);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-success {
+    background: var(--success);
+    color: var(--white);
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+/* 공통 메시지 스타일 */
+.message {
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    border: 1px solid;
+}
+
+.message-error {
+    color: var(--error);
+}
+
+.message-success {
+    color: var(--success);
+}
+
+/* 페이지 공통 스타일 */
+.container {
+    padding: var(--spacing-lg);
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.header {
+    margin-bottom: var(--spacing-xxl);
+}
+
+.header h1 {
+    margin: 0;
+    color: var(--black);
+    font-size: 34px;
+    font-weight: 650;
+    display: inline;
+}
+
+.header a {
+    text-decoration: none;
+    color: #666;
+    padding: 0px 4px;
+    margin-left: 10px;
+    transition: all 0.2s ease;
+}
+
+.header a:hover {
+    color: var(--primary-color);
+}
+
+.header a.active {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.header button {
+    padding: 6px;
+    background-color: #3F51B5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 20px 0px 0px;
+}
+
+.header button img {
+    width: 18px;
+    height: 18px;
+}
+
+/* 테이블 스타일 */
+.table-container {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: var(--gray-50);
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-700);
+    border-bottom: 1px solid var(--gray-300);
+}
+
+.table td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--gray-300);
+    color: var(--gray-700);
+    white-space: nowrap;
+}
+
+/* 내용이 긴 컬럼용 스타일 */
+.table td.content {
+    white-space: normal;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.table tbody tr:hover {
+    background: var(--gray-50);
+}
+
+.table button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.table button img {
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+}
+
+/* 상태 표시 */
+.status-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* 네비게이션 바 스타일 */
+.nav-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: var(--spacing-lg);
+}
+
+.nav-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) 0px;
+}
+
+.nav-list {
+    display: flex;
+    padding: var(--spacing-sm) var(--spacing-md);
+    gap: var(--spacing-xl);
+    align-items: center;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: var(--gray-400);
+    font-size: 18px;
+    padding: var(--spacing-sm) 0;
+    margin: 0px var(--spacing-xxl);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.nav-list a:hover {
+    color: var(--primary-color);
+}
+
+.nav-list a.active {
+    color: var(--primary-color);
+    font-weight: 500;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.nav-list .logo {
+    color: var(--primary-color);
+    font-size: 40px;
+    font-weight: 900;
+    margin: 0px var(--spacing-xl) 0px 0px;
+}
+
+.nav-list .logout {
+    font-size: 14px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .container {
+        padding: var(--spacing-md);
+    }
+
+    .table {
+        font-size: var(--font-size-sm);
+    }
+
+    .table th,
+    .table td {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .nav-list {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-lg);
+    }
+
+    .nav-list a {
+        font-size: var(--font-size-md);
+    }
+
+    .nav-list .logout {
+        font-size: var(--font-size-sm);
+    }
+}

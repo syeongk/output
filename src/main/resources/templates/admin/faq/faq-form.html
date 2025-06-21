@@ -3,37 +3,38 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>FAQ 작성</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>자주 묻는 질문 작성</title>
+        <link rel="stylesheet" th:href="@{/css/variables.css}">
+        <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <link href="data:;base64,iVBORw0KGgo=" rel="icon">
 
 <body>
-<div class="container mt-5">
-    <h2>FAQ 작성</h2>
-    <form method="post" th:action="@{/admin/faqs}" th:object="${faqDTO}">
-        <div>
-            <label for="questionTitle">질문 제목</label>
-            <input id="questionTitle" th:field="*{questionTitle}" type="text">
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+    <div class="container">
+        <div class="header">
+            <h1>자주 묻는 질문 작성</h1>
         </div>
-        <div>
-            <label for="answerContent">답변 내용</label>
-            <textarea id="answerContent" th:field="*{answerContent}"></textarea>
-        </div>
-        <div>
-            <label for="faqCategory">카테고리</label>
-            <select id="faqCategory" th:field="*{faqCategory}">
-                <option value="">카테고리 선택</option>
-                <option th:each="category : ${T(com.sw.output.domain.faq.entity.FaqCategory).values()}"
-                        th:text="${category}" th:value="${category}">
-                </option>
-            </select>
-        </div>
-        <div>
-            <button type="submit">등록</button>
-        </div>
-    </form>
-</div>
+        <form method="post" class="form-box" th:action="@{/admin/faqs}" th:object="${faqDTO}">
+            <div class="form-group">
+                <input class="form-content" id="questionTitle" th:field="*{questionTitle}" type="text" placeholder="질문 제목을 입력해 주세요" required>
+            </div>
+            <div class="form-group">
+                <select class="form-content" id="faqCategory" th:field="*{faqCategory}">
+                    <option value="">카테고리 선택</option>
+                    <option th:each="category : ${T(com.sw.output.domain.faq.entity.FaqCategory).values()}" th:text="${category}"
+                        th:value="${category}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea class="form-content" id="answerContent" th:field="*{answerContent}" placeholder="답변 내용을 입력해 주세요" required></textarea>
+            </div>
+            <div class="form-group">
+                <button class="form-button" type="submit">등록</button>
+            </div>
+        </form>
+    </div> 
 </body>
 
 </html>

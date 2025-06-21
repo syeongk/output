@@ -4,24 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항 작성</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
-<link href="data:;base64,iVBORw0KGgo=" rel="icon">
 
 <body>
-    <div class="container mt-5">
-        <h2>공지사항 작성</h2>
-        <form method="post" th:action="@{/admin/notices}" th:object="${noticeDTO}">
-            <div>
-                <label for="title">제목</label>
-                <input id="title" th:field="*{title}" type="text">
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+    <div class="container">
+        <div class="header">
+            <h1>공지사항 작성</h1>
+        </div>
+        <form method="post" class="form-box" th:action="@{/admin/notices}" th:object="${noticeDTO}">
+            <div class="form-group">
+                <input class="form-content" id="title" th:field="*{title}" type="text" placeholder="제목을 입력해 주세요" required>
             </div>
-            <div>
-                <label for="content">내용</label>
-                <textarea id="content" th:field="*{content}"></textarea>
+            <div class="form-group">
+                <textarea class="form-content" id="content" th:field="*{content}" placeholder="내용을 입력해 주세요" required></textarea>
             </div>
-            <div>
-                <button type="submit">등록</button>
+            <div class="form-group">
+                <button class="form-button" type="submit">등록</button>
             </div>
         </form>
     </div>

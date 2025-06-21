@@ -3,69 +3,81 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>면접 세트 목록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>면접 세트 관리</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
-<link href="data:;base64,iVBORw0KGgo=" rel="icon">
-
 <body>
-<div class="container mt-5">
-    <h2>면접 세트 목록</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>부모 ID</th>
-            <th>사용자 ID</th>
-            <th>직무 카테고리</th>
-            <th>면접 카테고리</th>
-            <th>제목</th>
-            <th>모의 면접 수</th>
-            <th>답변 공개</th>
-            <th>북마크 수</th>
-            <th>숨김 여부</th>
-            <th>삭제 여부</th>
-            <th>생성일</th>
-            <th>수정일</th>
-            <th>삭제일</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="interviewSet : ${interviewSets}">
-            <td th:text="${interviewSet.id}"></td>
-            <td th:text="${interviewSet.parent?.id}"></td>
-            <td th:text="${interviewSet.member.id}"></td>
-            <td th:text="${interviewSet.jobCategory}"></td>
-            <td th:text="${interviewSet.interviewCategory}"></td>
-            <td th:text="${interviewSet.title}"></td>
-            <td th:text="${interviewSet.mockCount}"></td>
-            <td th:text="${interviewSet.isAnswerPublic}"></td>
-            <td th:text="${interviewSet.bookmarkCount}"></td>
-            <td th:text="${interviewSet.isHidden}"></td>
-            <td th:text="${interviewSet.isDeleted}"></td>
-            <td th:text="${interviewSet.createdAt}"></td>
-            <td th:text="${interviewSet.updatedAt}"></td>
-            <td th:text="${interviewSet.deletedAt}"></td>
-            <td>
-                <form method="get" th:action="@{/admin/interview-sets/{interviewSetId}(interviewSetId=${interviewSet.id})}">
-                    <button type="submit">상세</button>
-                </form>
-            </td>
-            <td>
-                <form method="post"
-                      th:action="@{/admin/interview-sets/{interviewSetId}/hide(interviewSetId=${interviewSet.id})}"
-                      th:if="${!interviewSet.isHidden}">
-                    <button onclick="return confirm('숨김 처리하시겠습니까?')" type="submit">숨김</button>
-                </form>
-                <form method="post"
-                      th:action="@{/admin/interview-sets/{interviewSetId}/unhide(interviewSetId=${interviewSet.id})}"
-                      th:if="${interviewSet.isHidden}">
-                    <button onclick="return confirm('숨김 해제하시겠습니까?')" type="submit">숨김 해제</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<div class="container">
+    <div class="header">
+        <h1>면접 세트 관리</h1>
+    </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>부모 ID</th>
+                <th>사용자 ID</th>
+                <th>직무 카테고리</th>
+                <th>면접 카테고리</th>
+                <th>제목</th>
+                <th>모의 면접 수</th>
+                <th>답변 공개</th>
+                <th>북마크 수</th>
+                <th>숨김 여부</th>
+                <th>삭제 여부</th>
+                <th>생성일</th>
+                <th>수정일</th>
+                <th>삭제일</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="interviewSet : ${interviewSets}">
+                <td th:text="${interviewSet.id}"></td>
+                <td th:text="${interviewSet.parent?.id}"></td>
+                <td th:text="${interviewSet.member.id}"></td>
+                <td th:text="${interviewSet.jobCategory}"></td>
+                <td th:text="${interviewSet.interviewCategory}"></td>
+                <td th:text="${interviewSet.title}"></td>
+                <td th:text="${interviewSet.mockCount}"></td>
+                <td th:text="${interviewSet.isAnswerPublic}"></td>
+                <td th:text="${interviewSet.bookmarkCount}"></td>
+                <td th:text="${interviewSet.isHidden}"></td>
+                <td th:text="${interviewSet.isDeleted}"></td>
+                <td th:text="${interviewSet.createdAt}"></td>
+                <td th:text="${interviewSet.updatedAt}"></td>
+                <td th:text="${interviewSet.deletedAt}"></td>
+                <td>
+                    <form method="get" th:action="@{/admin/interview-sets/{interviewSetId}(interviewSetId=${interviewSet.id})}">
+                        <button type="submit">
+                            <img src="/images/detail.png" alt="상세">
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post"
+                        th:action="@{/admin/interview-sets/{interviewSetId}/hide(interviewSetId=${interviewSet.id})}"
+                        th:if="${!interviewSet.isHidden}">
+                        <button onclick="return confirm('숨김 처리하시겠습니까?')" type="submit">
+                            <img src="/images/hide.png" alt="숨김">
+                        </button>
+                    </form>
+                    <form method="post"
+                        th:action="@{/admin/interview-sets/{interviewSetId}/unhide(interviewSetId=${interviewSet.id})}"
+                        th:if="${interviewSet.isHidden}">
+                        <button onclick="return confirm('숨김 해제하시겠습니까?')" type="submit">
+                            <img src="/images/unhide.png" alt="숨김 해제">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 

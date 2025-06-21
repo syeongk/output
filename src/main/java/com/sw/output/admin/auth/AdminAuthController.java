@@ -1,6 +1,7 @@
 package com.sw.output.admin.auth;
 
 import com.sw.output.domain.admin.Admin;
+import com.sw.output.global.exception.BusinessException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,19 +27,20 @@ public class AdminAuthController {
 
     // 관리자 로그인 처리
     @PostMapping("/login")
-    public String adminLogin(@ModelAttribute AdminRequestDTO.LoginDTO request, HttpSession session) {
-        Admin admin = adminAuthService.validateLogin(request);
-
-        // 세션에 관리자 정보 저장
-        session.setAttribute("admin", admin.getId());
-
-        // 세션 만료 시간 설정 (30분)
-        session.setMaxInactiveInterval(30 * 60);
-        return "redirect:/admin/members";
+    public String adminLogin(@ModelAttribute AdminRequestDTO.LoginDTO request, HttpSession session, RedirectAttributes redirectAttributes) {
+        try {
+            Admin admin = adminAuthService.validateLogin(request);
+            session.setAttribute("admin", admin.getId());
+            session.setMaxInactiveInterval(30 * 60);
+            return "redirect:/admin/members";
+        } catch (BusinessException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/admin/auth/login";
+        }
     }
 
     // 관리자 로그아웃 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String adminLogout(HttpSession session) {
         session.invalidate();
         return "redirect:/admin/auth/login-form";
