@@ -1,6 +1,7 @@
 package com.sw.output.domain.report.service;
 
 import com.sw.output.domain.interviewset.dto.OpenAIResponseDTO;
+import com.sw.output.domain.report.dto.OpenAIDTO;
 import com.sw.output.domain.report.entity.Feedback;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -73,4 +77,25 @@ public class OpenAIService {
 
         feedbackService.updateFeedbackResult(feedback.getId(), memberAnswer, feedbackContent, prompt);
     }
+    
+    public String sttMemberAnswer(MultipartFile audioFile) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", audioFile.getResource());
+        body.add("model", "whisper-1");
+        body.add("language", "ko");
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
+
+        OpenAIDTO.WhisperResponseDTO response = openAITemplate.postForObject(
+                "https://api.openai.com/v1/audio/transcriptions",
+                request,
+                OpenAIDTO.WhisperResponseDTO.class);
+
+        return response.getText();
+    }
+
+
 }

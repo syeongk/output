@@ -1,20 +1,14 @@
 package com.sw.output.domain.auth.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.sw.output.domain.auth.dto.AuthResponseDTO;
 import com.sw.output.domain.auth.dto.GoogleOAuthDTO;
 import com.sw.output.domain.auth.service.AuthService;
 import com.sw.output.domain.auth.service.OAuthService;
 import com.sw.output.global.response.ApiResponse;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")

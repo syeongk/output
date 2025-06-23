@@ -6,6 +6,5 @@ public class ReportRequestDTO {
     @Getter
     public static class CreateAiFeedbackDTO {
         private Long questionAnswerId;
-        private String memberAnswer;
     }
 }
