@@ -45,7 +45,8 @@
                 </td>
                 <td th:text="${#temporals.format(complaint.createdAt, 'yyyy-MM-dd')}"></td>
                 <td>
-                    <form method="get" th:action="@{/admin/complaints/{complaintId}(complaintId=${complaint.id})}">
+                    <form method="get" th:action="@{/admin/interview-sets}">
+                        <input type="hidden" name="interviewSetId" th:value="${complaint.interviewSet.id}">
                         <button class="btn btn-primary" type="submit">
                             <img src="/images/detail.png" alt="상세">
                         </button>

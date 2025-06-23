@@ -17,4 +17,12 @@ public class AdminReportService {
     public List<Report> getReports() {
         return reportRepository.findAll();
     }
+
+    public List<Report> getReportsByMemberId(Long memberId) {
+        return reportRepository.findByMemberId(memberId);
+    }
+
+    public List<Report> getReportsByInterviewSetId(Long interviewSetId) {
+        return reportRepository.findByInterviewSetId(interviewSetId);
+    }
 }

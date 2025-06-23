@@ -1,18 +1,13 @@
 package com.sw.output.admin.interviewset.controller;
 
-import java.util.List;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.sw.output.admin.interviewset.service.AdminInterviewSetService;
 import com.sw.output.domain.interviewset.entity.InterviewSet;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,8 +16,18 @@ public class AdminInterviewSetController {
     private final AdminInterviewSetService adminInterviewSetService;
 
     @GetMapping
-    public String getInterviewSets(Model model) {
-        List<InterviewSet> interviewSets = adminInterviewSetService.getInterviewSets();
+    public String getInterviewSets(Model model, @RequestParam(required = false) Long memberId, @RequestParam(required = false) Long interviewSetId) {
+
+        List<InterviewSet> interviewSets;
+
+        if (memberId != null) {
+            interviewSets = adminInterviewSetService.getInterviewSetsByMemberId(memberId);
+        } else if (interviewSetId != null) {
+            interviewSets = adminInterviewSetService.getInterviewSetsByInterviewSetId(interviewSetId);
+        } else {
+            interviewSets = adminInterviewSetService.getInterviewSets();
+        }
+
         model.addAttribute("interviewSets", interviewSets);
         return "admin/interview-set/interview-set-list";
     }
@@ -45,4 +50,6 @@ public class AdminInterviewSetController {
         model.addAttribute("questionAnswers", interviewSet.getQuestionAnswers());
         return "admin/interview-set/interview-set-detail";
     }
+
+
 }

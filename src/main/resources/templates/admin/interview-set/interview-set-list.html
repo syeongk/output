@@ -12,6 +12,12 @@
 <div class="container">
     <div class="header">
         <h1>면접 세트 관리</h1>
+            <form class="search-form" method="get" th:action="@{/admin/interview-sets}">
+                <input type="text" name="memberId" placeholder="사용자 ID를 입력해 주세요">
+            </form>
+            <form class="search-form" method="get" th:action="@{/admin/interview-sets}">
+                <input type="text" name="interviewSetId" placeholder="면접 세트 ID를 입력해 주세요">
+            </form>
     </div>
     <div class="table-container">
         <table class="table">
@@ -52,9 +58,10 @@
                 <td th:text="${interviewSet.updatedAt}"></td>
                 <td th:text="${interviewSet.deletedAt}"></td>
                 <td>
-                    <form method="get" th:action="@{/admin/interview-sets/{interviewSetId}(interviewSetId=${interviewSet.id})}">
+                    <form method="get" th:action="@{/admin/reports}">
+                        <input type="hidden" name="interviewSetId" th:value="${interviewSet.id}">
                         <button type="submit">
-                            <img src="/images/detail.png" alt="상세">
+                            <img src="/images/reports.png" alt="리포트">
                         </button>
                     </form>
                 </td>

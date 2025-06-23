@@ -3,21 +3,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <nav th:fragment="navigation" class="nav-bar">
-        <div class="nav-container">
-            <div class="nav-list">
-                <div class="logo">Output</div>
-                <a th:href="@{/admin/members}">사용자</a>
-                <a th:href="@{/admin/interview-sets}">면접 세트</a>
-                <a th:href="@{/admin/reports}">결과 레포트</a>
-                <a th:href="@{/admin/complaints}">신고</a>
-                <a th:href="@{/admin/banned-keywords}">금지 키워드</a>
-                <a th:href="@{/admin/notices}">공지사항</a>
-                <a th:href="@{/admin/faqs}">자주 묻는 질문</a>
-                <a th:href="@{/admin/auth/logout}" class="logout">로그아웃</a>
-            </div>
+<nav class="nav-bar" th:fragment="navigation">
+    <div class="nav-container">
+        <div class="nav-list">
+            <div class="logo">Output</div>
+            <a th:href="@{/admin/members}">사용자</a>
+            <a th:href="@{/admin/interview-sets}">면접 세트</a>
+            <a th:href="@{/admin/reports}">결과 리포트</a>
+            <a th:href="@{/admin/complaints}">신고</a>
+            <a th:href="@{/admin/banned-keywords}">금지 키워드</a>
+            <a th:href="@{/admin/notices}">공지사항</a>
+            <a th:href="@{/admin/faqs}">자주 묻는 질문</a>
+            <a class="logout" th:href="@{/admin/auth/logout}">로그아웃</a>
         </div>
-    </nav>
+    </div>
+</nav>
 </body>
 
 </html>

@@ -3,52 +3,58 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>결과 레포트 관리</title>
+    <title>결과 리포트 관리</title>
     <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 
 <body>
-    <div th:replace="~{fragments/navigation :: navigation}"></div>
-    <div class="container">
-        <div class="header">
-            <h1>결과 레포트 관리</h1>
-        </div>
-        <div class="table-container">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>면접 세트 ID</th>
-                    <th>사용자 ID</th>
-                    <th>삭제 여부</th>
-                    <th>생성일</th>
-                    <th>수정일</th>
-                    <th>삭제일</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="report : ${reports}">
-                    <td th:text="${report.id}"></td>
-                    <td th:text="${report.interviewSet.id}"></td>
-                    <td th:text="${report.member.id}"></td>
-                    <td th:text="${report.isDeleted}"></td>
-                    <td th:text="${report.createdAt}"></td>
-                    <td th:text="${report.updatedAt}"></td>
-                    <td th:text="${report.deletedAt}"></td>
-                    <td>
-                        <form method="get" th:action="@{/admin/reports/{reportId}(reportId=${report.id})}">
-                            <button type="submit">
-                                <img th:src="@{/images/detail.png}" alt="상세">
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<div class="container">
+    <div class="header">
+        <h1>결과 리포트 관리</h1>
+        <form class="search-form" method="get" th:action="@{/admin/reports}">
+            <input name="memberId" placeholder="사용자 ID를 입력해 주세요" type="text">
+        </form>
+        <form class="search-form" method="get" th:action="@{/admin/reports}">
+            <input name="interviewSetId" placeholder="면접 세트 ID를 입력해 주세요" type="text">
+        </form>
     </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>면접 세트 ID</th>
+                <th>사용자 ID</th>
+                <th>삭제 여부</th>
+                <th>생성일</th>
+                <th>수정일</th>
+                <th>삭제일</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="report : ${reports}">
+                <td th:text="${report.id}"></td>
+                <td th:text="${report.interviewSet.id}"></td>
+                <td th:text="${report.member.id}"></td>
+                <td th:text="${report.isDeleted}"></td>
+                <td th:text="${report.createdAt}"></td>
+                <td th:text="${report.updatedAt}"></td>
+                <td th:text="${report.deletedAt}"></td>
+                <td>
+                    <form method="get" th:action="@{/admin/reports/{reportId}(reportId=${report.id})}">
+                        <button type="submit">
+                            <img alt="상세" th:src="@{/images/detail.png}">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 
 </html>

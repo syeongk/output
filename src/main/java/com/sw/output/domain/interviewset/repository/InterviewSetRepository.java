@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long> {
     @Query("""
@@ -168,4 +169,6 @@ public interface InterviewSetRepository extends JpaRepository<InterviewSet, Long
             ORDER BY b.createdAt DESC, b.id DESC
             """)
     Slice<InterviewSetSummaryProjection> findBookmarkedInterviewSetsNextPage(Pageable pageable, @Param("memberId") Long memberId, @Param("cursorId") Long cursorId, @Param("cursorCreatedAt") LocalDateTime cursorCreatedAt);
+
+    List<InterviewSet> findByMemberId(Long memberId);
 }
