@@ -115,6 +115,9 @@ public class InterviewSetService {
             int pageSize,
             QuestionAnswerSortType questionAnswerSortType
     ) {
+        Member member = memberRepository.findByEmail(getAuthenticatedUsername())
+                .orElseThrow(() -> new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
+
         InterviewSet interviewSet = interviewSetRepository.findById(interviewSetId)
                 .orElseThrow(() -> new BusinessException(InterviewSetErrorCode.INTERVIEW_SET_NOT_FOUND));
 
@@ -136,16 +139,21 @@ public class InterviewSetService {
             questionAnswerSlice = questionAnswerRepository.findQuestionAnswerNextPage(pageable, interviewSetId, questionAnswer.getId(), questionAnswer.getCreatedAt(), questionAnswer.getQuestionTitle(), questionAnswerSortType.name());
         }
 
+        Boolean isBookmarked;
+        Bookmark bookmark = bookmarkRepository.findByInterviewSetIdAndMemberId(interviewSet.getId(), member.getId())
+                .orElse(null);
+        isBookmarked = bookmark != null;
+
         List<QuestionAnswer> questionAnswers = questionAnswerSlice.getContent();
         if (questionAnswers.isEmpty()) {
-            return toInterviewSetCursorResponse(interviewSet, new ArrayList<>(), null, questionAnswerSortType);
+            return toInterviewSetCursorResponse(interviewSet, new ArrayList<>(), null, questionAnswerSortType, isBookmarked);
         }
 
         if (!questionAnswerSlice.hasNext()) {
-            return toInterviewSetCursorResponse(interviewSet, questionAnswers, null, questionAnswerSortType);
+            return toInterviewSetCursorResponse(interviewSet, questionAnswers, null, questionAnswerSortType, isBookmarked);
         } else {
             QuestionAnswer lastQuestionAnswer = questionAnswers.get(questionAnswers.size() - 1);
-            return toInterviewSetCursorResponse(interviewSet, questionAnswers, lastQuestionAnswer.getId(), questionAnswerSortType);
+            return toInterviewSetCursorResponse(interviewSet, questionAnswers, lastQuestionAnswer.getId(), questionAnswerSortType, isBookmarked);
         }
     }
 

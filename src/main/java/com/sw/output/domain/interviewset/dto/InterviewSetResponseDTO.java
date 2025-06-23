@@ -30,6 +30,7 @@ public class InterviewSetResponseDTO {
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;
         private Boolean isAnswerPublic;
+        private Boolean isBookmarked;
         private List<QuestionAnswerResponseDTO.QuestionAnswerDTO> questionAnswers;
     }
 

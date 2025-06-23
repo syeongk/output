@@ -62,7 +62,7 @@ public class InterviewSetConverter {
                 .build();
     }
 
-    public static InterviewSetResponseDTO.GetInterviewSetDTO toGetInterviewSetResponse(InterviewSet interviewSet, List<QuestionAnswer> questionAnswers) {
+    public static InterviewSetResponseDTO.GetInterviewSetDTO toGetInterviewSetResponse(InterviewSet interviewSet, List<QuestionAnswer> questionAnswers, Boolean isBookmarked) {
         return InterviewSetResponseDTO.GetInterviewSetDTO.builder()
                 .id(interviewSet.getId())
                 .parentId(interviewSet.getParent() != null ? interviewSet.getParent().getId() : null)
@@ -72,6 +72,7 @@ public class InterviewSetConverter {
                 .nickname(interviewSet.getMember().getNickname())
                 .createdAt(interviewSet.getCreatedAt())
                 .isAnswerPublic(interviewSet.getIsAnswerPublic())
+                .isBookmarked(isBookmarked)
                 .questionAnswers(
                         questionAnswers.stream()
                                 .map(QuestionAnswerConverter::toQuestionAnswerDTO)
@@ -85,9 +86,9 @@ public class InterviewSetConverter {
                 .build();
     }
 
-    public static InterviewSetResponseDTO.InterviewSetCursorDTO toInterviewSetCursorResponse(InterviewSet interviewSet, List<QuestionAnswer> questionAnswers, Long cursorId, QuestionAnswerSortType questionAnswerSortType) {
+    public static InterviewSetResponseDTO.InterviewSetCursorDTO toInterviewSetCursorResponse(InterviewSet interviewSet, List<QuestionAnswer> questionAnswers, Long cursorId, QuestionAnswerSortType questionAnswerSortType, Boolean isBookmarked) {
         return InterviewSetResponseDTO.InterviewSetCursorDTO.builder()
-                .interviewSet(toGetInterviewSetResponse(interviewSet, questionAnswers))
+                .interviewSet(toGetInterviewSetResponse(interviewSet, questionAnswers, isBookmarked))
                 .nextCursor(cursorId)
                 .build();
     }
