@@ -13,6 +13,7 @@ import com.sw.output.global.response.errorcode.InterviewSetErrorCode;
 import com.sw.output.global.response.errorcode.ReportErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,7 @@ import static com.sw.output.domain.report.converter.OpenAIDTOConverter.toAiFeedb
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FeedbackUseCase {
     private final QuestionAnswerRepository questionAnswerRepository;
     private final OpenAIService openAIService;
@@ -31,6 +33,7 @@ public class FeedbackUseCase {
 
     @Transactional
     public OpenAIDTO.AiFeedbackDTO prepareAIFeedback(Long reportId, Long questionAnswerId) {
+        log.info("[{}] prepare", Thread.currentThread().getName());
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new BusinessException(ReportErrorCode.REPORT_NOT_FOUND));
 
@@ -60,8 +63,6 @@ public class FeedbackUseCase {
     public void createAIFeedback(Long reportId, Long questionAnswerId, MultipartFile audioFile) {
         OpenAIDTO.AiFeedbackDTO aiFeedbackDTO = prepareAIFeedback(reportId, questionAnswerId);
 
-        String memberAnswer = openAIService.sttMemberAnswer(audioFile);
-
-        openAIService.processAIFeedback(memberAnswer, aiFeedbackDTO.getQuestionAnswer().getQuestionTitle(), aiFeedbackDTO.getFeedback());
+        openAIService.processAudioAndFeedback(audioFile, aiFeedbackDTO.getQuestionAnswer().getQuestionTitle(), aiFeedbackDTO.getFeedback());
     }
 }

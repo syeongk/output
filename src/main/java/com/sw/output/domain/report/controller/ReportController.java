@@ -1,31 +1,25 @@
 package com.sw.output.domain.report.controller;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.sw.output.domain.report.dto.FeedbackResponseDTO;
 import com.sw.output.domain.report.service.FeedbackUseCase;
 import com.sw.output.domain.report.service.ReportService;
 import com.sw.output.global.response.ApiResponse;
 import com.sw.output.global.response.successcode.CommonSuccessCode;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/reports")
 @RequiredArgsConstructor
 @Tag(name = "결과 레포트")
+@Slf4j
 public class ReportController {
     private final ReportService reportService;
     private final FeedbackUseCase feedbackUseCase;
@@ -36,6 +30,7 @@ public class ReportController {
             @PathVariable Long reportId,
             @RequestParam Long questionAnswerId,
             @Parameter(required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @RequestParam MultipartFile audioFile) {
+        log.info("[{}] start STT", Thread.currentThread().getName());
         feedbackUseCase.createAIFeedback(reportId, questionAnswerId, audioFile);
         return ApiResponse.success(CommonSuccessCode.ACCEPTED, null);
     }
