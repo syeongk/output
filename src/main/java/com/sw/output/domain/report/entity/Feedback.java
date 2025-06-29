@@ -46,5 +46,9 @@ public class Feedback extends SoftDeleteEntity {
     public void updateFeedbackStatus(FeedbackStatus feedbackStatus) {
         this.feedbackStatus = feedbackStatus;
     }
+
+    public void updateMemberAnswer(String memberAnswer) {
+        this.memberAnswer = memberAnswer;
+    }
 }
 

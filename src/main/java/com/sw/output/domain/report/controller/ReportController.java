@@ -1,5 +1,6 @@
 package com.sw.output.domain.report.controller;
 
+import com.sw.output.domain.report.dto.FeedbackRequestDTO;
 import com.sw.output.domain.report.dto.FeedbackResponseDTO;
 import com.sw.output.domain.report.service.FeedbackUseCase;
 import com.sw.output.domain.report.service.ReportService;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -30,7 +32,7 @@ public class ReportController {
             @PathVariable Long reportId,
             @RequestParam Long questionAnswerId,
             @Parameter(required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @RequestParam MultipartFile audioFile) {
-        log.info("[{}] start STT", Thread.currentThread().getName());
+        log.info("[{}] Controller", Thread.currentThread().getName());
         feedbackUseCase.createAIFeedback(reportId, questionAnswerId, audioFile);
         return ApiResponse.success(CommonSuccessCode.ACCEPTED, null);
     }
@@ -41,6 +43,7 @@ public class ReportController {
             @PathVariable Long reportId,
             @RequestParam(required = false) Long cursorId,
             @RequestParam(defaultValue = "20") int pageSize) {
+
         FeedbackResponseDTO.FeedbacksDTO response = reportService.getReport(reportId, cursorId, pageSize);
         return ApiResponse.success(response);
     }
@@ -50,5 +53,19 @@ public class ReportController {
     public ApiResponse<Void> deleteReport(@PathVariable Long reportId) {
         reportService.deleteReport(reportId);
         return ApiResponse.success();
+    }
+
+    @PostMapping("{reportId}/ai-feedback/recreate")
+    @Operation(summary = "AI 피드백 재생성 API")
+    public ApiResponse<Void> recreateAiFeedback(
+            @PathVariable Long reportId,
+            @RequestBody @Valid FeedbackRequestDTO request
+    ) {
+        log.info("reportId = {}", reportId);
+        log.info("feedbackId = {}", request.getFeedbackId());
+        log.info("memberAnswer = {}", request.getMemberAnswer());
+
+        feedbackUseCase.recreateAIFeedback(reportId, request);
+        return ApiResponse.success(CommonSuccessCode.ACCEPTED, null);
     }
 }
