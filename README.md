@@ -52,25 +52,25 @@ AI 기반 맞춤형 모의 면접 앱
 **Front-end :**
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white)
 
-Back-end :
+** Back-end :**
 ![Java](https://img.shields.io/badge/Java-007396?style=flat-square&logo=java&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=spring-security&logoColor=white)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=flat-square&logo=thymeleaf&logoColor=white)
 
-Database :
+**Database :**
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
 
-Infrastructure :
+**Infrastructure :**
 ![kt cloud](https://img.shields.io/badge/ktcloud-FF0000?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white)
 
-External APIs :
+**External APIs :**
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square&logo=openai&logoColor=white)
 ![Google](https://img.shields.io/badge/Google-4285F4?style=flat-square&logo=google&logoColor=white)
 
-Collaboration :
+**Collaboration :**
 ![Notion](https://img.shields.io/badge/Notion-000000?style=flat-square&logo=notion&logoColor=white)
 ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=flat-square&logo=figma&logoColor=white)
 
@@ -90,6 +90,7 @@ Collaboration :
 - 문제점 : 답변 완료 후 AI 피드백을 동기적으로 처리할 경우, API 호출 지연으로 인해 로딩 시간이 길어졌습니다.
 
 - 해결책 : 답변 요청에 대해 서버가 즉시 HTTP 202 Accepted를 반환하고, AI 피드백 생성은 별도 스레드에서 비동기적으로 처리하도록 구현하여 사용자 경험을 개선했습니다.
+
 
 
 
